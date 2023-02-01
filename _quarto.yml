@@ -3,18 +3,29 @@ project:
   output-dir: docs
 
 website:
-  title: "website-brianlookabaugh"
+  title: "Brian Lookabaugh"
+  description: "Brian Lookabaugh's Personal Website for Research and Blogs"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: "resume/index.qmd"
+        text: Resume
+      - href: "projects/index.qmd"
+        text: Projects
+      - href: "blog/index.qmd"
+        text: Blog
+    right:
+      - icon: linkedin
+        href: https://www.linkedin.com/in/brian-lookabaugh-372ab31a1/
+      - icon: github
+        href: https://github.com/Brian-Lookabaugh
+      - icon: envelope
+        href: mailto:brianlookabaughjr@gmail.com
 
 format:
   html:
-    theme: cosmo
+    theme: flatly
     css: styles.css
-    toc: true
-
-editor: visual
+    toc: false
 

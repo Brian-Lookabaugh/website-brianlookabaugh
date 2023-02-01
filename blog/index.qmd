@@ -1,0 +1,7 @@
+---
+title: "A Blog About Causal Inference and Data Science"
+listing:
+  contents:
+    - "Causal Inference for Social Scientists/**/index.qmd"
+    - "All Things R/**/index.qmd"
+---
