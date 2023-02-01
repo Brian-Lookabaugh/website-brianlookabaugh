@@ -2,7 +2,7 @@
 image: "images/headshot.jpg"
 about:
   template: trestles
-  image-width: 21em
+  image-width: 20em
   image-shape: rounded
 ---
 
