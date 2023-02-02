@@ -6,7 +6,7 @@ date: 2023-02-01
 description: "A brief introduction/refresher to executing SQL in R and translating between SQL and dplyr syntax."
 categories: [R, SQL, dplyr]
 page-layout: full
-image: "images/dbplyr_badge.png"
+image: "SQL and R/images/dbplyr_badge.png"
 ---
 
 A promising direction in the world of data analytics and data science is the push to homogenize commonly-used tools into a common interface. Given my background in R, the prospect of working with SQL *completely inside of RStudio* has always been very appealing to me. This blog serves as a very *brief* and *introductory* review of how to execute SQL in R along with a couple of other related features. While this brief guide is not intended to serve as an introduction to SQL syntax, it is my intent that it can be shared with those who are new to SQL with R.
