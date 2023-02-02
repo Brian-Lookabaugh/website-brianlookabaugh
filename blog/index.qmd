@@ -2,7 +2,7 @@
 title: "Causal Inference and Data Science"
 listing:
   contents:
-    - "blog/Causal Inference/**/index.qmd"
-    - "blog/R/**/index.qmd"
+    - "Causal Inference/**/index.qmd"
+    - "R/**/index.qmd"
   categories: true
 ---
