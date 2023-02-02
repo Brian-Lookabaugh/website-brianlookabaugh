@@ -72,9 +72,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: [{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-date','listing-title','listing-author','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: [],
+      searchColumns: ["listing-date","listing-title","listing-author","listing-description"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -181,7 +181,31 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="R,SQL,dplyr" data-listing-date-sort="1675231200000" data-listing-file-modified-sort="1675300820135" data-listing-reading-time-sort="4.915">
+<div class="body">
+<a href="../blog/R/SQL and R/index.html">
+<h3 class="no-anchor listing-title">
+Executing SQL in R
+</h3>
+<div class="listing-subtitle">
 
+</div>
+<div class="listing-description">
+<p>A brief introduction/refresher to executing SQL in R and translating between SQL and dplyr syntax.</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="../blog/R/SQL and R/index.html">
+<div class="listing-date">
+Feb 1, 2023
+</div>
+<div class="listing-author">
+Brian Lookabaugh
+</div>
+</a>
+</div>
+</div>
 </div>
 <div class="listing-no-matching d-none">
 No matching items

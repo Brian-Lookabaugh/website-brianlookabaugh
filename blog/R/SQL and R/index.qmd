@@ -100,10 +100,6 @@ GROUP BY cyl
 ORDER BY avg_mpg DESC;
 ```
 
-```{r}
-tibble(query_3)
-```
-
 Note that if you are going to be using SQL chunks frequently, it is worth specifying the default connection for SQL chunks as demonstrated below.
 
 ```{r eval=FALSE}
@@ -114,7 +110,7 @@ knitr::opts_chunk$set(connection = "con")
 
 Another very helpful tool that bridges the gap between SQL and dplyr syntax is the `show_query` command. Personally, I found this tool incredibly valuable when learning SQL because of my background in R. Essentially, what this tool does is translate dplyr syntax into SQL syntax. In the opposite direction, through the `tidyquery` package, we also have the capability to the exact opposite and translate SQL syntax into dplyr syntax. Below demonstrates the functionality of these two commands for the same query. First, translating dplyr syntax to SQL syntax:
 
-```{r}
+```{r warning = FALSE}
 tbl(con, "mtcars") %>%
   filter(am == 1) %>%
   group_by(cyl) %>%
