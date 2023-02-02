@@ -2,7 +2,7 @@
 title: "A Blog About Causal Inference and Data Science"
 listing:
   contents:
-    - "Causal Inference/**/index.qmd"
-    - "R/**/index.qmd"
+    - "blog/Causal Inference/**/index.qmd"
+    - "blog/R/**/index.qmd"
   categories: true
 ---
