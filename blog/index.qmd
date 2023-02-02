@@ -1,5 +1,5 @@
 ---
-title: "A Blog About Causal Inference and Data Science"
+title: "Causal Inference and Data Science"
 listing:
   contents:
     - "blog/Causal Inference/**/index.qmd"
