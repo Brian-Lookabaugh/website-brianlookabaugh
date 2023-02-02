@@ -2,6 +2,8 @@
 title: "Executing SQL in R"
 author: "Brian Lookabaugh"
 toc: true
+toc-title: Contents
+code-tools: true
 date: 2023-02-01
 description: "A brief introduction/refresher to executing SQL in R and translating between SQL and dplyr syntax."
 categories: [R, SQL, dplyr]
