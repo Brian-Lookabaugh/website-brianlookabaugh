@@ -4,10 +4,6 @@ about:
   template: trestles
   image-width: 21em
   image-shape: rounded
-  links:
-    - icon: filter-square-fill
-      href: "resume/Lookabaugh-Resume-2-2.pdf"
-      text: Resume
 ---
 
 Greetings and welcome to my personal website! I am a PhD Candidate in the Political Science Department at the University of North Texas. Over the past five years, I have leveraged data and statistics to produce quantitative social science research in both independent and collaborative settings. My strongest skills include causal inference (primarily quasi-experimental design), research design, and advanced data manipulation/visualization using R.
