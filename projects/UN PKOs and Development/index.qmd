@@ -3,7 +3,6 @@ title: "Do UN Peacekeeping Operations Contribute to Economic Development?"
 author: "Brian Lookabaugh"
 toc: true
 toc-title: Contents
-code-tools: true
 code-fold: true
 date: 2023-02-04
 description: "Employing a quasi-experimental design, this project estimates the causal impact of UN peacekeeping operation deployments and withdrawals on economic development."
