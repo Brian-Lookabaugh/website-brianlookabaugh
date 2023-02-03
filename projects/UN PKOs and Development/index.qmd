@@ -3,6 +3,8 @@ title: "Do UN Peacekeeping Operations Contribute to Economic Development?"
 author: "Brian Lookabaugh"
 toc: true
 toc-title: Contents
+code-tools: true
+code-fold: show
 date: 2023-02-04
 description: "Employing a quasi-experimental design, this project estimates the causal impact of UN peacekeeping operation deployments and withdrawals on economic development."
 categories: [causal inference, quasi-experimental design, matching, IPW, panel data, sensitivity analysis]
@@ -11,3 +13,17 @@ image: "images/UN Emblem.png"
 ---
 
 (The entirety of code for this project along with manuscripts, data, and graphics can be found in [this GitHub repository](https://github.com/Brian-Lookabaugh/UN-PKOs-Project)).
+
+The United Nation's (UN) pacifying role in the world has been stained in the public eye with images of Rwanda and Srebrenica, Bosnia coming to mind. Despite this, most studies evaluating the potentially pacifying effects of UN peacekeeping operations (PKOs) have largely demonstrated a positive relationship between UN PKOs and peace. To a lesser extent, researchers have also sought to evaluate the economic consequences of UN PKOs. Given the relationship between economic development and conflict, UN PKOs should also lead to better economic conditions if we expect PKOs to be effective at promoting peace. However, most studies in this area are limited to correlative analyses. Where quasi-experimental methods are employed, they are often lacking, missing a clear confounder identification strategy, misusing quasi-experimental methods, and/or omitting sensitivity analysis to assess the impact of unobserved confounders. This project employs matching and inverse probability weighting (IPW) designed for panel data as implemented by [@Imai et al.:2021] to evaluate the causal impact of UN PKOs on economic development.
+
+The remainder of this project is structured as follows. First, I briefly discuss the theoretical relationship between UN PKOs and development to provide the reader with basic familiarity concerning the alleged relationship between treatment (PKO) and outcome (economic development). Second, I walk through the data collection and manipulation process, detailing which variables were selected, why they were selected, and how data was manipulated. Third, I provide context and justification concerning the implementation of the novel panel data matching analysis as proposed by @Imai et al.: 2021. Fourth, I finally get to the fun part... the results. In this section, I walk readers through the results and their substantive importance. Finally, I conclude with a recap of the project, its limitations, and conclusions generated from the findings.
+
+# PKOs and Economic Development
+
+# Collecting the Data
+
+# The Limitations of Conventional Matching for Panel Data
+
+# Results
+
+# Conclusion
