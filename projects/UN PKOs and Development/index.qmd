@@ -28,3 +28,5 @@ The remainder of this project is structured as follows. First, I briefly discuss
 # Results
 
 # Conclusion
+
+# References
