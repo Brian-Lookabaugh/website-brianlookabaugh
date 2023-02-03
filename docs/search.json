@@ -4,7 +4,7 @@
     "href": "blog/index.html",
     "title": "Topics on Causal Inference and Data Science",
     "section": "",
-    "text": "R\n\n\nSQL\n\n\ndplyr\n\n\n\n\nA brief introduction/refresher to executing SQL in R and translating between SQL and dplyr syntax.\n\n\n\n\n\n\nFeb 1, 2023\n\n\nBrian Lookabaugh\n\n\n\n\n\n\nNo matching items"
+    "text": "A brief introduction/refresher to executing SQL in R and translating between SQL and dplyr syntax.\n\n\n\n\n\n\nFeb 1, 2023\n\n\nBrian Lookabaugh\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/R/SQL and R/index.html",
@@ -19,6 +19,13 @@
     "title": "Brian Lookabaugh",
     "section": "",
     "text": "My current work is focused on making causal inferences from conflict management programs. Cutting out the jargon, I am curious if policies such as peacekeeping operations, peace agreements, mediation, foreign aid, and foreign direct investment actually contribute to resolving civil conflicts and creating peaceful post-conflict environments. Detailed explanations and technical information concerning this research can be located on the projects section of this site or my Github profile. In addition, I occasionally write blog posts where I primarily discuss topics related to causal inference and data science. In particular, I am working on a comprehensive set of blog posts designed to introduce curious social scientists to causal inference and experimental/quasi-experimental design."
+  },
+  {
+    "objectID": "projects/index.html",
+    "href": "projects/index.html",
+    "title": "Causal Inference and Data Science Projects",
+    "section": "",
+    "text": "Employing a quasi-experimental design, this project estimates the causal impact of UN peacekeeping operation deployments and withdrawals on economic development.\n\n\n\n\n\n\nFeb 4, 2023\n\n\nBrian Lookabaugh\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "resume/index.html",
