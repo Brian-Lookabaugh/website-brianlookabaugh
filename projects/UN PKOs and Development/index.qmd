@@ -10,3 +10,5 @@ categories: [causal inference, quasi-experimental design, matching, IPW, panel d
 page-layout: full
 image: "images/UN Emblem.png"
 ---
+
+(The entirety of code for this project along with manuscripts, data, and graphics can be found in [this GitHub repository](https://github.com/Brian-Lookabaugh/UN-PKOs-Project)).
