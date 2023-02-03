@@ -4,5 +4,5 @@ listing:
   contents:
     - "Causal Inference/**/index.qmd"
     - "R/**/index.qmd"
-categories: true
+  categories: true
 ---

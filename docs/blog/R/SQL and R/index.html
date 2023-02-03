@@ -245,8 +245,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>A promising direction in the world of data analytics and data science is the push to homogenize commonly-used tools into a common interface. Given my background in R, the prospect of working with SQL <em>completely inside of RStudio</em> has always been very appealing to me. This blog serves as a very <em>brief</em> and <em>introductory</em> review of how to execute SQL in R along with a couple of other related features. While this brief guide is not intended to serve as an introduction to SQL syntax, it is my intent that it can be shared with those who are new to SQL with R.</p>
 <p>To begin, we will load the packages that will be utilized in this blog.</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dplyr"</span>, <span class="do">## Data Manipulation in R</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"sqldf"</span>, <span class="do">## Running SQL Queries in R</span></span>
@@ -256,21 +254,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tidyquery"</span>, <span class="do">## Translating SQL Syntax to dplyr Syntax</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">install =</span> <span class="cn">FALSE</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
 <section id="setting-up-databases" class="level3">
 <h3 class="anchored" data-anchor-id="setting-up-databases">Setting Up Databases</h3>
 <p>In practice, executing SQL in R requires connection to a pre-existing SQL database. For the purpose of this blog, however, we will just be using a temporary database stored in a local RStudio session. We will store this database as an object call <code>con</code>.</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(RSQLite<span class="sc">::</span><span class="fu">SQLite</span>(), <span class="st">":memory:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
 <p>For practical reasons, the syntax above will not be sufficient. Each connection will look different, dependent on various circumstances (the type of relational database management system (RDBMS) being used, log-in information, etc.), so the following example is just that; an example using completely made-up information. However, it does serve as a template for real information to be plugged into.</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="fu">odbc</span>(),</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Driver =</span> ,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Server =</span> ,</span>
@@ -278,12 +270,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">UID =</span> ,</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">PWD =</span> ,</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Port =</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
 <p>Returning to the database we created, it is empty and has no data stored in it. To keep things simple, we are going to load the <code>mtcars</code> data set. We first begin by loading the data into RStudio. The second line of code copies this data set into the local database that we created. Now that we have copied this data into the local database, we can remove the <code>mtcars</code> data set from the local environment.</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"mtcars"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dbWriteTable</span>(<span class="at">conn =</span> con,</span>
@@ -291,15 +280,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">value =</span> mtcars)</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(mtcars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
 </section>
 <section id="running-a-sql-query-in-r" class="level3">
 <h3 class="anchored" data-anchor-id="running-a-sql-query-in-r">Running a SQL Query in R</h3>
 <p>Now that we have the <code>mtcars</code> data in our database, we can run a SQL query to retrieve information from this data. Using the <code>dbGetQuery</code> command, we can execute SQL syntax to return desired information. Here, we are writing a query to return a table which tells us the average miles per gallon for automatic vehicles grouped by the number of cylinders the vehicle has and ordered by miles per gallon from the highest to lowest values.</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>query_1 <span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(con,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">'SELECT ROUND(AVG(mpg)) as avg_mpg, cyl</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">   FROM mtcars</span></span>
@@ -309,7 +295,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(query_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   avg_mpg   cyl
@@ -321,8 +306,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>In contrast, if you wanted to execute a query on a data frame object instead of pulling from a database, you can use <code>sqldf</code>.</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>query_2 <span class="ot">&lt;-</span> <span class="fu">sqldf</span>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">'SELECT ROUND(AVG(mpg)) as avg_mpg, cyl</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">   FROM mtcars</span></span>
@@ -332,7 +315,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(query_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   avg_mpg   cyl
@@ -347,8 +329,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="running-a-sql-chunk-in-rmarkdownquarto">Running a SQL Chunk in RMarkdown/Quarto</h3>
 <p>We can conveniently execute a SQL query in R without relying on a specific command like <code>dbGetQuery</code>. Using RMarkdown or Quarto, we can specify a SQL code chunk. Within the code chunk, you will need to specify the connection (<code>con</code> in our case) and, optionally, the object that the results of the query will be stored in. In the output below, you would begin the code chunk with <code>{sql, connection = con, output.var = "query_2"}</code>.</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <pre class="eval cell-code"><code>SELECT
   ROUND(AVG(mpg)) AS avg_mpg,
   cyl
@@ -356,22 +336,16 @@ FROM mtcars
 WHERE am = 1
 GROUP BY cyl
 ORDER BY avg_mpg DESC;</code></pre>
-</details>
 </div>
 <p>Note that if you are going to be using SQL chunks frequently, it is worth specifying the default connection for SQL chunks as demonstrated below.</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">connection =</span> <span class="st">"con"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
 </section>
 <section id="translating-dplyr-syntax-to-sql-syntax-and-vice-versa" class="level3">
 <h3 class="anchored" data-anchor-id="translating-dplyr-syntax-to-sql-syntax-and-vice-versa">Translating dplyr Syntax to SQL Syntax and Vice Versa</h3>
 <p>Another very helpful tool that bridges the gap between SQL and dplyr syntax is the <code>show_query</code> command. Personally, I found this tool incredibly valuable when learning SQL because of my background in R. Essentially, what this tool does is translate dplyr syntax into SQL syntax. In the opposite direction, through the <code>tidyquery</code> package, we also have the capability to the exact opposite and translate SQL syntax into dplyr syntax. Below demonstrates the functionality of these two commands for the same query. First, translating dplyr syntax to SQL syntax:</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl</span>(con, <span class="st">"mtcars"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(am <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cyl) <span class="sc">%&gt;%</span></span>
@@ -379,7 +353,6 @@ ORDER BY avg_mpg DESC;</code></pre>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(avg_mpg)) <span class="sc">%&gt;%</span></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_query</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;SQL&gt;
 SELECT `cyl`, ROUND(AVG(`mpg`), 0) AS `avg_mpg`
@@ -391,8 +364,6 @@ ORDER BY `avg_mpg` DESC</code></pre>
 </div>
 <p>Now, we will do the opposite</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_dplyr</span>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SELECT</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="st">    ROUND(AVG(mpg)) AS avg_mpg,</span></span>
@@ -402,7 +373,6 @@ ORDER BY `avg_mpg` DESC</code></pre>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="st">   GROUP BY cyl</span></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="st">   ORDER BY avg_mpg DESC;"</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>mtcars %&gt;%
   filter(am == 1) %&gt;%

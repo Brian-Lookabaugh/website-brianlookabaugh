@@ -3,5 +3,5 @@ title: "Causal Inference and Data Science Projects"
 listing:
   contents: 
     - "UN PKOs and Development/**/index.qmd"
-categories: true
+  categories: true
 ---
