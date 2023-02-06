@@ -2,7 +2,7 @@
 title: "Resume"
 engine: knitr
 cv:
-  pdf: "Lookabaugh-Resume-2-2.pdf"
+  pdf: "Lookabaugh-Resume-2-6.pdf"
 ---
 
 ```{css echo=FALSE}
