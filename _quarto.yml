@@ -7,7 +7,7 @@ execute:
 
 website:
   title: "Brian Lookabaugh"
-  image: "images/sticker.png"
+  image: "website-brianlookabaugh/images/sticker.png"
   description: "Brian Lookabaugh's Personal Website for Research and Blogs"
   navbar:
     left:
