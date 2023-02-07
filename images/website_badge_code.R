@@ -39,7 +39,7 @@ models <- tribble(
   mutate(method = fct_inorder(model_name))
 
 # Plot the Effects
-p <- ggplot(models, aes(x = estimate, y = fct_rev(model_name), color = model_name)) +
+ggplot(models, aes(x = estimate, y = fct_rev(model_name), color = model_name)) +
   geom_vline(xintercept = 0, size = 1, linetype = "dashed", color = "black") +
   scale_color_viridis_d(option = "mako", end = 0.9, guide = "none") +
   geom_pointrange(aes(xmin = conf.low, xmax = conf.high), size = 1) +
@@ -49,24 +49,24 @@ p <- ggplot(models, aes(x = estimate, y = fct_rev(model_name), color = model_nam
         axis.text = element_blank(),
         axis.ticks.y = element_blank(),
         panel.grid = element_blank(),
-        panel.border = element_blank())
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "transparent"))
 
-# Create and Save the Sticker
 sticker(
   subplot = p,
   package = "",
-  s_width = 1.5,
-  s_height = 1.5,
+  s_width = 1.25,
+  s_height = 1.25,
   s_x = 1,
   s_y = 1,
-  h_fill = "transparent",
+  h_fill = "white",
   h_color = "black"
-) %>%
-  print()
+  ) %>%
+ print()
 
 ggsave(
   "sticker.png",
-  width = 2,
-  height = 2,
+  width = 3,
+  height = 3,
   path = "C:/Users/brian/Desktop/Job/website-brianlookabaugh/images"
 )
