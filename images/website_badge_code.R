@@ -39,7 +39,7 @@ models <- tribble(
   mutate(method = fct_inorder(model_name))
 
 # Plot the Effects
-ggplot(models, aes(x = estimate, y = fct_rev(model_name), color = model_name)) +
+p <- ggplot(models, aes(x = estimate, y = fct_rev(model_name), color = model_name)) +
   geom_vline(xintercept = 0, size = 1, linetype = "dashed", color = "black") +
   scale_color_viridis_d(option = "mako", end = 0.9, guide = "none") +
   geom_pointrange(aes(xmin = conf.low, xmax = conf.high), size = 1) +
