@@ -1,0 +1,25 @@
+---
+title: Causal Inference for Casuals, Part I
+subtitle: What Is Causal Inference and Why Does It Matter?
+author: "Brian Lookabaugh"
+date: 2023-02-11
+toc: true
+toc-title: Contents
+code-fold: true
+description: An intrduction to the world of causal inference for the casual, curious reader.
+categories: [causal inference, DAGs, potential outcomes]
+page-layout: full
+image: "images/daniel_fast.png"
+---
+
+### The State of Science
+
+### A Return to Stats 101
+
+### Causal Diagrams and the Causal Revolution
+
+### Potential Outcomes Framework
+
+### Definition of Key Terms
+
+### Causal Inference With Observational Data
