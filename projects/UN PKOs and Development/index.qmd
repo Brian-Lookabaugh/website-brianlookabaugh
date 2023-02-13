@@ -6,7 +6,7 @@ toc-title: Contents
 code-fold: true 
 date: 2023-02-04
 description: "Employing a quasi-experimental design, this project estimates the causal impact of UN peacekeeping operation deployments and withdrawals on economic development."
-categories: [causal inference, quasi-experimental design, matching, IPW, panel data, sensitivity analysis]
+categories: [causal inference, quasi-experimental design, matching, IPW, panel data, sensitivity analysis, peacekeeping operations, conflict management, economic development]
 page-layout: full
 image: "images/UN Emblem.png"
 bibliography: "references/PKO References.bib"
