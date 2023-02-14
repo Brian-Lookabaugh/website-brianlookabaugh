@@ -1,0 +1,13 @@
+---
+title: Causal Inference for Casuals, Part II
+subtitle: Making Causal Assumptions Clear With DAGs
+author: Brian Lookabaugh
+date: 2023-02-16
+toc: true
+toc-title: Contents
+code-fold: true
+description: An introduction to DAGs, adjustment, and creating DAGs in R.
+categories: [causal inference, DAGs, R]
+page-layout: full
+image:
+---
