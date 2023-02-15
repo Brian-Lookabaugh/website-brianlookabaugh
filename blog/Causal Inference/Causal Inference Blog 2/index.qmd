@@ -11,3 +11,36 @@ categories: [causal inference, DAGs, R]
 page-layout: full
 image:
 ---
+
+```{r warning = FALSE, message = FALSE}
+library(ggdag)
+library(dagitty)
+library(tidyverse)
+
+dag <- dagify(crops ~ rain + insects + soil_qual,
+              soil_qual ~ fert,
+              fert ~ need + rain,
+              labor ~ fert + crops,
+              exposure = "fert",
+              outcome = "crops",
+              coords = list(x = c(crops = 5, rain = 3, insects = 5, soil_qual = 3,
+                                  fert = 1, need = 1, labor = 3),
+                            y = c(crops = 3, rain = 5, insects = 5, soil_qual = 3,
+                                  fert = 3, need = 1, labor = 1)),
+              labels = c(crops = "Crops", rain = "Rain", insects = "Insects",
+                         soil_qual = "Soil Quality", fert = "Fertilizer",
+                         need = "Need", labor = "Labor"))
+
+tidy_dag <- dag %>%
+  tidy_dagitty() %>%
+  node_status()
+
+ggplot(tidy_dag, aes(x = x, y = y, xend = xend, yend = yend)) + 
+  theme_dag() +
+  geom_dag_edges() +
+  geom_dag_point(aes(color = status)) +
+  geom_dag_label_repel(aes(label = label, fill = status),
+                       color = "white", fontface = "bold") +
+  guides(color = "none", fill = "none")
+```
+
