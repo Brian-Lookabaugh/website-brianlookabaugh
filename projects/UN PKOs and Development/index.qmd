@@ -9,7 +9,7 @@ description: "Employing a quasi-experimental design, this project estimates the 
 categories: [causal inference, quasi-experimental design, matching, IPW, panel data, sensitivity analysis, peacekeeping operations, conflict management, economic development]
 page-layout: full
 image: "images/UN Emblem.png"
-bibliography: "references/PKO References.bib"
+bibliography: "projects/Master References.bib"
 ---
 
 ```{r echo = FALSE}
