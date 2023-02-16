@@ -7,10 +7,10 @@ toc: true
 toc-title: Contents
 code-fold: true
 description: An introduction to DAGs, adjustment, and creating DAGs in R.
-categories: [causal inference, DAGs, R]
+categories: [causal inference, DAGs]
 page-layout: full
 bibliography: "C:/Users/brian/Desktop/Job/website-brianlookabaugh/projects/Master References.bib"
-image: "blog/Causal Inference/Causa Inference Blog 2/images/ag_dag."
+image: "C/Users/brian/Desktop/Job/website-brianlookabaugh/blog/Causal Inference/Causal Inference Blog 2/images/ag_dag.png"
 ---
 
 ### What Are DAGs Used For?

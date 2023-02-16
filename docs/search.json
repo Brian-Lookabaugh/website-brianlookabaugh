@@ -18,7 +18,7 @@
     "href": "blog/index.html",
     "title": "Topics on Causal Inference and Data Science",
     "section": "",
-    "text": "What Is Causal Inference and Why Does It Matter?\n\n\n\n\ncausal inference\n\n\nDAGs\n\n\npotential outcomes\n\n\n\n\nAn introduction to the world of causal inference for the casual, curious reader.\n\n\n\n\n\n\nFeb 11, 2023\n\n\nBrian Lookabaugh\n\n\n\n\n\n\n  \n\n\n\n\n\nMaking Causal Assumptions Clear With DAGs\n\n\n\n\ncausal inference\n\n\nDAGs\n\n\nR\n\n\n\n\nAn introduction to DAGs, adjustment, and creating DAGs in R.\n\n\n\n\n\n\nFeb 16, 2023\n\n\nBrian Lookabaugh\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nR\n\n\nSQL\n\n\ndplyr\n\n\n\n\nA brief introduction/refresher to executing SQL in R and translating between SQL and dplyr syntax.\n\n\n\n\n\n\nFeb 1, 2023\n\n\nBrian Lookabaugh\n\n\n\n\n\n\nNo matching items"
+    "text": "What Is Causal Inference and Why Does It Matter?\n\n\n\n\ncausal inference\n\n\nDAGs\n\n\npotential outcomes\n\n\n\n\nAn introduction to the world of causal inference for the casual, curious reader.\n\n\n\n\n\n\nFeb 11, 2023\n\n\nBrian Lookabaugh\n\n\n\n\n\n\n  \n\n\n\n\n\nMaking Causal Assumptions Clear With DAGs\n\n\n\n\ncausal inference\n\n\nDAGs\n\n\n\n\nAn introduction to DAGs, adjustment, and creating DAGs in R.\n\n\n\n\n\n\nFeb 16, 2023\n\n\nBrian Lookabaugh\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nR\n\n\nSQL\n\n\ndplyr\n\n\n\n\nA brief introduction/refresher to executing SQL in R and translating between SQL and dplyr syntax.\n\n\n\n\n\n\nFeb 1, 2023\n\n\nBrian Lookabaugh\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/R/SQL and R/index.html",
