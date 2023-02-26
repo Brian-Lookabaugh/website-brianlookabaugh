@@ -40,7 +40,7 @@ What about the non-interference assumption? Eh… One thing researchers can do i
 
 ### Positivity
 
-The positivity assumption states that all types of units within a study should have a greater than zero chance of receiving treatment. To break this down, let’s consider a situation where a violation of the positivity assumption is apparent. We’ll continue with the PKO example. A look at the map below will inform the reader that UN peacekeeping operations are heavily clustered in Sub-Saharan Africa. (So much so that [Geo-PKO page](https://www.pcr.uu.se/data/geo-pko/) - where the data comes from - just kind of zoom in on Africa and cut out sections of the map like Canada, Scandinavia, and Australia).
+The positivity assumption states that all types of units within a study should have a greater than zero chance of receiving treatment. To break this down, let’s consider a situation where a violation of the positivity assumption is apparent. We’ll continue with the PKO example. A look at the map below will inform the reader that UN peacekeeping operations are heavily clustered in Sub-Saharan Africa. (So much so that the [Geo-PKO page](https://www.pcr.uu.se/data/geo-pko/) - where the data comes from - just kind of zooms in on Africa and cut out sections of the map like Canada, Scandinavia, and Australia).
 
 ![](images/pko_distribution.png)
 
