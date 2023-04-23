@@ -17,8 +17,8 @@ website:
         text: Home
       - href: "resume/index.qmd"
         text: Resume
-      - href: "projects/index.qmd"
-        text: Projects
+      - href: "research/index.qmd"
+        text: Research
       - href: "blog/index.qmd"
         text: Blog
     right:
