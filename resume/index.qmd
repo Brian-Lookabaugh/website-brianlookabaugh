@@ -9,6 +9,11 @@ cv:
 .btn.cv-download {
     display: flex;
     align-items: center;
+    justify-content: center;
+}
+
+.btn.cv-download i.fa-solid {
+    margin-right: 5px; /* Optional: Add some spacing between the icon and text */
 }
 .embed-container {
     position: relative;
@@ -31,7 +36,7 @@ cv:
 ```{=html}
 <p class="text-center">
   <a class="btn btn-primary btn-lg cv-download" href="`r rmarkdown::metadata$cv$pdf`" target="_blank">
-    <i class="fa-solid fa-file-arrow-down"></i>&ensp;Download Resume
+    <i class="fa-solid fa-file-arrow-down"></i>&ensp;Download
   </a>
 </p>
 <div class="embed-container">
