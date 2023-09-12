@@ -6,6 +6,10 @@ cv:
 ---
 
 ```{css echo=FALSE}
+.btn.cv-download {
+    display: flex;
+    align-items: center;
+}
 .embed-container {
     position: relative;
     padding-bottom: 129%;
