@@ -1,10 +1,5 @@
 ---
-title: ""
-listing:
-  - id: completed-papers
-    contents: "completed-papers/*/index.qmd"
-  - id: working-papers
-    contents: "working-papers/*/index.qmd"
+title: "Research"
 page-layout: article
 toc-location: right
 ---
@@ -13,14 +8,14 @@ My personal research covers the intersection of program evaluation and peacebuil
 
 
 
-## Completed Papers
-
-:::{#completed-papers}
-:::
+## Completed Papers for Publication
+- **"Do Human Rights Treaties Work? Causal Re-Analysis for Peace Science"** <br>
+  - [Code](https://github.com/Brian-Lookabaugh/Human-Rights-Treaties-Project) \github{} <br>
+  - [Paper]() <br>
+- **"Five Shortcomings of Quantitative Peace Research"** <br>
+  - [Paper]()
 
 
 ## Working Papers
-
-:::{#working-papers}
-:::
+- **"Failed Mediation and Civilian Victimization During Civil War**
 
