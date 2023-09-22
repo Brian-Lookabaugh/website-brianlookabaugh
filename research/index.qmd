@@ -5,7 +5,7 @@ listing:
     contents: "completed-papers/*/index.qmd"
   - id: working-papers
     contents: "working-papers/*/index.qmd"
-page-layout: full
+page-layout: article
 toc-location: right
 ---
 
