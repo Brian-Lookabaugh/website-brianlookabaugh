@@ -1,3 +1,21 @@
 ---
-title: "Causal Inference and Data Science Research"
+title: ""
+listing:
+  - id: Completed-Projects-for-Publication
+    contents: "Completed Projects for Publication/*/index.qmd"
+    categories: true
+  - id: Working-Papers
+    contents: "Working Papers/*/index.qmd"
+    categories: true
+page-layout: full
+toc-location: right
 ---
+
+## Completed Projects for Publication
+:::{#Completed-Projects-for-Publications}
+:::
+
+## Working Papers
+:::{#Working-Papers}
+:::
+

@@ -1,0 +1,10 @@
+---
+title: "Five Shortcomings of Quantiative Peace Research"
+author: 
+  - Brian Lookabaugh
+categories:
+  - "Causal Inference"
+  - "Regression Adjustment"
+  - "Panel Data"
+  - "Bayesian Statistics"
+---

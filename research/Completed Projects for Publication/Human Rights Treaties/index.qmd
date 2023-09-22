@@ -1,0 +1,16 @@
+---
+title: "Do Human Rights Treaties Work? Causal Re-Analysis for the Peace Sciences"
+author: 
+  - Brian Lookabaugh
+categories:
+  - "Causal Inference"
+  - "Panel Data"
+  - "Quasi-Experimental Design"
+  - "Propensity Scores"
+  - "Sensitivity Analysis"
+  - "Human Rights"
+links:
+  name: Code
+  url: https://github.com/Brian-Lookabaugh/Human-Rights-Treaties-Project
+  icon: fa-brands fa-github
+---

@@ -1,0 +1,11 @@
+---
+title: "Failed Mediation and Civilian Victimization"
+author:
+  - Brian Lookabaugh
+  - Michael Greig
+categories:
+  - "Causal Inference"
+  - "Quasi-Experimental Design"
+  - "One-Sided Violence"
+  - "Mediation"
+---
