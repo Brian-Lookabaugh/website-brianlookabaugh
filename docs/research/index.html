@@ -66,20 +66,20 @@ ul.task-list li input[type="checkbox"] {
 <script>
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-Completed-Projects-for-Publication .list');
+    const listingTargetEl = window.document.querySelector('#listing-completed-papers .list');
     if (!listingTargetEl) {
       // No listing discovered, do not attach.
       return; 
     }
 
     const options = {
-      valueNames: ['listing-title','listing-author','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-title','listing-author','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-description","listing-categories"],
+      searchColumns: ["listing-title","listing-author","listing-description"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-Completed-Projects-for-Publication'] = new List('listing-Completed-Projects-for-Publication', options);
+    window['quarto-listings']['listing-completed-papers'] = new List('listing-completed-papers', options);
 
     if (window['quarto-listing-loaded']) {
       window['quarto-listing-loaded']();
@@ -94,20 +94,20 @@ ul.task-list li input[type="checkbox"] {
   
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-Working-Papers .list');
+    const listingTargetEl = window.document.querySelector('#listing-working-papers .list');
     if (!listingTargetEl) {
       // No listing discovered, do not attach.
       return; 
     }
 
     const options = {
-      valueNames: ['listing-title','listing-author','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: [{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-description","listing-categories"],
+      searchColumns: [],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-Working-Papers'] = new List('listing-Working-Papers', options);
+    window['quarto-listings']['listing-working-papers'] = new List('listing-working-papers', options);
 
     if (window['quarto-listing-loaded']) {
       window['quarto-listing-loaded']();
@@ -187,61 +187,50 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Bayesian Statistics">Bayesian Statistics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Causal Inference">Causal Inference <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Human Rights">Human Rights <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Mediation">Mediation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="One-Sided Violence">One-Sided Violence <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Panel Data">Panel Data <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Propensity Scores">Propensity Scores <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Quasi-Experimental Design">Quasi-Experimental Design <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Regression Adjustment">Regression Adjustment <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Sensitivity Analysis">Sensitivity Analysis <span class="quarto-category-count">(1)</span></div></div></div>
+    
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content">
 
 
 
-<section id="completed-projects-for-publication" class="level2">
-<h2 class="anchored" data-anchor-id="completed-projects-for-publication">Completed Projects for Publication</h2>
-<div id="Completed-Projects-for-Publications">
+<p>My personal research covers the intersection of program evaluation and peacebuilding. In particular, this involves designing experiments and quasi-experiments to evaluate the impact of various policies designed to promote peace in the world and manage ongoing conflict. I also have an interest in broader statistical methodology and I enjoy researching topics in observational causal inference, Bayesian statistics, machine learning, survival analysis, and multilevel modeling.</p>
+<section id="completed-papers" class="level2">
+<h2 class="anchored" data-anchor-id="completed-papers">Completed Papers</h2>
+<div id="listing-completed-papers" class="quarto-listing quarto-listing-container-default">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="Causal Inference,Panel Data,Quasi-Experimental Design,Propensity Scores,Sensitivity Analysis,Human Rights" data-listing-file-modified-sort="1695411533511" data-listing-reading-time-sort="0.005">
+<div class="body">
+<a href="../research/completed-papers/human_rights_treaty/index.html">
+<h3 class="no-anchor listing-title">
+Do Human Rights Treaties Work? Causal Re-Analysis for Peace Science
+</h3>
+<div class="listing-subtitle">
 
+</div>
+<div class="listing-description">
+
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="../research/completed-papers/human_rights_treaty/index.html">
+<div class="listing-author">
+Brian Lookabaugh
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
 </div>
 </section>
 <section id="working-papers" class="level2">
 <h2 class="anchored" data-anchor-id="working-papers">Working Papers</h2>
-<div id="listing-Working-Papers" class="quarto-listing quarto-listing-container-default">
+<div id="listing-working-papers" class="quarto-listing quarto-listing-container-default">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Causal Inference,Quasi-Experimental Design,One-Sided Violence,Mediation" data-listing-file-modified-sort="1695409494342" data-listing-reading-time-sort="0.005">
-<div class="body">
-<a href="../research/Working Papers/Mediation and Civilian Victimization/index.html">
-<h3 class="no-anchor listing-title">
-Failed Mediation and Civilian Victimization
-</h3>
-<div class="listing-subtitle">
 
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Causal Inference'); return false;">
-Causal Inference
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Quasi-Experimental Design'); return false;">
-Quasi-Experimental Design
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('One-Sided Violence'); return false;">
-One-Sided Violence
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Mediation'); return false;">
-Mediation
-</div>
-</div>
-<a href="../research/Working Papers/Mediation and Civilian Victimization/index.html">
-<div class="listing-description">
-
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="../research/Working Papers/Mediation and Civilian Victimization/index.html">
-<div class="listing-author">
-Brian Lookabaugh, Michael Greig
-</div>
-</a>
-</div>
-</div>
 </div>
 <div class="listing-no-matching d-none">
 No matching items
@@ -252,95 +241,7 @@ No matching items
 
 </section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-Completed-Projects-for-Publication">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Causal Inference,Panel Data,Quasi-Experimental Design,Propensity Scores,Sensitivity Analysis,Human Rights" data-listing-file-modified-sort="1695408670639" data-listing-reading-time-sort="0.005">
-<div class="body">
-<a href="../research/Completed Projects for Publication/Human Rights Treaties/index.html">
-<h3 class="no-anchor listing-title">
-Do Human Rights Treaties Work? Causal Re-Analysis for the Peace Sciences
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Causal Inference'); return false;">
-Causal Inference
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Panel Data'); return false;">
-Panel Data
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Quasi-Experimental Design'); return false;">
-Quasi-Experimental Design
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Propensity Scores'); return false;">
-Propensity Scores
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Sensitivity Analysis'); return false;">
-Sensitivity Analysis
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Human Rights'); return false;">
-Human Rights
-</div>
-</div>
-<a href="../research/Completed Projects for Publication/Human Rights Treaties/index.html">
-<div class="listing-description">
-
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="../research/Completed Projects for Publication/Human Rights Treaties/index.html">
-<div class="listing-author">
-Brian Lookabaugh
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Causal Inference,Regression Adjustment,Panel Data,Bayesian Statistics" data-listing-file-modified-sort="1695409219592" data-listing-reading-time-sort="0.005">
-<div class="body">
-<a href="../research/Completed Projects for Publication/Shortcomings of Quantitative Peace Research/index.html">
-<h3 class="no-anchor listing-title">
-Five Shortcomings of Quantiative Peace Research
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Causal Inference'); return false;">
-Causal Inference
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Regression Adjustment'); return false;">
-Regression Adjustment
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Panel Data'); return false;">
-Panel Data
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Bayesian Statistics'); return false;">
-Bayesian Statistics
-</div>
-</div>
-<a href="../research/Completed Projects for Publication/Shortcomings of Quantitative Peace Research/index.html">
-<div class="listing-description">
-
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="../research/Completed Projects for Publication/Shortcomings of Quantitative Peace Research/index.html">
-<div class="listing-author">
-Brian Lookabaugh
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

@@ -1,21 +1,26 @@
 ---
 title: ""
 listing:
-  - id: Completed-Projects-for-Publication
-    contents: "Completed Projects for Publication/*/index.qmd"
-    categories: true
-  - id: Working-Papers
-    contents: "Working Papers/*/index.qmd"
-    categories: true
+  - id: completed-papers
+    contents: "completed-papers/*/index.qmd"
+  - id: working-papers
+    contents: "working-papers/*/index.qmd"
 page-layout: full
 toc-location: right
 ---
 
-## Completed Projects for Publication
-:::{#Completed-Projects-for-Publications}
+My personal research covers the intersection of program evaluation and peacebuilding. In particular, this involves designing experiments and quasi-experiments to evaluate the impact of various policies designed to promote peace in the world and manage ongoing conflict. I also have an interest in broader statistical methodology and I enjoy researching topics in observational causal inference, Bayesian statistics, machine learning, survival analysis, and multilevel modeling. 
+
+
+
+## Completed Papers
+
+:::{#completed-papers}
 :::
 
+
 ## Working Papers
-:::{#Working-Papers}
+
+:::{#working-papers}
 :::
 
