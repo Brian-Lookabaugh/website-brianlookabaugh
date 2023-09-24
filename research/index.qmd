@@ -11,7 +11,7 @@ My personal research covers the intersection of program evaluation and peacebuil
 ## Completed Papers for Publication
 - **"Do Human Rights Treaties Work? Causal Re-Analysis for Peace Science"** <br>
   - [Code](https://github.com/Brian-Lookabaugh/Human-Rights-Treaties-Project) \github{} <br>
-  - [Paper](hrt_lookabaugh_23.pdf) <br>
+  - [Paper](completed-papers/hrt_lookabaugh_23.pdf) <br>
 - **"Five Shortcomings of Quantitative Peace Research"** <br>
   - [Paper]()
 
