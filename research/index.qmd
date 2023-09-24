@@ -13,7 +13,7 @@ My personal research covers the intersection of program evaluation and peacebuil
   - [Code](https://github.com/Brian-Lookabaugh/Human-Rights-Treaties-Project) <br>
   - [Paper](completed-papers/hrt_lookabaugh_23.pdf) <br>
 - **"Five Shortcomings of Quantitative Peace Research"** <br>
-  - [Paper](completed-papers/shortcomings_lookabaugh_23)
+  - [Paper](completed-papers/shortcomings_lookabaugh_23.pdf)
 
 
 ## Working Papers
