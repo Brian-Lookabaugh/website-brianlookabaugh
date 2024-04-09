@@ -4,18 +4,12 @@ page-layout: article
 toc-location: right
 ---
 
-My personal research covers the intersection of program evaluation and peacebuilding. In particular, this involves designing experiments and quasi-experiments to evaluate the impact of various policies designed to promote peace in the world and manage ongoing conflict. I also have an interest in broader statistical methodology and I enjoy researching topics in observational causal inference, Bayesian statistics, machine learning, survival analysis, and multilevel modeling. 
+My personal research covers the intersection of causal inference, quasi-experimental design, and machine learning on a variety of topics that I find interesting, including (but not limited to): peace and conflict, democracy and elections, development, and the NFL (professional American football).
 
 
-
-## Completed Papers for Publication
-- **"Do Human Rights Treaties Work? Causal Re-Analysis for Peace Science"** <br>
-  - [Code](https://github.com/Brian-Lookabaugh/Human-Rights-Treaties-Project) <br>
-  - [Paper](completed-papers/hrt_lookabaugh_23.pdf) <br>
-- **"Five Shortcomings of Quantitative Peace Research"** <br>
-  - [Paper](completed-papers/shortcomings_lookabaugh_23.pdf)
-
-
-## Working Papers
-- **"Failed Mediation and Civilian Victimization During Civil War"**
+## Dissertation
+- **"Rethinking the Study of Conflict and Peace: Making Causal Inferences in Quantitative Conflict and Peace Research"** <br>
+  - [Manuscript](https://digital.library.unt.edu/ark:/67531/metadc2257739/m1/1/) <br>
+  - [Code (Chapter 2)](https://github.com/Brian-Lookabaugh/UN-PKOs-Project) <br>
+  - [Code (Chapter 3)](https://github.com/Brian-Lookabaugh/Human-Rights-Treaties-Project)
 
