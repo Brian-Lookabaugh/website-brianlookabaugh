@@ -11,21 +11,14 @@
     "href": "research/index.html",
     "title": "Research",
     "section": "",
-    "text": "My personal research covers the intersection of program evaluation and peacebuilding. In particular, this involves designing experiments and quasi-experiments to evaluate the impact of various policies designed to promote peace in the world and manage ongoing conflict. I also have an interest in broader statistical methodology and I enjoy researching topics in observational causal inference, Bayesian statistics, machine learning, survival analysis, and multilevel modeling."
+    "text": "My personal research covers the intersection of causal inference, quasi-experimental design, and machine learning on a variety of topics that I find interesting, including (but not limited to): peace and conflict, democracy and elections, development, and the NFL (professional American football)."
   },
   {
-    "objectID": "research/index.html#completed-papers-for-publication",
-    "href": "research/index.html#completed-papers-for-publication",
+    "objectID": "research/index.html#dissertation",
+    "href": "research/index.html#dissertation",
     "title": "Research",
-    "section": "Completed Papers for Publication",
-    "text": "Completed Papers for Publication\n\n“Do Human Rights Treaties Work? Causal Re-Analysis for Peace Science” \n\nCode \nPaper \n\n“Five Shortcomings of Quantitative Peace Research” \n\nPaper"
-  },
-  {
-    "objectID": "research/index.html#working-papers",
-    "href": "research/index.html#working-papers",
-    "title": "Research",
-    "section": "Working Papers",
-    "text": "Working Papers\n\n“Failed Mediation and Civilian Victimization During Civil War”"
+    "section": "Dissertation",
+    "text": "Dissertation\n\n“Rethinking the Study of Conflict and Peace: Making Causal Inferences in Quantitative Conflict and Peace Research” \n\nManuscript \nCode (Chapter 2) \nCode (Chapter 3)"
   },
   {
     "objectID": "resume/index.html",
