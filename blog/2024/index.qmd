@@ -47,7 +47,7 @@ It would be great if a researcher could simply look for a correlation between $X
 
 ```{r warning=FALSE}
 #| label: scatterplot-shark-attacks-ice-cream
-#| tbl-cap: "Correlation Between Shark Attacks and Ice Cream Sales"
+#| fig-cap: "Correlation Between Shark Attacks and Ice Cream Sales"
 #| code-fold: true
 
 # Create Simulated Data
@@ -73,7 +73,7 @@ This plot is why we don’t infer causation from a bi-variable relationship. (Th
 
 ```{r warning=FALSE}
 #| label: scatterplot-shark-attacks-ice-cream-temperature
-#| tbl-cap: "Correlation Between Shark Attacks and Ice Cream Sales Adjusted for Temperature"
+#| fig-cap: "Correlation Between Shark Attacks and Ice Cream Sales Adjusted for Temperature"
 #| code-fold: true
 
 ggplot(sim, aes(x = ice, y = shark, color = temp)) + 
@@ -109,7 +109,7 @@ In a “static” cross-sectional design, we could simply control for conflict d
 
 ```{r}
 #| label: time-varying-confounding-dag
-#| tbl-cap: "DAG Showing Time-Varying Confounding"
+#| fig-cap: "DAG Showing Time-Varying Confounding"
 #| code-fold: true
 
 # Specify Node Info
@@ -190,7 +190,7 @@ Of the two identification strategies mentioned here, strict exogeneity is perhap
 
 ```{r warning=FALSE}
 #| label: dag-independence-from-pontential-outcomes
-#| tbl-cap: "DAG Showing Treatment Independent of Potential Outcomes"
+#| fig-cap: "DAG Showing Treatment Independent of Potential Outcomes"
 #| code-fold: true
 
 # Specify Node Info
