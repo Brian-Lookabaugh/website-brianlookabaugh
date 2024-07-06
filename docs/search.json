@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Brian Lookabaugh",
     "section": "",
-    "text": "Outside of my professional role, I routinely refine and expand my methodological toolkit by researching new methods and applying my skill set to other interests of mine (such as studying the NFL through a data science-lens). You can find some of these passion projects under the “Blog” section of this site. If you have any questions about my research, please feel free to reach out to me!"
+    "text": "Greetings and welcome to my personal website! My name is Brian Lookabaugh and I am a Research Analyst at Fors Marsh. In my position, I leverage my skills in data analysis and statistical modeling to solve a variety of business questions. These include descriptive questions (creating visualizations to communicate what data says), predictive questions (utilizing machine learning to predict outcomes and forecast), and causal questions (drawing on my background in causal inference and experiment/quasi-experimental design to answer questions such as “did X have an impact on Y?”).\n\nOutside of my professional role, I routinely refine and expand my methodological toolkit by researching new methods and applying my skill set to other interests of mine (such as studying the NFL through a data science-lens). You can find some of these passion projects under the “Blog” section of this site. If you have any questions about my research, please feel free to reach out to me!"
   },
   {
     "objectID": "research/index.html",
@@ -58,6 +58,20 @@
   {
     "objectID": "blog/2024/index.html#footnotes",
     "href": "blog/2024/index.html#footnotes",
+    "title": "An Introduction to Dynamic Causal Inference",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nNote: if you are already familiar with the core concepts of causal inference, feel free to skip down to the section where I start discussing time and why it messes things up.↩︎\nWell… kind of. There are actually a lot of other assumptions that you would need to check for first, like positivity, SUTVA, no measurement error, etc. (which will not be covered here in sufficient detail if you are not familiar with these topics). If you’re not super familiar with these topics, I highly recommend checking out Chatton and Rohrer 2024.↩︎\nI do not condone this attitude… never treat your regressions or research designs this way.↩︎\nHere are some good starting materials for DAGs, simulation, and sensitivity analyses: Rohrer 2018, Blair et al. 2023, Cinelli and Hazlett 2020.↩︎"
+  },
+  {
+    "objectID": "blog/2024/dynamic-causal-inference/index.html",
+    "href": "blog/2024/dynamic-causal-inference/index.html",
+    "title": "An Introduction to Dynamic Causal Inference",
+    "section": "",
+    "text": "Code\n# Load Libraries\npacman::p_load(\n  \"dplyr\", # Data Manipulation\n  \"ggplot2\", # Data Visualization\n  \"ggtext\", # Labels\n  \"dagitty\", # Creating DAGs\n  \"ggdag\", # Plotting DAGs\n  install = FALSE\n)\n\n# Define a Custom Theme - Taken From Andrew Heiss's Blogs\nblog_theme &lt;- function() {\n  theme_bw() +  # Start with theme_bw\n    theme(\n      panel.grid.minor = element_blank(),\n      plot.background = element_rect(fill = \"white\", color = NA),\n      plot.title = element_text(face = \"bold\"),\n      axis.title = element_text(face = \"bold\"),\n      strip.text = element_text(face = \"bold\"),\n      strip.background = element_rect(fill = \"grey80\", color = NA),\n      legend.title = element_text(face = \"bold\")\n    )\n}"
+  },
+  {
+    "objectID": "blog/2024/dynamic-causal-inference/index.html#footnotes",
+    "href": "blog/2024/dynamic-causal-inference/index.html#footnotes",
     "title": "An Introduction to Dynamic Causal Inference",
     "section": "Footnotes",
     "text": "Footnotes\n\n\nNote: if you are already familiar with the core concepts of causal inference, feel free to skip down to the section where I start discussing time and why it messes things up.↩︎\nWell… kind of. There are actually a lot of other assumptions that you would need to check for first, like positivity, SUTVA, no measurement error, etc. (which will not be covered here in sufficient detail if you are not familiar with these topics). If you’re not super familiar with these topics, I highly recommend checking out Chatton and Rohrer 2024.↩︎\nI do not condone this attitude… never treat your regressions or research designs this way.↩︎\nHere are some good starting materials for DAGs, simulation, and sensitivity analyses: Rohrer 2018, Blair et al. 2023, Cinelli and Hazlett 2020.↩︎"
