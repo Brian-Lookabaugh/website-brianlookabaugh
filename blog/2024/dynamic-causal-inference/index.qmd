@@ -2,7 +2,7 @@
 title: "An Introduction to Dynamic Causal Inference"
 date: 2024-07-08
 description: "Learn the basics to making causal inferences with panel/longitudinal data."
-image: "blog/2024/dynamic-causal-inference/images/time-varying-confounding-dag-1.png"
+image: "images/time-varying-confounding-dag-1.png"
 categories:
   - causal inference
   - panel data
