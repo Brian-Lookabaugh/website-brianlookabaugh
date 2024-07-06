@@ -40,6 +40,7 @@ blog_theme <- function() {
 }
 ```
 
+
 # Introduction
 
 One of the primary goals of science is to examine causal relationships. Anytime a researcher asks a question like, “how does $X$ impact $Y$?” or “do changes in $X$ cause a change in $Y$?” that researcher is at the very beginning of a causal research design. Unfortunately, asking causal questions is a lot easier than answering them.[^1]
@@ -47,6 +48,7 @@ One of the primary goals of science is to examine causal relationships. Anytime 
 [^1]: Note: if you are already familiar with the core concepts of causal inference, feel free to skip down to the section where I start discussing time and why it messes things up.
 
 It would be great if a researcher could simply look for a correlation between $X$ and $Y$ and determine whether $X$ causes a change in $Y$. However, inferring causation from a bi-variable test or a scatterplot is very, very poor practice. One of the biggest reasons why we can’t do this is because of confounding, which refers to things that cause some change in both $X$ and $Y$ (in notation: $X$ $\leftarrow$ $Z$ $\rightarrow$ $Y$) and, if not accounted for, will result in a misleading picture on the relationship between $X$ and $Y$. A somewhat canonical example to illustrate the problem of un-adjusted confounding is the relationship between ice cream sales ($X$) and shark attacks ($Y$).
+
 
 ```{r warning=FALSE}
 #| label: scatterplot-shark-attacks-ice-cream
@@ -70,9 +72,11 @@ ggplot(sim, aes(x = ice, y = shark)) +
   blog_theme()
 ```
 
+
 This plot is why we don’t infer causation from a bi-variable relationship. (This plot also uses totally fake data and it's only here to serve as a theoretical example... Sharks really don't attack this many people annually, but I really don't like them so ¯\\\_(ツ)\_/¯ ). If we did, then we could conclude one should never risk swimming in the ocean after consuming ice cream. However, as you can see in the following graph, once we take temperature into account, the ice cream sales-shark attack-pipeline theory is certainly much less compelling. However, the point remains. If we were to remove all of the variation in the relationship between $X$ and $Y$ that is explained by the confounders, then the bi-variable correlation between $X$ and $Y$ would be the causal effect.[^2]
 
 [^2]: Well… kind of. There are actually a lot of other assumptions that you would need to check for first, like positivity, SUTVA, no measurement error, etc. (which will not be covered here in sufficient detail if you are not familiar with these topics). If you’re not super familiar with these topics, I highly recommend checking out [Chatton and Rohrer 2024](https://journals.sagepub.com/doi/full/10.1177/25152459241236149).
+
 
 ```{r warning=FALSE}
 #| label: scatterplot-shark-attacks-ice-cream-temperature
@@ -87,6 +91,7 @@ ggplot(sim, aes(x = ice, y = shark, color = temp)) +
   ylim(0, 4) +
   blog_theme()
 ```
+
 
 In an ideal world, a researcher is able to utilize a randomized experiment to answer their causal question. Randomized experiments are incredibly valuable because the “treatment” (also known as “$X$”, the independent variable of interest, the exposure, etc.) is randomly allocated across the participants/units in the study. If treatment is randomly allocated then we’ve taken care of our confounders because $Z$ $\rightarrow$ $X$ is no longer true. The only thing that impacts $X$ is pure chance (randomization). Sure, participants/units have characteristics that might make them more or less likely to respond to treatment in a certain way. But we don’t need to control for this because those same individuals are just as likely to be in the control group because pure chance determined their treatment status. Therefore, while randomization does not allow us to estimate causal effects for each individual within a study, we *can* estimate causal effects on average for the “populations” they represent by comparing the average outcome ($Y$) between the two groups (treated and control).
 
@@ -109,6 +114,7 @@ Humanitarian Intervention$_t$ $\leftarrow$ Conflict Duration$_t$ $\rightarrow$ V
 Here, the "$_t$" subscript refers to any time period (for example, 2010, 1998, 2023, whatever). If you're curious about the logic of this confounding relationship, it is fairly simple. The longer a conflict goes on, the more opportunities exist for an external actor to launch a humanitarian intervention. Further, a humanitarian intervention may be viewed as a method to resolve a conflict stagnating into a protracted stalemate. In addition, most of the heaviest periods of violence within civil conflicts take place at the beginning of a conflict, which is likely a function of resources being plentiful at the start of a conflict and the lack of attrition.
 
 In a “static” cross-sectional design, we could simply control for conflict duration and “be done with it”. However, most conflict research is longitudinal/panel, meaning that (in this example) we track humanitarian interventions, violence, and conflict duration for the same countries over several years. While the leap from the cross-sectional case to the longitudinal one may not initially appear to make a consequential difference for causal inference, a major complication arises when our confounders are allowed to vary over time. To demonstrate why this is a problem, consider the following DAG:
+
 
 ```{r}
 #| label: time-varying-confounding-dag
@@ -173,6 +179,7 @@ ggplot(tvc_dag, aes(
     theme_dag()
 ```
 
+
 This DAG just incorporates two time periods ($t$ and $t-1$). You could add however many time periods that you wanted if it was relevant for your research ($t-2$, $t+1$, etc.). While this example is nothing too complicated, do you notice the problem? Again, if I want to estimate the causal effect of humanitarian interventions on violence, I need to control for conflict duration because it clearly confounds the relationship between Humanitarian Intervention$_t$ and Violence$_t$. However, if I wanted to estimate the causal effect of lagged humanitarian intervention on violence (in an attempt to answer whether it takes time for humanitarian interventions to “kick in”), then I could not do so in the same model. I also strongly emphasize that dynamic effects (those beyond the immediate treatment$_t$ $\rightarrow$ outcome$_t$ relationship) are very important. I can attest to this in the conflict management research, where we expect that certain strategies may increase violence in the short-term but promote peace in the long-term or, it may be the case that some strategies are “band-aid” approaches where violence may decrease in the short-term, but increase violence in the long-run. These questions are super important to explore and throwing treatment$_t$ and treatment$_{t-1}$ in the same regression model is going to lead to biased results!
 
 While controlling for Conflict Duration$_t$ “de-confounds” the Humanitarian Intervention$_t$ $\rightarrow$ Violence$_t$ relationship, it *biases* the Humanitarian Intervention$_{t-1}$ $\rightarrow$ Violence$_t$ relationship because part of the effect of past humanitarian interventions on violence is filtered through the pacifying effect that past humanitarian interventions should have had by decreasing the duration of conflict. In plainer English, including Humanitarian Intervention$_t$, Humanitarian Intervention$_{t-1}$ and Conflict Duration$_t$ in the same model means that the model output for Humanitarian Intervention$t-1$ could not be interpreted as an unbiased causal effect on violence because it is removing part of the effect that past humanitarian interventions had on violence, mediated through current conflict duration.
@@ -190,6 +197,7 @@ While the burden of specifying all confounding relationships is never ideal, it 
 # Strict Exogeneity and Sequential Ignorability
 
 Of the two identification strategies mentioned here, strict exogeneity is perhaps the more well-known of the two. The basic idea of strict exogeneity is that the potential outcomes are independent of the treatment assignment, conditioned on confounders. Effectively, once the analysis has been conditioned on confounders, the treatment assignment can be treated as-if random. If our treatment assignment is as-if random, then the treatment assignment is independent of the potential outcomes (the observed factual and unobserved counterfactual outcomes for each observation). All of this is basically a long-winded way of saying, “if you adjust for all confounders, then your estimate is a causal effect”.
+
 
 ```{r warning=FALSE}
 #| label: dag-independence-from-pontential-outcomes
@@ -254,6 +262,7 @@ ggplot(indep_dag, aes(
   theme_dag()
 ```
 
+
 Now, adjusting for all confounders is very difficult, which explains why methods such as fixed effects, two-way fixed effects, or difference-in-differences are such popular designs operating under strict exogeneity because, by design, they adjust for all time-\*invariant\* confounders (confounders whose values do not change over time for each unit in the study... these are things like sex, geography, race, etc.). While these methods still rely on the specification of time-\*varying\* confounders, being able to automatically handle *all* time-invariant confounding is certainly very powerful! Why doesn’t everyone use this for their panel/longitudinal designs?
 
 Well, an often overlooked aspect of the assumption of strict exogeneity is the assumption that, following adjustment of confounders, treatment can be treated as-if randomly assigned *at one time period for a given unit*. This implies that past treatment and outcome values should not be influencing current treatment or outcome values. This is a hard assumption to satisfy if we know that treatment in a given time period is going to have direct effects on things other than $Y_t$. If feedback loops exist (such as $X_t$ $\rightarrow$ $Y_t$ $\rightarrow$ $X_{t+1}$ $\rightarrow$ $Y_{t+1}$), the treatment assignment cannot be considered as-if random for later time periods because the feedback loop is impacting the treatment assignment. Indeed, as [Imai and Kim (2019)](https://imai.fas.harvard.edu/research/files/FEmatch.pdf) note, strict exogeneity actually places several great burdens on the data, assuming that (in addition to no unmeasured time-varying confounders), 1) past outcomes do not directly affect current outcomes, 2) past treatment do not directly affect current outcomes, and 3) past outcomes do not directly affect current treatment.
@@ -275,3 +284,4 @@ I hope this blog was informative for you though! And if I failed to make a point
 -   [Blackwell and Glynn 2018](https://www.mattblackwell.org/files/papers/causal-tscs.pdf)
 
 -   [Xu 2023](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3979613)
+
