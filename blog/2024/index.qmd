@@ -2,7 +2,7 @@
 title: "An Introduction to Dynamic Causal Inference"
 date: 2024-07-08
 description: "Learn the basics to making causal inferences with panel/longitudinal data."
-image: "_freeze/blog/2024/index/figure-html/dag-independence-from-pontential-outcomes-1.png"
+image: "website-brianlookabaugh/images/dag-independence-from-pontential-outcomes-1.png"
 categories:
   - causal inference
   - panel data
@@ -45,7 +45,7 @@ One of the primary goals of science is to examine causal relationships. Anytime 
 
 It would be great if a researcher could simply look for a correlation between $X$ and $Y$ and determine whether $X$ causes a change in $Y$. However, inferring causation from a bi-variable test or a scatterplot is very, very poor practice. One of the biggest reasons why we can’t do this is because of confounding, which refers to things that cause some change in both $X$ and $Y$ (in notation: $X$ $\leftarrow$ $Z$ $\rightarrow$ $Y$) and, if not accounted for, will result in a misleading picture on the relationship between $X$ and $Y$. A somewhat canonical example to illustrate the problem of un-adjusted confounding is the relationship between ice cream sales ($X$) and shark attacks ($Y$).
 
-```{r}
+```{r warning=FALSE}
 #| label: scatterplot-shark-attacks-ice-cream
 #| tbl-cap: "Correlation Between Shark Attacks and Ice Cream Sales"
 #| code-fold: true
@@ -71,7 +71,7 @@ This plot is why we don’t infer causation from a bi-variable relationship. (Th
 
 [^2]: Well… kind of. There are actually a lot of other assumptions that you would need to check for first, like positivity, SUTVA, no measurement error, etc. (which will not be covered here in sufficient detail if you are not familiar with these topics). If you’re not super familiar with these topics, I highly recommend checking out [Chatton and Rohrer 2024](https://journals.sagepub.com/doi/full/10.1177/25152459241236149).
 
-```{r}
+```{r warning=FALSE}
 #| label: scatterplot-shark-attacks-ice-cream-temperature
 #| tbl-cap: "Correlation Between Shark Attacks and Ice Cream Sales Adjusted for Temperature"
 #| code-fold: true
