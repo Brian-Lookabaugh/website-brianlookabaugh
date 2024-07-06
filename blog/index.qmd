@@ -1,3 +1,28 @@
 ---
-title: " "
+title: "Blog"
+author: ""
+listing:
+  - id: posts_2024
+    contents: "2024/**/index.qmd"
+    sort: "date desc"
+    categories: true
+page-layout: full
+toc-title: Year
+toc-location: right
+date-format: "MMMM D, YYYY"
+code-tools: false
+comments: false
+engine: knitr
+freeze: false
 ---
+
+```{css, echo=FALSE}
+#title-block-header .description {
+    display: none;
+}
+```
+
+## 2024
+
+:::{#posts_2024}
+:::
