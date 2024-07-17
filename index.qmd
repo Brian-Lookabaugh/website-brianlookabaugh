@@ -6,9 +6,9 @@ about:
   image-shape: rounded
 ---
 
-Greetings and welcome to my personal website! My name is Brian Lookabaugh and I am a Research Analyst at Fors Marsh. In my position, I leverage my skills in data analysis and statistical modeling to solve a variety of business questions. These include descriptive questions (creating visualizations to communicate what data says), predictive questions (utilizing machine learning to predict outcomes and forecast), and causal questions (drawing on my background in causal inference and experiment/quasi-experimental design to answer questions such as "did X have an impact on Y?").
+Greetings and welcome to my personal website! My name is Brian Lookabaugh and I am a Research Analyst at Fors Marsh. In my position, I leverage my skills in data analysis and statistical modeling to solve a variety of business problems. These include descriptive tasks (creating visualizations to communicate trends and patterns), predictive problems (utilizing machine learning to predict outcomes and forecast), and causal questions (drawing on my background in causal inference to answer questions such as "did X have an impact on Y?").
 
 :::a
-Outside of my professional role, I routinely refine and expand my methodological toolkit by researching new methods and applying my skill set to other interests of mine (such as studying the NFL through a data science-lens). You can find some of these passion projects under the "Blog" section of this site. If you have any questions about my research, please feel free to reach out to me!
+Outside of my professional role, I routinely refine and expand my methodological toolkit by researching new methods and applying my skill set to other recreational interests of mine. You can find some of these passion projects under the "Blog" section of this site. If you have any questions about my research, please feel free to reach out to me!
 :::
 

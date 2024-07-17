@@ -4,7 +4,7 @@ page-layout: article
 toc-location: right
 ---
 
-My personal research covers the intersection of causal inference, quasi-experimental design, and machine learning on a variety of topics that I find interesting, including (but not limited to): peace and conflict, democracy and elections, development, and the NFL (professional American football).
+My personal research covers the intersection of causal inference, quasi-experimental design, and policy evaluation and a variety of topics that I find interesting, including (but not limited to): peace and conflict, democracy and elections, political and economic development, and the NFL (professional American football).
 
 
 ## Dissertation
