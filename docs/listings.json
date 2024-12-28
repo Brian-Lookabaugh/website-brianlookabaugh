@@ -2,6 +2,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/2024/simulating-panel-data/index.html",
       "/blog/2024/causal-inference-simulation/index.html",
       "/blog/2024/nfl-workflow/index.html",
       "/blog/2024/dynamic-causal-inference/index.html"
