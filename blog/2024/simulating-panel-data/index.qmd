@@ -12,6 +12,7 @@ categories:
   - dags
   - ipw
   - msm
+  - panel data
 ---
 
 ```{r}
