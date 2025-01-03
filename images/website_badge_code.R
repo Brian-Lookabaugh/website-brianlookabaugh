@@ -3,54 +3,43 @@ pacman::p_load(
   "tidyverse",
   "hexSticker",
   "broom",
+  "ggdag",
+  "dagitty",
   install = FALSE
 )
 
-# Create Dummy Data
-set.seed(1234)
-y = rnorm(n = 100, mean = 0, sd = 2)
-x1 = rnorm(n = 100, mean = 1, sd = 0.25)
-x2 = rnorm(n = 100, mean = 2, sd = 0.001)
-x3 = rnorm(n = 100, mean = 3, sd = 5)
-x4 = rnorm(n = 100, mean = 4, sd = 6)
-x5 = rnorm(n = 100, mean = 5, sd = 7)
-merged <- cbind(y, x1, x2, x3, x4, x5)
-merged <- data.frame(merged)
+node_colors <- c(
+  "Z[TIC]" = "#3d424d",  
+  "X[t-1]" = "#6f032d",  
+  "Y[t-1]" = "#a9994e", 
+  "X[t]" = "#003a20",   
+  "Y[t]" = "#111340"   
+)
 
-# Generate Dummy Models
-m1 <- lm(y ~ x1, data = merged)
-m2 <- lm(y ~ x1 + x2, data = merged)
-m3 <- lm(y ~ x1 + x2 + x3, data = merged)
-m4 <- lm(y ~ x1 + x2 + x3 + x4, data = merged)
-m5 <- lm(y ~ x1 + x2 + x3 + x4 + x5, data = merged)
+dgp1_dag <- dagitty('dag {
+  "Z[TIC]" [pos="2.5,2"]
+  "X[t-1]" [pos="1,1"]
+  "Y[t-1]" [pos="2,1.25"]
+  "X[t]" [pos="3,1"]
+  "Y[t]" [pos="4,1.25"]
+  "Z[TIC]" -> "X[t-1]"
+  "Z[TIC]" -> "Y[t-1]"
+  "Z[TIC]" -> "X[t]"
+  "Z[TIC]" -> "Y[t]"
+  "X[t-1]" -> "Y[t-1]"
+  "Y[t-1]" -> "X[t]"
+  "X[t]" -> "Y[t]"
+  "X[t-1]" -> "X[t]"
+  "Y[t-1]" -> "Y[t]"
+}') %>%
+  tidy_dagitty()
 
-models <- tribble(
-  ~model_name, ~model_results,
-  "M1", m1,
-  "M2", m2,
-  "M3", m3,
-  "M4", m4,
-  "M5", m5
-) %>%
-  mutate(tidied = map(model_results, ~tidy(., conf.int = TRUE)),
-         effect = map(tidied, ~filter(., term == "x1"))) %>%
-  unnest(effect) %>%
-  select(-model_results, -tidied) %>%
-  mutate(method = fct_inorder(model_name))
-
-# Plot the Effects
-p <- ggplot(models, aes(x = estimate, y = fct_rev(model_name), color = model_name)) +
-  geom_vline(xintercept = 0, size = 1, linetype = "dashed", color = "black") +
-  scale_color_viridis_d(option = "mako", end = 0.9, guide = "none") +
-  geom_pointrange(aes(xmin = conf.low, xmax = conf.high), size = 1) +
-  labs(x = "", y = "") +
-  theme_light() +
-  theme(axis.title = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks.y = element_blank(),
-        panel.grid = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_rect(fill = "transparent"))
+p <- ggplot(dgp1_dag, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges() +
+  geom_dag_point(aes(fill = name), color = "black", size = 16, shape = 21) +  
+  scale_fill_manual(values = node_colors) +  
+  theme_dag() +
+  guides(fill = "none") 
 
 sticker(
   subplot = p,
@@ -65,8 +54,8 @@ sticker(
  print()
 
 ggsave(
-  "sticker.png",
+  "stickerv2.png",
   width = 3,
   height = 3,
-  path = "C:/Users/brian/Desktop/Job/website-brianlookabaugh/images"
+  path = "C:/Users/brian/Documents/website-brianlookabaugh/images"
 )
