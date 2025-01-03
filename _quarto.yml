@@ -11,7 +11,7 @@ website:
   favicon: "images/stickerv2.png"
   description: "Brian Lookabaugh's Personal Website for Research and Blogs"
   navbar:
-    logo: "images/sticker.png"
+    logo: "images/stickerv2.png"
     left:
       - href: index.qmd
         text: Home
