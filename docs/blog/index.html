@@ -75,6 +75,34 @@ ul.task-list li input[type="checkbox"] {
 <script>
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-posts_2025 .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-posts_2025'] = new List('listing-posts_2025', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
     const listingTargetEl = window.document.querySelector('#listing-posts_2024 .list');
     if (!listingTargetEl) {
       // No listing discovered, do not attach.
@@ -201,7 +229,7 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="causal inference">causal inference <span class="quarto-category-count">(3)</span></div><div class="category" data-category="dags">dags <span class="quarto-category-count">(3)</span></div><div class="category" data-category="ipw">ipw <span class="quarto-category-count">(1)</span></div><div class="category" data-category="machine learning">machine learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="msm">msm <span class="quarto-category-count">(1)</span></div><div class="category" data-category="nfl">nfl <span class="quarto-category-count">(1)</span></div><div class="category" data-category="panel data">panel data <span class="quarto-category-count">(2)</span></div><div class="category" data-category="regression">regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="simulation">simulation <span class="quarto-category-count">(2)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="causal inference">causal inference <span class="quarto-category-count">(3)</span></div><div class="category" data-category="dags">dags <span class="quarto-category-count">(3)</span></div><div class="category" data-category="ipw">ipw <span class="quarto-category-count">(1)</span></div><div class="category" data-category="machine learning">machine learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="msm">msm <span class="quarto-category-count">(1)</span></div><div class="category" data-category="nfl">nfl <span class="quarto-category-count">(2)</span></div><div class="category" data-category="panel data">panel data <span class="quarto-category-count">(2)</span></div><div class="category" data-category="regression">regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="simulation">simulation <span class="quarto-category-count">(2)</span></div><div class="category" data-category="visualization">visualization <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content">
 
@@ -232,7 +260,50 @@ window.Quarto = {
 </style>
 </div>
 <section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section">2024</h2>
+<h2 class="anchored" data-anchor-id="section">2025</h2>
+<div id="listing-posts_2025" class="quarto-listing quarto-listing-container-default">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="nfl,visualization" data-listing-date-sort="1738303200000" data-listing-file-modified-sort="1738345259928" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="40" data-listing-word-count-sort="7903">
+<div class="thumbnail">
+<p><a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external"></a></p><a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external">
+<p><img loading="lazy" src="../blog/2025/chiefs-refs-bias" class="thumbnail-image"></p>
+</a><p><a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external">Do NFL Referees Favor the Kansas City Chiefs?</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('nfl'); return false;">
+nfl
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('visualization'); return false;">
+visualization
+</div>
+</div>
+<div class="listing-description">
+<a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external">The back-to-back NFL champions are poised for a third consecutive Super Bowl win (three-peat), which has never been accomplished before. Is such a feat possible due to unfair officiating? Let’s look at the data!</a>
+</div>
+</div>
+<div class="metadata">
+<a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external">
+<div class="listing-date">
+January 31, 2025
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div>
+</section>
+<section id="section-1" class="level2">
+<h2 class="anchored" data-anchor-id="section-1">2024</h2>
 <div id="listing-posts_2024" class="quarto-listing quarto-listing-container-default">
 <div class="list quarto-listing-default">
 <div class="quarto-post image-right" data-index="0" data-categories="causal inference,simulation,dags,ipw,msm,panel data" data-listing-date-sort="1735538400000" data-listing-file-modified-sort="1735410245688" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="42" data-listing-word-count-sort="8343">
