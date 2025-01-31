@@ -2,10 +2,13 @@
 title: "Blog"
 author: ""
 listing:
+  - id: posts_2025
+    contents: "2025/**/index.qmd"
+    sort: "date desc"
+    categories: true
   - id: posts_2024
     contents: "2024/**/index.qmd"
     sort: "date desc"
-    categories: true
 page-layout: full
 toc-title: Year
 toc-location: right
@@ -21,6 +24,11 @@ freeze: false
     display: none;
 }
 ```
+
+## 2025
+
+:::{#posts_2025}
+:::
 
 ## 2024
 
