@@ -2,7 +2,7 @@
 title: "Do NFL Referees Favor the Kansas City Chiefs?"
 date: 2025-01-31
 description: "The back-to-back NFL champions are poised for a third consecutive Super Bowl win (three-peat), which has never been accomplished before. Is such a feat possible due to unfair officiating? Let's look at the data!"
-image: "images/overall_pyd_2018_2024.png"
+image: "figures/overall_pyd_2018_2024.png"
 toc: true
 execute:
   warning: false
