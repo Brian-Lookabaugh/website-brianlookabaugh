@@ -2,7 +2,7 @@
 title: "Do NFL Referees Favor the Kansas City Chiefs?"
 date: 2025-01-31
 description: "The back-to-back NFL champions are poised for a third consecutive Super Bowl win (three-peat), which has never been accomplished before. Is such a feat possible due to unfair officiating? Let's look at the data!"
-image: ""
+image: "images/overall_pyd_2018_2024.png"
 toc: true
 execute:
   warning: false
@@ -56,7 +56,7 @@ In fairness, I don't think that anyone is claiming that the Chiefs are cheating.
 
 In this review, we are going to look at four major claims that people make and we're going to see if the data supports such claims. First, outright, do the refs overall favor the Chiefs above any other team? Second, do the refs help out the Chiefs in "tight spots" when it really matters (3rd downs, 4th downs, and overtime). Third, do the refs go out of their way to protect Patrick Mahomes in particular? And, lastly, does the NFL treat the Chiefs differently because of Taylor Swift and her relationship with Travis Kelce? 
 
-# Claim 1: Do the Refs Help Out the Cheifs?
+# Claim 1: Do the Refs Help Out the Chiefs?
 
 Let's start looking into this claim by evaluating penalty yard differentials throughout Mahomes's tenure as KC's starting quarterback. Why penalty yard differential (PYD)? Here is the logic: while some calls may go your way in a given game, some calls will go the *other* way. What we care about is this: which team got helped out by the refs more? PYD is a way to evaluate that. If a team has a positive PYD, that means they got more yards awarded to them by the refs than the other team. If there is a negative PYD, the other team got more yards awarded to them by the refs. The larger the PYD, the greater the discrepancy. 
 
