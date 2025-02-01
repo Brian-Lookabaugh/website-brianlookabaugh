@@ -48,19 +48,19 @@ blog_theme <- function() {
 nflreadr::.clear_cache()
 ```
 
-The Kansas City Chiefs are heading to their 5th Super Bowl in the past 6 years. This upcoming Super Bowl appearance against the Philadelphia Eagles is a re-match from two years ago, where the Chiefs emerged victories. If the Chiefs can beat the Eagles again, they will go down in history as the first NFL team to win three consecutive Super Bowls (a "three-peat").
+The Kansas City Chiefs are heading to their 5th Super Bowl in the past 6 years. This upcoming Super Bowl appearance against the Philadelphia Eagles is a re-match from two years ago, where the Chiefs emerged victorious. If the Chiefs can beat the Eagles again, they will go down in history as the first NFL team to win three consecutive Super Bowls (a "three-peat").
 
-Despite this unprecedented greatness, many fans, players, and coaches alike are skeptical. It seems that, week-after-week, a referee call just happens to go in the favor of Kansas City, and sometimes, these calls seem to impact the game. This has lead to many fans and members of the NFL to question the integrity of the game.
+Despite this unprecedented greatness, many fans, players, and coaches alike are skeptical. It seems that, week-after-week, a referee call just happens to go in the favor of Kansas City, and sometimes, these calls seem to impact the outcome of the game. This has lead to many fans and members of the NFL to question the integrity of the game.
 
-In fairness, I don't think that anyone is claiming that the Chiefs are cheating. Instead, the claim is that, for some reason, the NFL wants the Chiefs to do well, and so they decide to give Kansas City small nudges here and there that go their way and inflate their success. Primarily, skeptics claim that the NFL does so by weaponizing the referee system. "It seems like the Chiefs get all of the calls" or "the calls just all happen to go KC's way" or "the refs don't call clear penalties against KC like they do towards other teams". Is any of this true? Have your eyes deceived you? I think so! And, if you don't believe me, let's dig into the data!
+In fairness, I don't think that anyone is claiming that the Chiefs are cheating. Instead, the claim is that, for some reason, the NFL wants the Chiefs to do well, so they decide to give Kansas City small nudges here and there that go their way and inflate their probability of success. Primarily, skeptics claim the NFL does this by weaponizing the referee system. "It seems like the Chiefs get all of the calls" or "the calls just all happen to go KC's way" or "the refs don't call clear penalties against KC like they do towards other teams". Is any of this true? Or have your eyes deceived you? I think so! And, if you don't believe me, let's dig into the data!
 
-In this review, we are going to look at four major claims that people make and we're going to see if the data supports such claims. First, outright, do the refs overall favor the Chiefs above any other team? Second, do the refs help out the Chiefs in "tight spots" when it really matters (3rd downs, 4th downs, and overtime). Third, do the refs go out of their way to protect Patrick Mahomes in particular? And, lastly, does the NFL treat the Chiefs differently because of Taylor Swift and her relationship with Travis Kelce? 
+In this review, we are going to look at four major claims that people make and we're going to see if the data supports such claims. First, outright, do the refs overall favor the Chiefs above any other team? Second, do the refs help out the Chiefs in "tight spots" when it really matters (3rd downs, 4th downs, overtime, etc.). Third, do the refs go out of their way to protect Patrick Mahomes in particular? And, lastly, does the NFL treat the Chiefs differently because of Taylor Swift and her relationship with Travis Kelce? 
 
 # Claim 1: Do the Refs Help Out the Chiefs?
 
-Let's start looking into this claim by evaluating penalty yard differentials throughout Mahomes's tenure as KC's starting quarterback. Why penalty yard differential (PYD)? Here is the logic: while some calls may go your way in a given game, some calls will go the *other* way. What we care about is this: which team got helped out by the refs more? PYD is a way to evaluate that. If a team has a positive PYD, that means they got more yards awarded to them by the refs than the other team. If there is a negative PYD, the other team got more yards awarded to them by the refs. The larger the PYD, the greater the discrepancy. 
+Let's start looking into this claim by evaluating penalty yard differentials throughout Mahomes's tenure as KC's starting quarterback. Why penalty yard differential (PYD)? Here is the logic: while some calls may go your way in a given game, some calls will go the *other* way. What we care about is this: which team got helped out by the refs *more*? PYD is a way to evaluate that. If a team has a positive PYD, that means they got more yards awarded to them by the refs than the other team. If there is a negative PYD, the other team got more yards awarded to them from the refs. The larger the PYD, the greater the discrepancy. 
 
-Now, in a single game, you might either get unlucky, or your team was just poorly coached in that game and truly deserved all the penalties. That's why we're going to take a look overall. 
+Now, in a single game, you might either get unlucky, or your team was just poorly coached in that game and truly deserved all the penalties. That's why we're going to take a look overall, aggregating each game every team played from 2018-2024. 
 
 ```{r fig.height=8, fig.width=10}
 #| fig-cap: "Penalty Yard Differential by Team (2018-2024)"
@@ -126,7 +126,7 @@ ggplot(penalty_differential_2018_2024, aes(x = reorder(team, total_penalty_yard_
         legend.position = "none")
 ```
 
-Now, that's interesting! Not only is KC nowhere near the top of PYD over the past 7 years, they are near the very bottom! Okay, but you might think "back then, the Chiefs weren't the favorites in the NFL, but now they are. And, I've watched their games all year this season and clearly see them getting bailed out." Fair enough... so let's look at PYD for *just* the 2024 NFL season.
+Now, that's interesting! Not only is KC nowhere near the top of PYD over the past 7 years, they are near the very bottom! Okay, but you might think "back then, the Chiefs weren't the favorites in the NFL, but now they are. And, I've watched their games all year this season and clearly see them getting bailed out by the refs." Fair enough... so let's look at PYD for *just* the 2024 NFL season.
 
 ```{r fig.height=8, fig.width=10}
 #| fig-cap: "Penalty Yard Differential by Team (2024)"
@@ -185,7 +185,7 @@ ggplot(penalty_differential_2024, aes(x = reorder(team, total_penalty_yard_diffe
         legend.position = "none")
 ```
 
-Look, the Chiefs are 8th in PYD for this season! Yes, they are. However, they are only 8th... If the NFL is using the refs to help out KC, then are they also doing the same to help out their rivals, Buffalo? What about the Cinderella story of the Vikings this year? They are nowhere close to anyone else. Or, what about my Dallas Cowboys, who have a near identical PYD to the Chiefs? Is the NFL engaged in a conspiracy to help them out? I don't think so... So, we've seen that the Chiefs have a low PYD overall but had a high one this year. What about *each year* throughout Mahomes's career?
+Look, the Chiefs are 8th in PYD for this season! Yes, they are. However, they are... only 8th... If the NFL is using the refs to help out KC, then are they also doing the same to help out their rivals like Buffalo? What about the Cinderella story of the Vikings this year? They are nowhere close to anyone else in positive PYD. Or, what about my Dallas Cowboys, who have a near identical PYD to the Chiefs? Is the NFL engaged in a conspiracy to help these teams out too? I don't think so... So, we've seen that the Chiefs have a low PYD overall but had a high one this year. What about *each year* throughout Mahomes's career?
 
 ```{r fig.height=8, fig.width=10}
 #| fig-cap: "Chiefs Penalty Yard Differential Each Year (2018-2024)"
@@ -246,11 +246,11 @@ ggplot(penalty_differential_over_time, aes(x = season, y = total_penalty_yard_di
   )
 ```
 
-Well, that's not entirely compelling, is it? The Chiefs are pretty consistently *negativley* impacted by the refs. In fact, in their three seasons where they won the Super Bowl (2019, 2022, 2023) they had a *negative* PYD *every season*. If they beat the Eagles next week, it will be the first Super Bowl victory with a positive PYD. As you can see, this is not helping the anti-Chiefs case out so far. But, let's take a deeper look into the context of the penalties themselves. A holding call in the 1st Quarter of the game isn't near as impactful as a holding call on 3rd down in a game-winning drive, right? So, let's see if the refs help the Chiefs out in tight spots.
+Well, that's not entirely compelling, is it? The Chiefs are pretty consistently *negativley* impacted by the refs. In fact, in their three seasons where they won the Super Bowl (2019, 2022, 2023) they had a *negative* PYD *every season*. If they beat the Eagles next week, it will be their first Super Bowl victory with a positive PYD. As you can see, this is not helping the anti-Chiefs case out so far. But, let's take a deeper look into the context of the penalties themselves. After all, a holding call in the 1st Quarter of the game isn't near as impactful as a holding call on 3rd down in a game-winning drive, right? So, let's see if the refs help the Chiefs out in tight spots.
 
 # Claim 2: Do the Refs Help Out the Chiefs in Tight Spots?
 
-We'll start by looking at PYD during the 4th Quarter. Throughout Mahomes's entire career, have the Chiefs been given a boost during the 4th Quarter?
+We'll start by looking at PYD during the 4th Quarter. Throughout Mahomes's entire career, have the Chiefs been given a boost by the refs during the 4th Quarter?
 
 ```{r fig.height=8, fig.width=10}
 #| fig-cap: "Chiefs Penalty Yard Differential in the 4th Quarter (2018-2024)"
@@ -306,7 +306,7 @@ ggplot(penalty_differential_2018_2024_4th, aes(x = reorder(team, total_penalty_y
         legend.position = "none")
 ```
 
-Yet again, we see the Chiefs near the bottom. But, I hear you, so let's see if that was any different *this* season in particular.
+Yet again, we see the Chiefs near the bottom. But let's see if that was any different *this* season in particular when all of the noise around the Chiefs and the refs exploded.
 
 ```{r fig.height=8, fig.width=10}
 #| fig-cap: "Chiefs Penalty Yard Differential in the 4th Quarter (2024)"
@@ -363,7 +363,7 @@ ggplot(penalty_differential_2024_4th, aes(x = reorder(team, total_penalty_yard_d
         legend.position = "none")
 ```
 
-Yep, about what I expected. Even during this season (when all of the "Chiefs get all the calls" rhetoric started), the refs still give KC's opponents more penalty yards in the 4th Quarter than the Chiefs. Next, we're going to shift our attention towards downs. In particular, both 3rd and 4th downs since converting these are very important for sustaining drives and preventing turnover on downs.
+Yep, about what I expected. Even during this season, the refs still give KC's opponents more penalty yards in the 4th Quarter than the Chiefs. Next, we're going to shift our attention towards downs. In particular, both 3rd and 4th downs since converting these are very important for sustaining drives and preventing turnover on downs.
 
 ```{r fig.height=8, fig.width=10}
 #| fig-cap: "Chiefs Penalty Yard Differential on 3rd Down (2018-2024)"
@@ -591,7 +591,7 @@ ggplot(penalty_differential_2024_4d, aes(x = reorder(team, total_penalty_yard_di
         legend.position = "none")
 ```
 
-But, what about overtime? Maybe we can finally find some bit of evidence that the refs favor the Chiefs in a high-stakes situation? Nope, as you can see below, just barely above average. Note that I am not showing OT data for this season because a lot of teams never went into OT this season and, among those who did, it only occurred once. So, the sample sizes are much too small to be useful. However, looking in the aggregate over 7 seasons can yield some insights.
+But, what about overtime? Maybe we can finally find some bit of evidence that the refs favor the Chiefs in a high-stakes situation? Nope, as you can see below, the Chiefs are just barely above average for PYD in OT. Note that I am not showing OT data for just the 2024t season because a lot of teams never went into OT this season and, among those who did, they only went once. So, the sample sizes are much too small to be useful. However, looking in the aggregate over 7 seasons yields some insight.
 
 ```{r fig.height=8, fig.width=10}
 #| fig-cap: "Penalty Yard Differential in Over Time (2018-2024)"
@@ -705,7 +705,7 @@ ggplot(penalty_differential_2018_2024_trail, aes(x = reorder(team, total_penalty
         legend.position = "none")
 ```
 
-Throughout Mahomes's career, again, the Chiefs are just barely above average and, for the 2024 season, we actually get a shred of evidence that the Chiefs are *positively* impacted by ref calls. However, I would stress that, if one wants to make a statement like "the refs favor the Chiefs" based on one statistic, that conviction should also be interesting in the apparent collusion between the NFL and Minnesota Vikings... (I say sarcastically).
+Throughout Mahomes's career, again, the Chiefs are just barely above average and, for the 2024 season, we actually get a shred of evidence that the Chiefs are *positively* impacted by ref calls. However, I would stress that, if one wants to make a statement like "the refs favor the Chiefs" based on one statistic, that conviction should also suggest that the NFL is rigging the game in favor of other teams like the Vikings, Colts, Packers, etc. I don't think anyone thiks that...
 
 ```{r fig.height=8, fig.width=10}
 #| fig-cap: "Penalty Yard Differential When Trailing (2024)"
@@ -1026,10 +1026,10 @@ Is this evidence that, even if the NFL doesn't rig games for the Chiefs, they ar
 
 # Why You Think the Game is Rigged
 
-Overall, the overwhelming evidence suggests that the Chiefs are not being helped by the refs. In many cases, they rank very poorly in PYD, in some case, they are right in the middle and, in a minority of cases, they are near the top in PYD. Further, plenty of other teams consistently records a larger PYD than the Chiefs (such as the Bills), but we fail to hear about any conspiracy regarding these teams? Why? Further, why might you think the league helps out the Chiefs when the data suggests otherwise?
+Overall, the overwhelming evidence suggests that the Chiefs are not being helped by the refs. In many cases, they rank very poorly in PYD, in some cases, they are right in the middle and, in a minority of cases, they are near the top in PYD. Further, plenty of other teams consistently record a larger PYD than the Chiefs (such as the Bills), but we fail to hear about any conspiracy regarding these teams. Why? Why might you think the league helps out the Chiefs when the data suggests otherwise?
 
-This likely just has to do with both **selection** and **confirmation** bias. If you watch a disproportionately higher number of Chiefs games (which, you likely do because they are on prime-time more often), then you *see* more questionable ref calls being made. Built up over time, and you might begin to think that the Chiefs sure do get a lot of calls. However, by *not watching* other teams as often as the Chiefs, you are cognitively discounting how many other questionable calls are made in the favor of other teams. 
+This likely just has to do with both **selection** and **confirmation** bias. If you watch a disproportionately higher number of Chiefs games (which, you likely do because they are on prime-time more often), then you *see* more questionable ref calls being made. As you watch more games over time, you might begin to think that the Chiefs sure do get a lot of calls. However, by *not watching* other teams as often as the Chiefs, you are cognitively discounting how many other questionable calls are made in the favor of other teams. In other words, the pattern only seems suspicious because you're not *seeing* how often these calls are made for other teams.
 
 This leads to the second problem, which is confirmation bias. Once you have made the (false) connection that all the calls go the Chiefs' way, every additional questionable call you see favor the Chiefs only goes to *confirm* your suspicions. Looking at the game like this makes you susceptible to arriving at false conclusions. You become so focused on the Chiefs, that you fail to see when other teams get away with missed calls or have their opponents called more often or have questionable calls go their way. 
 
-So, what can you take from this? I would say, *stop complaining* (because there is no reason to) and enjoy history being made! This team has been a blast to watch and, as a Dallas Cowboys fan, I sincerely hope that the Chiefs do what they do best and send Philly to Cancun.
+So, what can you take from this? I would say, *stop complaining* (because there is no reason to) and enjoy history being made! This team has been a blast to watch and, as a Dallas Cowboys fan and a resident of the greater Tyler, Texas area (where Mahomes grew up), I sincerely hope that the Chiefs do what they do best and send Philly to Cancun.
