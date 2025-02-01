@@ -1,0 +1,21 @@
+---
+title: "Explaining Everything About Marginal Structural Models and Inverse Probability Weighting in Plain English"
+date: 2025-03-14
+description: "BLOG IN PROGRESS - Marginal structural models are a necessary method in the toolkit of panel/longitudinal data analysis. Despite this, outside of a few disciplines, they are rarely utilized! Check this blog out to learn more about these tools and why they are so crucial to understand."
+image: ""
+toc: true
+execute:
+  warning: false
+  error: false
+  message: false
+toc-location: "left"
+toc-title: "Contents"
+categories:
+  - causal inference
+  - dags
+  - ipw
+  - msm
+  - panel data
+  - regression
+  - sensitivity analysis
+---

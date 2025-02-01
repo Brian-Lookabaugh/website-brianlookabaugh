@@ -6,9 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="">
+<meta name="dcterms.date" content="2025-01-31">
+<meta name="description" content="Marginal structural models are a necessary method in the toolkit of panel/longitudinal data analysis. Despite this, outside of a few disciplines, they are rarely utilized! Check this blog out to learn more about these tools and why they are so crucial to understand.">
 
-<title>Blog – Brian Lookabaugh</title>
+<title>Explaining Everything About Marginal Structural Models and Inverse Probability Weighting in Plain English – Brian Lookabaugh</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,27 +25,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../images/stickerv2.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/quarto-html/quarto.js"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../images/stickerv2.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,108 +71,22 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-posts_2025 .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-posts_2025'] = new List('listing-posts_2025', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-posts_2024 .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-posts_2024'] = new List('listing-posts_2024', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../images/stickerv2.png" alt="" class="navbar-logo">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../images/stickerv2.png" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Brian Lookabaugh</span>
     </a>
   </div>
@@ -184,19 +97,19 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../resume/index.html"> 
+    <a class="nav-link" href="../../../resume/index.html"> 
 <span class="menu-text">Resume</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../research/index.html"> 
+    <a class="nav-link" href="../../../research/index.html"> 
 <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../blog/index.html" aria-current="page"> 
+    <a class="nav-link" href="../../../blog/index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
 </ul>
@@ -225,24 +138,48 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(6)</span></div><div class="category" data-category="causal inference">causal inference <span class="quarto-category-count">(4)</span></div><div class="category" data-category="dags">dags <span class="quarto-category-count">(4)</span></div><div class="category" data-category="ipw">ipw <span class="quarto-category-count">(2)</span></div><div class="category" data-category="machine learning">machine learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="msm">msm <span class="quarto-category-count">(2)</span></div><div class="category" data-category="nfl">nfl <span class="quarto-category-count">(2)</span></div><div class="category" data-category="panel data">panel data <span class="quarto-category-count">(3)</span></div><div class="category" data-category="regression">regression <span class="quarto-category-count">(2)</span></div><div class="category" data-category="sensitivity analysis">sensitivity analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="simulation">simulation <span class="quarto-category-count">(2)</span></div><div class="category" data-category="visualization">visualization <span class="quarto-category-count">(1)</span></div></div></div>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Blog</h1>
+<h1 class="title">Explaining Everything About Marginal Structural Models and Inverse Probability Weighting in Plain English</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">causal inference</div>
+    <div class="quarto-category">dags</div>
+    <div class="quarto-category">ipw</div>
+    <div class="quarto-category">msm</div>
+    <div class="quarto-category">panel data</div>
+    <div class="quarto-category">regression</div>
+    <div class="quarto-category">sensitivity analysis</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Marginal structural models are a necessary method in the toolkit of panel/longitudinal data analysis. Despite this, outside of a few disciplines, they are rarely utilized! Check this blog out to learn more about these tools and why they are so crucial to understand.
+  </div>
 </div>
 
 
-
-<div class="quarto-title-meta column-page-left">
+<div class="quarto-title-meta">
 
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 31, 2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -252,270 +189,8 @@ window.Quarto = {
 </header>
 
 
-<div class="cell">
-<style type="text/css">
-#title-block-header .description {
-    display: none;
-}
-</style>
-</div>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section">2025</h2>
-<div id="listing-posts_2025" class="quarto-listing quarto-listing-container-default">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="nfl,visualization" data-listing-date-sort="1738303200000" data-listing-file-modified-sort="1738430156376" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="40" data-listing-word-count-sort="7978">
-<div class="thumbnail">
-<p><a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external"></a></p><a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/2025/chiefs-refs-bias/figures/overall_pyd_2018_2024.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external">Do NFL Referees Favor the Kansas City Chiefs?</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('nfl'); return false;">
-nfl
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('visualization'); return false;">
-visualization
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external">The back-to-back NFL champions are poised for a third consecutive Super Bowl win (three-peat), which has never been accomplished before. Is such a feat possible due to unfair officiating? Let’s look at the data!</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/2025/chiefs-refs-bias/index.html" class="no-external">
-<div class="listing-date">
-January 31, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="causal inference,dags,ipw,msm,panel data,regression,sensitivity analysis" data-listing-date-sort="1738303200000" data-listing-file-modified-sort="1738361498578" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
-<div class="thumbnail">
-<p><a href="../blog/2025/msms-and-ipw/index.html" class="no-external"></a></p><a href="../blog/2025/msms-and-ipw/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/2025/msms-and-ipw" class="thumbnail-image"></p>
-</a><p><a href="../blog/2025/msms-and-ipw/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/2025/msms-and-ipw/index.html" class="no-external">Explaining Everything About Marginal Structural Models and Inverse Probability Weighting in Plain English</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/2025/msms-and-ipw/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('causal inference'); return false;">
-causal inference
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('dags'); return false;">
-dags
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('ipw'); return false;">
-ipw
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('msm'); return false;">
-msm
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('panel data'); return false;">
-panel data
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('regression'); return false;">
-regression
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('sensitivity analysis'); return false;">
-sensitivity analysis
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/2025/msms-and-ipw/index.html" class="no-external">Marginal structural models are a necessary method in the toolkit of panel/longitudinal data analysis. Despite this, outside of a few disciplines, they are rarely utilized! Check this blog out to learn more about these tools and why they are so crucial to understand.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/2025/msms-and-ipw/index.html" class="no-external">
-<div class="listing-date">
-January 31, 2025
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div>
-</section>
-<section id="section-1" class="level2">
-<h2 class="anchored" data-anchor-id="section-1">2024</h2>
-<div id="listing-posts_2024" class="quarto-listing quarto-listing-container-default">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="causal inference,simulation,dags,ipw,msm,panel data" data-listing-date-sort="1735538400000" data-listing-file-modified-sort="1735410245688" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="42" data-listing-word-count-sort="8343">
-<div class="thumbnail">
-<p><a href="../blog/2024/simulating-panel-data/index.html" class="no-external"></a></p><a href="../blog/2024/simulating-panel-data/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/2024/simulating-panel-data/images/tvc_model_results.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/2024/simulating-panel-data/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/2024/simulating-panel-data/index.html" class="no-external">Simulating Complex Panel Data to Validate Model Performance in Estimating Dynamic Treatment Effects</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/2024/simulating-panel-data/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('causal inference'); return false;">
-causal inference
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('simulation'); return false;">
-simulation
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('dags'); return false;">
-dags
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('ipw'); return false;">
-ipw
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('msm'); return false;">
-msm
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('panel data'); return false;">
-panel data
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/2024/simulating-panel-data/index.html" class="no-external">Making causal inferences is hard, and making causal inferences is harder with complex panel data. In this blog post, learn how to test the validity of your panel data models using simulation!</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/2024/simulating-panel-data/index.html" class="no-external">
-<div class="listing-date">
-December 30, 2024
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="causal inference,simulation,dags,regression" data-listing-date-sort="1728968400000" data-listing-file-modified-sort="1735405084315" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="71" data-listing-word-count-sort="14155">
-<div class="thumbnail">
-<p><a href="../blog/2024/causal-inference-simulation/index.html" class="no-external"></a></p><a href="../blog/2024/causal-inference-simulation/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/2024/causal-inference-simulation/figures/att_distribution.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/2024/causal-inference-simulation/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/2024/causal-inference-simulation/index.html" class="no-external">Causal Inference for Casuals</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/2024/causal-inference-simulation/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('causal inference'); return false;">
-causal inference
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('simulation'); return false;">
-simulation
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('dags'); return false;">
-dags
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('regression'); return false;">
-regression
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/2024/causal-inference-simulation/index.html" class="no-external">Learn about the core concepts of causal inference and the motivations for causal analysis with the help of simulation. Beginners to causal inference welcome!</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/2024/causal-inference-simulation/index.html" class="no-external">
-<div class="listing-date">
-October 15, 2024
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="machine learning,nfl" data-listing-date-sort="1726203600000" data-listing-file-modified-sort="1735405084548" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="39" data-listing-word-count-sort="7799">
-<div class="thumbnail">
-<p><a href="../blog/2024/nfl-workflow/index.html" class="no-external"></a></p><a href="../blog/2024/nfl-workflow/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/2024/nfl-workflow/images/nflverse_logo.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/2024/nfl-workflow/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/2024/nfl-workflow/index.html" class="no-external">Predicting the Outcome of NFL Games in the 2024-2025 Season</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/2024/nfl-workflow/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
-machine learning
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('nfl'); return false;">
-nfl
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/2024/nfl-workflow/index.html" class="no-external">Follow my attempt to predict the winners and losers of each game in the 2024-2025 NFL season.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/2024/nfl-workflow/index.html" class="no-external">
-<div class="listing-date">
-September 13, 2024
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="causal inference,panel data,dags" data-listing-date-sort="1720414800000" data-listing-file-modified-sort="1735405084318" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3897">
-<div class="thumbnail">
-<p><a href="../blog/2024/dynamic-causal-inference/index.html" class="no-external"></a></p><a href="../blog/2024/dynamic-causal-inference/index.html" class="no-external">
-<p><img loading="lazy" src="../blog/2024/dynamic-causal-inference/images/time-varying-confounding-dag-1.png" class="thumbnail-image"></p>
-</a><p><a href="../blog/2024/dynamic-causal-inference/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/2024/dynamic-causal-inference/index.html" class="no-external">An Introduction to Dynamic Causal Inference</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/2024/dynamic-causal-inference/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('causal inference'); return false;">
-causal inference
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('panel data'); return false;">
-panel data
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('dags'); return false;">
-dags
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/2024/dynamic-causal-inference/index.html" class="no-external">Learn the basics to making causal inferences with panel/longitudinal data.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/2024/dynamic-causal-inference/index.html" class="no-external">
-<div class="listing-date">
-July 8, 2024
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div>
 
 
-
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
