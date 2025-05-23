@@ -1,7 +1,7 @@
 ---
 title: "Give Your Hypotheses Space!"
 date: 2025-05-15
-description: "It's tempting to throw a bunch of variables of interest into a model and evaluate each variable's impact on the outcome, but proceed at your own caution! Check this blog out to see why that approach is most likely not the best idea..."
+description: "It's tempting to throw a bunch of variables of interest into a model and evaluate each variable's 'impact' on the outcome, but proceed at your own caution! Check this blog out to see why that approach is most likely not the best idea..."
 image: "figures/bad_controls_bias.png"
 toc: true
 execute:
@@ -67,21 +67,21 @@ colors <- c(
 
 # Intro
 
-It is tempting for practitioners and clients alike to feel that we can develop a "model" that can answer our questions. But the idea of shooting for a single model is flawed, regardless of what you're trying to do. If you are seeking to do machine learning things, there's a lot of virtue in ensemble approaches. From the causal inference approach, it is *very easy* to let a single model too much and, as a consequence, severely damage the credibility of your results.
+It is tempting for practitioners and clients alike to feel that we can develop a "model" that can answer our questions. But the idea of shooting for a single model is flawed, regardless of what you're trying to do. If you are seeking to do machine learning things, there's a lot of virtue in ensemble approaches. From the causal inference approach, it is *very easy* to let a single model do too much and, as a consequence, severely damage the credibility of your results.
 
-This is especially a problem when asked to do some sort of "shotgun causal inference". I have no clue if someone else has used this term before, but the desire for shotgun causal inference is apparent in academic and non-academic settings. It all starts with this "what are the predictors/explanations/factors that impact", etc. What is the problem here? Well, for one, the task is insurmountable. *All* the influences?
+This is especially a problem when asked to do some sort of "shotgun causal inference". I have no clue if someone else has used this term before, but the desire for shotgun causal inference is apparent in academic and non-academic settings. It all starts with this question: "what are the predictors/explanations/factors that impact", etc. What is the problem here? Well, for one, the task is insurmountable. *All* the things?
 
-In reality, such questions can really be boiled down to "find as many variables that you think explains some outcome of interest and test them". But this is actually a very hard causal inference problem (which is part of the reason why academic hypotheses tend to be narrow and only focus on one potential causal factor for each research project). Even though shotgun causal inference is hard, there is one rule that should never be violated...
+In reality, such questions can really be boiled down to "find as many variables that you think explain some outcome of interest and test them". But this is actually a very hard causal inference problem (which is part of the reason why academic hypotheses tend to be narrow and only focus on one potential causal factor for each research project). Even though shotgun causal inference is hard, there is one rule that should never be violated...
 
-When testing multiple hypotheses, *do not* throw everything in the same model and assume that this model provides interpretable results. To demonstrate why this should be avoided, let's review a quick refresher on the concept of "bad controls" and what they do. This will be important for understanding why we should not test multiple hypotheses within the same model.
+When testing multiple hypotheses, *do not* throw everything into the same model and assume that this model provides interpretable results. To demonstrate why this should be avoided, let's go over quick refresher on the concept of "bad controls" and what they do. This will be important for understanding why we should not test multiple hypotheses within the same model.
 
 # A Refresher on the Consequences of "Bad Controls"
 
-For those not familiar, I go into greater detail on this subject in a [prior blog post](https://brian-lookabaugh.github.io/website-brianlookabaugh/blog/2024/causal-inference-simulation/#dont-be-a-control-freak-overadjustment-bias). However, the TLDR of this point is that different hypotheses require different adjustment sets. Adjustment sets are the unique combination/specification of covariates that are required to be adjusted for to give $X \rightarrow Y$ a causal interpretation.
+For those not familiar, I go into greater detail on this subject in a [prior blog post](https://brian-lookabaugh.github.io/website-brianlookabaugh/blog/2024/causal-inference-simulation/#dont-be-a-control-freak-overadjustment-bias). However, the TLDR of this point is that different hypotheses require different adjustment sets. Adjustment sets are the unique combination/specification of covariates that are required to be adjusted for to give any $X \rightarrow Y$ relationship a causal interpretation.
 
 The problem is that the same covariate can have a different causal role for different hypotheses. Confounders ($X \leftarrow Z \rightarrow Y$) should always be controlled for, but what happens when a confounder for the $H_{1} \rightarrow Y$ relationship is a *bad control* for the $H_{2} \rightarrow Y$ relationship?
 
-Let's assume that we are interested in testing the $H_{1} \rightarrow Y$ relationship and we add some other controls that, while necessary for the *other* hypotheses, are *harmful* for identifying $H_{1} \rightarrow Y$. Below, I simulate three different situations where the influence of these bad controls ranges from large to medium to small. I simulate two post-treatment controls (a mediator: $X \rightarrow Y$ and a collider: $X \rightarrow C \leftarrow Y$) and an instance of M-Bias. The idea for this simulation exercise is to show how much our model deviates from estimating the true causal effect when adjusting for other covariates.
+Let's assume that we are interested in testing the $H_{1} \rightarrow Y$ relationship and we add some other controls that, while necessary for the *other* hypotheses, are *harmful* for identifying $H_{1} \rightarrow M \rightarrow Y$. Below, I simulate three different situations where the influence of these bad controls ranges from large to medium to small. I simulate two post-treatment controls (a mediator: $X \rightarrow Y$ and a collider: $X \rightarrow C \leftarrow Y$) and an instance of M-Bias. The idea for this simulation exercise is to show how much our model deviates from estimating the true causal effect when adjusting for other bad covariates.
 
 ```{r simulating data for bad controls}
 set.seed(1234)
@@ -352,15 +352,15 @@ ggplot(dgp2_dag, aes(x = x, y = y, xend = xend, yend = yend)) +
   theme_dag()
 ```
 
-According to this DAG, if we want to estimate the effect of Exposure 1 on the Outcome, we need to adjust for Covariate 1. But if we were to do this all in one model, we would cause a post-treatment bias by blocking the Exposure 2 $\rightarrow$ Covariate 1 $\rightarrow$ Outcome path. And if we want to estimate the effect of Exposure 3 on the Outcome, we need to adjust for Covariate 3, but then we can clearly see that adjusting for Covariate 3 blocks the Exposure 1 $\rightarrow$ Covariate 3 $\rightarrow$ Outcome path. If you choose to include everything in one model, you are truly damned if you do and damned if you don't!
+According to this DAG, if we want to estimate the effect of Exposure 1 on the Outcome, we need to adjust for Covariate 1. But if we were to do this all in one model, we would cause a post-treatment bias for evaluating the $X_{2] \rightarrow Y$ relationship by blocking the Exposure 2 $\rightarrow$ Covariate 1 $\rightarrow$ Outcome path. And if we want to estimate the effect of Exposure 3 on the Outcome, we need to adjust for Covariate 3, but then we can clearly see that adjusting for Covariate 3 blocks the Exposure 1 $\rightarrow$ Covariate 3 $\rightarrow$ Outcome path. If you choose to include everything in one model, you are truly damned if you do and damned if you don't!
 
-So what to do instead? Simply give your hypotheses room to breathe! According to this DAG, to test the effect of Exposure 1 on Outcome, we only need to adjust for Covariate 1. To estimate the effect of Exposure 2 on Outcome, we only need to adjust for Covariate 2, etc. There is no one magic model. Trying to include everything in one model is a near guarantee to get very bad, *not true* results.
+So what to do instead? Simply give your hypotheses space! According to this DAG, to test the effect of Exposure 1 on Outcome, we only need to adjust for Covariate 1. To estimate the effect of Exposure 2 on Outcome, we only need to adjust for Covariate 2, etc. There is no one magic model. Trying to include everything in one model is a near guarantee to get very bad, *not true* results.
 
 # Don't Bother Interpreting Your Controls
 
 When estimating a regression model, you get a lot of numbers back and it's tempting to try and glean some information from each other. In particular, if we are on the same page and agree that we should only use one model to test each hypothesis, then the vast majority of our coefficients are for our control variables. Surely all that information is useful?
 
-Nope! At least, it probably is not, and the reasons discussed above help explain why coefficients for control variables ought to be avoided. Recall that we design models to test *a specific hypothesis*. That is, we use control variables to *de-confound* the relationship of interest (whether that is the effect of $H_{1}$, $H_{2}$, etc.). Subsequently, any other estimate from that model is most likely, *not* de-confounded. To demonstrate this, I am going to simulate some data with one effect of interest that is confounded by five covariates. However, each of these covariates is itself confounded by *another* confounder that confounds the Confouder $\rightarrow Y$ relationship.
+Nope! At least, it probably is not, and the reasons discussed above help explain why coefficients for control variables ought to be avoided. Recall that we design models to test *a specific hypothesis*. That is, we use control variables to *de-confound* the relationship of interest (whether that is the effect of $H_{1}$, $H_{2}$, etc.). Subsequently, any other estimate from that model is most likely, *not* de-confounded. To demonstrate this, I am going to simulate some data with one effect of interest that is confounded by five covariates. However, each of these covariates is itself confounded by *another* confounder that confounds the Confouder $\rightarrow Y$ relationship, but does *not* confound the $X \rightarrow Y$ relationship.
 
 ```{r simulating data for table 2 fallacy}
 set.seed(1234)
@@ -392,7 +392,10 @@ table2_reg <- lm(y ~ x + z1 + z2 + z3 + z4 + z5, data = table2)
 
 We can show this data generating process with this messy DAG (and I'm keeping it messy for a reason!)
 
-```{r dag for table 2 fallacy}
+```{r}
+#| fig-cap: "Messy DAG"
+#| code-fold: true
+
 dgp3_dag <- dagitty('dag {
     bb="0,0,1,1"
     U1 [pos="0.47,0.83"]
@@ -480,6 +483,8 @@ Again, what is this DAG showing us? It's showing us that we need to adjust for C
 With that being said, let's estimate a model regressing $Y$ on $X$, $Z1$, $Z2$, $Z3$, $Z4$, and $Z5$ and let's see how well the coefficients align with the vaues that we know to be true from our simulation.
 
 ```{r table for table 2 fallacy}
+#| code-fold: true
+
 true_values <- c(
   "x"  = 1.25,
   "z1" = 0.8,
@@ -525,14 +530,14 @@ Covariates 1-3 aren't too bad, although they are for sure biased, but the magnit
 
 In other terms, folks will also refer to the role of control variables as "nuisance parameters". In other words, while adjusting for them is necessary for de-confounding purposes, they themselves have no interpretability. If you're familiar with alternative approaches like matching, this intuition makes more sense because, with matching, there are no control variable parameters to interpret in the first place. The design of matching itself adjusts for the control variables, but because you don't get any statistical output along with those control variables, there is nothing to interpret.
 
-Similarly, we should treat regression output for controls in a similar manner. Yes, it is there and yes it exists, but it is functionally meaningless. The controls have done their work to get us our coefficient for $X$ and we should not ask for them to do anything more than that. So, why do we publish these super long regression tables with all of these numbers if most of them are just nuisance parameters? I don't know! It's kind of a waste of space! But all you and I can really do is not use that and save more page space and word counts for ourselves!
+Similarly, we should treat regression output for controls in a similar manner. Yes, it is there and yes it exists, but it is functionally meaningless. The controls have done their work to get us our coefficient for $X$ and we should not ask for them to do anything more than that. So, why do we publish these super long regression tables with all of these numbers if most of them are just nuisance parameters? I don't know! It's kind of a waste of space! But all you and I can really do is not do this and save more page space and word counts for ourselves!
 
 # Conclusion
 
-In conclusion, I'll go back to the title of this blog and emphasize to give your hypotheses space! The key takeaways from this are:
+In conclusion, I'll return to the title of this blog and emphasize *give your hypotheses space*! The key takeaways from this are montra are:
 
-1)  Understand that each hypothesis requires its own model (it's own space) and its own unique adjustment set
+1)  Understand that each hypothesis requires its own model (it's own space) and its own unique adjustment set.
 
-2)  When asked to find out what the "factors that explain $Y$ are", realize that this is an incredibly complex task that will require a lot of models and a lot of time to think through what each adjustment set will need to be
+2)  When asked to find out what the "factors that explain $Y$ are", realize that this is an incredibly complex task that will require a lot of models and a lot of time to think through what each adjustment set will need to be. You cannot throw 30 variables into a model and expect something causally useful.
 
 3)  Only interpret the output for your exposure of interest. Control variable output is causally uninterpretable.
