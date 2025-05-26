@@ -187,7 +187,7 @@ And yes, these problems are the ones that warrant the caution about regression t
 
 # Positivity/Common Support
 
-A key assumption for causal inference is the positivity assumption (also known as common support). The key point is that, within each combination of covariates (aka stratum), the probability of any unit being exposed to the exposure is non-zero. That is, however the data is separated (i.e. $Z_1$ = 1 & $Z_2$ = 1 or $Z_1$ = 1 & $Z_2$ = 0, etc.), there should always be a possibility for exposure.
+A key assumption for causal inference is the positivity assumption (also known as common support). The key point is that, within each combination of covariates (aka stratum), the probability of any unit being exposed to the exposure is non-zero. That is, however the data is separated (i.e. $Z_1$ = 1 and $Z_2$ = 1 or $Z_1$ = 1 and $Z_2$ = 0, etc.), there should always be a possibility for exposure.
 
 The following plot demonstrates this by looking at an exposure-outcome relationship confounded by two binary confounders. It plots the percent of observations that, within each covariate combination, are exposed v. control.
 
@@ -242,20 +242,20 @@ confounded %>%
   blog_theme()
 ```
 
-Even though, within each stratum, the distribution of the exposure is not even, the probability is *all* non-zero. To  put this in other terms, we observe both exposed and control for units where $Z_1$ = 0 & where $Z_2$ = 0, we observe both exposed and control for units where $Z_1$ = 0 & where $Z_2$ = 1, etc. Within each stratum, we are able to observe counterfactuals for each exposure condition (exposed v. control) and are thus able to reconstruct the potential outcomes.
+Even though, within each stratum, the distribution of the exposure is not even, the probability is *all* non-zero. To  put this in other terms, we observe both exposed and control for units where $Z_1$ = 0 and where $Z_2$ = 0, we observe both exposed and control for units where $Z_1$ = 0 and where $Z_2$ = 1, etc. Within each stratum, we are able to observe counterfactuals for each exposure condition (exposed v. control) and are thus able to reconstruct the potential outcomes.
 
 This situation is good, but it is also incredibly naive (for one, there are only two binary confounders... very unlikely in real life.) We also are lucky because we happen to not struggle with a positivity violation here. But what might such a violation look like?
 
 # Violating Posivity with Regression is Easy!
 
-To dive into this question, I am going to borrow from the same data, but I am going to make it so that the stratum $Z_1$ = 1 & $Z_2$ = 1 are *never* exposed.
+To dive into this question, I am going to borrow from the same data, but I am going to make it so that the stratum $Z_1$ = 1 and $Z_2$ = 1 are *never* exposed.
 
 ```{r}
 lack_overlap <- confounded %>%
   mutate(X = ifelse(Z1 == 1 & Z2 == 1, 0, X))
 ```
 
-Admittedly, the way I am handling a lack of overlap is a bit heavy handed. As you can see in the code, I am simulating a data set where this is full treatment overlap in the covariates, but I am artificially creating a new data set from the simulated one where one combination of covariates results in the exposure always being 0. However, there are several ways that this could happen with real data.
+Admittedly, the way I am handling a lack of overlap is a bit heavy handed. As you can see in the code, I am simulating a data set where there is full treatment overlap in the covariates, but I am artificially creating a new data set from the simulated one where one combination of covariates results in the exposure always being 0. However, there are several ways that this could happen with real data.
 
 For example, perhaps simply due to sampling error, you manage to get a combination of covariates where there is only one treatment status. Or, perhaps we naturally observe in the world that a specific combination of covariates happens to always lead to one treatment status. For example, assume that the exposure of interest in a certain study is a binary indicator of civil conflict. Imagine that I control for GDP per capita and the presence of a UN peacekeeping operation. I imagine that it is very unlikely to ever observe an instance where a rich country that does not have a UN peacekeeping operation is *also* experiencing a civil war. This probably sounds a bit niche, but a lack of overlap might not be incredibly systematic. It truly might only exist in one stratum of your data.
 
@@ -292,7 +292,7 @@ lack_overlap %>%
   blog_theme()
 ```
 
-So, in the $Z_1$ = 1, $Z_2$ = 1 stratum, all units are control observations... What consequence might that have for estimating the causal effect of the exposure ($X$)? Well, recall that the true causal effect is 0.2. And, we can demonstrate that we can estimate this causal effect even with confounders through the following regression:
+So, in the $Z_1$ = 1 and $Z_2$ = 1 stratum, all units are control observations... What consequence might that have for estimating the causal effect of the exposure ($X$)? Well, recall that the true causal effect is 0.2. And, we can demonstrate that we can estimate this causal effect even with confounders through the following regression:
 
 ```{r}
 lm(Y ~ X + Z1 + Z2, data = confounded)
@@ -324,7 +324,7 @@ The basic idea of AMEs is this:
 
 So how do AMEs help explain why our coefficient becomes biased when positivity is violated? Well, let's return to our pesky stratum of $Z_1$ = 1 and $Z_2$ = 1. Remember, we *know* that all units in this stratum are controls. So we can predict the outcome for these units easily by: $Y = -0.017 + 0.189 (0) + 0.471 (1) + 0.729 (1)$ which sums to 1.183. Easy enough, but what about the next step. We want to know the counterfactual and that formula would be: $Y = -0.017 + 0.189 (1) + 0.471 (1) + 0.729 (1)$.
 
-Uh-oh... we already know that, within the $Z_1$ = 1 and $Z_2$ = 1 stratum, *no* units are exposed... so how can we know what the impact of exposure would be? Well, our model will gladly give us a predicted outcome, but that outcome is not generated from any *real* data points within that stratum. In other words, it is made up! Or, in fancier terms, regression is *extrapolating beyond the support of the data*. It is making a guess without any data points. That's kind of a problem! And we see the fruits of this problem bear out in a biased coefficient.
+Uh-oh... we already know that, within the $Z_1$ = 1 and $Z_2$ = 1 stratum, *no* units are exposed... so how can we know what the impact of exposure would be? Well, our model will gladly give us a predicted outcome, but that outcome is not generated from any *real* data points within that stratum. In other words, it is made up! Or, in fancier terms, regression is *extrapolating beyond the support of the data*. It is making a guess without any data points as reference. That's kind of a problem! And we see the fruits of this problem bear out in a biased coefficient.
 
 Now, because I know what each potential outcome *actually is* (because I simulated it), we can do something really interesting where we estimate the predicted counterfactual outcome (when units in this stratum are exposed) and compare it to the *true* counterfactual outcome. So, that's what the following table reports. 
 
@@ -381,7 +381,8 @@ confounded$ps <- predict(ps_score_model, type = "response")
 
 The propensity score is useful because it collapses all of the information from $k$ confounders and summarizes what we need to know (the probability of receiving treatment) into one metric. Once we have obtained propensity scores, we can compare their distribution between the exposed and control units. Take, for example, a plot I made for another blog post below:
 
-![Example Using Propensity Scores to Assess Positivity](C:/Users/brian/Documents/website-brianlookabaugh/blog/2025/extrapolation/figures/att_plot.png)
+![](figures/att_plot.png)
+
 This plot shows us that, for treated units, the probability of receiving treatment ranges from about 20% to about 80% while the distribution for control units ranges from 0% to about 80%. What do we learn from this? Well, it shows us that, for the analysis of *treated* units, there are potentially comparable control units that can allow us to estimate the potential outcomes for the treated units. In other terms, for each propensity score that a treated unit may have, there is at least one other *control* unit that has the same propensity score.
 
 So, propensity scores are one potential for evaluating positivity, but... isn't there still a problem here? What about the control units whose propensity scores range from 0% to 19%? According to the propensity scores, we can't estimate potential outcomes for these units. And, in this case, that would be correct, but it doesn't mean that your study would be doomed. One solution to violations of positivity is simply to *answer another question*.
