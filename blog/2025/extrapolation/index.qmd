@@ -292,7 +292,9 @@ lm(Y ~ X + Z1 + Z2, data = confounded)
 So, that being said, how does the coefficient for $X$ change using the data where the positivity assumption is violated? Let's check that out!
 
 ```{r}
-lm(Y ~ X + Z1 + Z2, data = lack_overlap)
+lack_overlap_mod <- lm(Y ~ X + Z1 + Z2, data = lack_overlap)
+
+lack_overlap_mod
 ```
 
 As we can see, we have found some bias even though all the confounders are accounted for. So clearly, violating the positivity assumption, in some way, matters for estimating unbiased causal effects. But... how exactly does that work? Well, the bias can be explained, in part, by what is happening on a more micro-level. 
