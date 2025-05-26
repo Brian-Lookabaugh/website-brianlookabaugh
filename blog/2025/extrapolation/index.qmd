@@ -77,7 +77,10 @@ The fundamental problem of causal inference is that observing (in the case of a 
 
 Thankfully, absent a time machine, clever designs and statistical methods allow us to make inferences about *average* causal effects rather than more precise *individual*-level causal effects. If we had access to individual-level causal effects, we could also make *average* inferences by taking the average of the exposed and control outcomes and then take the difference. Below is a plot that shows simulated potential outcomes for 100 units who are randomly assigned to exposure/control. Also, note that I got this plot idea from [Dr. Julia Rohrer](https://www.the100.ci/author/julia/), so credit to her for this visualization.
 
-```{r}
+```{r fig.height=8, fig.width=10}
+#| fig-cap: "Distribution of Individual-Level Potential Outcomes"
+#| code-fold: true
+#| 
 # Simulate Data
 set.seed(1234)
 n <- 100
@@ -186,9 +189,12 @@ And yes, these problems are the ones that warrant the caution about regression t
 
 A key assumption for causal inference is the positivity assumption (also known as common support). The key point is that, within each combination of covariates (aka stratum), the probability of any unit being exposed to the exposure is non-zero. That is, however the data is separated (i.e. $Z_1$ = 1 & $Z_2$ = 1 or $Z_1$ = 1 & $Z_2$ = 0, etc.), there should always be a possibility for exposure.
 
-The following plot demonstrates this by looking at an exposure-outcome relationship confounded by two binary confounders. It plots the percent of observations that, within each covaraite combination, are exposed v. control.
+The following plot demonstrates this by looking at an exposure-outcome relationship confounded by two binary confounders. It plots the percent of observations that, within each covariate combination, are exposed v. control.
 
-```{r}
+```{r fig.height=8, fig.width=10}
+#| fig-cap: "Exposure/Control Distribution Across Covariate Combinations"
+#| code-fold: true
+#| 
 # Simulate Data
 set.seed(1234)
 n <- 10000
@@ -255,7 +261,10 @@ For example, perhaps simply due to sampling error, you manage to get a combinati
 
 But, all that being said, the following bar plot helps visualize why a lack of overlap is an issue.
 
-```{r}
+```{r fig.height=8, fig.width=10}
+#| fig-cap: "Exposure/Control Distribution Across Covariate Combinations with Positivity Violated"
+#| code-fold: true
+
 # Create a Grouped Bar Plot to Show Exposure/Control Distribution per Covariate Combination
 lack_overlap %>%
   mutate(group = paste0("Z1 = ", Z1, ", Z2 = ", Z2)) %>%
@@ -329,7 +338,9 @@ sampled <- lack_overlap %>%
   sample_n(5)
 
 sampled_counterfactual <- sampled %>%
-  mutate(X = 1) %>%
+  mutate(X = 1)
+
+sampled_counterfactual <- sampled_counterfactual %>%
   mutate(Y_pred = predict(lack_overlap_mod, newdata = sampled_counterfactual))
 
 # Present Select Predicted Results with a Table
