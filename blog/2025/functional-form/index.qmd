@@ -80,6 +80,9 @@ First, I'll take a look at a squared effect, which looks something like the foll
 #| code-fold: true
 
 set.seed(1234)
+
+n_obs <- 10000
+exposure_effect <- 1.5
   
   for (i in 1:1000) {
     # Vary the Linear Effect of Z Between 1% and 300% of the Exposure Effect
@@ -113,6 +116,9 @@ Then, I'll take a look at another polynomial, examining a cubic effect instead:
 #| code-fold: true
 
 set.seed(1234)
+
+n_obs <- 10000
+exposure_effect <- 1.5
 
   for (i in 1:1000) {
     # Vary the Linear Effect of Z Between 1% and 300% of the Exposure Effect
@@ -149,6 +155,9 @@ Then, I'll shift away from polynomials and take a look at interaction effects. F
 #| code-fold: true
 
 set.seed(1234)
+
+n_obs <- 10000
+exposure_effect <- 1.5
 
   for (i in 1:1000) {
     # Fixed Interaction Effect
