@@ -2,7 +2,7 @@
 title: "The Overlooked Part of Confounder Adjustment"
 date: 2025-06-08
 description: "Obviously, we all know that we need to adjust for confounders, but what happens when we don't adjust for them the right way?"
-image: "figures/funcform.png"
+image: "figures/funform.png"
 toc: true
 execute:
   warning: false
