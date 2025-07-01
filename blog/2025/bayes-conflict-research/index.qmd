@@ -2,7 +2,7 @@
 title: "Three Points for Bayesian Statistics in Conflict Research"
 date: 2025-07-01
 description: "Bayesian inference is rarely used in quantitative conflict research (and a lot of the broader social sciences too). In this blog post, I point out some reasons for why we ought to change that!"
-image: "figures/dist_plot.png"
+image: "figures/conf_cred.png"
 toc: true
 execute:
   warning: false
@@ -113,7 +113,6 @@ To demonstrate, consider the following plot. To explain what is going on, I am s
 #| code-fold: true
 #| message: false
 #| error: false
-#| output: false
 
 # Create a Function to Create Thousands of Null Findings
 sim_null_world <- function(n_runs = 10000, n_obs = 5000) {
@@ -264,7 +263,6 @@ No, the p-value is oftentimes not ideal (as discussed earlier). It is difficult 
 #| code-fold: true
 #| message: false
 #| error: false
-#| output: false
 
 set.seed(1234)
 n <- 5000
@@ -304,7 +302,8 @@ bayes_mod <- brm(
   family = gaussian(),
   prior = priors,
   chains = 4, cores = 4, iter = 1000,
-  seed = 1234, backend = "cmdstanr"
+  seed = 1234, backend = "cmdstanr",
+  refresh = 0
 )
 
 bayes_draws <- bayes_mod |> 
@@ -368,7 +367,6 @@ The first model is a standard frequentist model, the likes of which are hegemoni
 #| code-fold: true
 #| message: false
 #| error: false
-#| output: false
 
 set.seed(1234)
 n <- 5000
@@ -395,7 +393,8 @@ weak_confounded_model <- brm(
   family = gaussian(),
   prior = confounded_weak_priors,
   chains = 4, cores = 4, iter = 1000,
-  seed = 1234, backend = "cmdstanr"
+  seed = 1234, backend = "cmdstanr",
+  refresh = 0
 )
 
 weak_draws <- weak_confounded_model |> 
@@ -414,7 +413,8 @@ med_confounded_model <- brm(
   family = gaussian(),
   prior = confounded_med_priors,
   chains = 4, cores = 4, iter = 1000,
-  seed = 1234, backend = "cmdstanr"
+  seed = 1234, backend = "cmdstanr",
+  refresh = 0
 )
 
 med_draws <- med_confounded_model |> 
@@ -433,7 +433,8 @@ strong_confounded_model <- brm(
   family = gaussian(),
   prior = confounded_strong_priors,
   chains = 4, cores = 4, iter = 1000,
-  seed = 1234, backend = "cmdstanr"
+  seed = 1234, backend = "cmdstanr",
+  refresh = 0
 )
 
 strong_draws <- strong_confounded_model |> 
