@@ -263,6 +263,7 @@ No, the p-value is oftentimes not ideal (as discussed earlier). It is difficult 
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: 'hide'
 
 set.seed(1234)
 n <- 5000
@@ -367,6 +368,7 @@ The first model is a standard frequentist model, the likes of which are hegemoni
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: 'hide'
 
 set.seed(1234)
 n <- 5000
