@@ -113,6 +113,7 @@ To demonstrate, consider the following plot. To explain what is going on, I am s
 #| code-fold: true
 #| message: false
 #| error: false
+#| output: false
 
 # Create a Function to Create Thousands of Null Findings
 sim_null_world <- function(n_runs = 10000, n_obs = 5000) {
@@ -263,6 +264,7 @@ No, the p-value is oftentimes not ideal (as discussed earlier). It is difficult 
 #| code-fold: true
 #| message: false
 #| error: false
+#| output: false
 
 set.seed(1234)
 n <- 5000
@@ -366,6 +368,7 @@ The first model is a standard frequentist model, the likes of which are hegemoni
 #| code-fold: true
 #| message: false
 #| error: false
+#| output: false
 
 set.seed(1234)
 n <- 5000

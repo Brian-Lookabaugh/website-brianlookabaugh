@@ -328,6 +328,8 @@ window.Quarto = {
 <p>There are some obvious heavy hitters that probably influence the risk of civil war onset like economic development, repression, etc. However, the majority of “effects” (including the majority of papers on the topic) are likely investigating small effects. And the problem arises because most QCR studies are potentially too <em>under-powered</em> to actually <em>detect</em> small/very small effects under NHST.</p>
 <p>To demonstrate, consider the following plot. To explain what is going on, I am simulating data with three variables: <span class="math inline">\(Y\)</span> (the outcome), <span class="math inline">\(X\)</span> (the hypothesized exposure that should impact <span class="math inline">\(Y\)</span>), and <span class="math inline">\(Z\)</span> (a potential confounder of the alleged <span class="math inline">\(X \rightarrow Y\)</span> relationship). Now, within the simulation, <span class="math inline">\(X\)</span> actually has no effect whatsoever on <span class="math inline">\(Y\)</span>. In other words, the <em>null hypothesis of no effect whatsoever</em> is true in this universe. With 5,000 observations each, I repeat this process of simulating data like this 10,000 times.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a Function to Create Thousands of Null Findings</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sim_null_world <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n_runs =</span> <span class="dv">10000</span>, <span class="at">n_obs =</span> <span class="dv">5000</span>) {</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -424,10 +426,12 @@ window.Quarto = {
 <span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>()</span>
 <span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Distribution of Estimated Effect Sizes in Null Effect Worlds</figcaption>
 </figure>
 </div>
 </div>
@@ -466,6 +470,8 @@ window.Quarto = {
 <p>Totally strip away how applicable such an analysis may be in the first place and ask yourself… how intuitive is this? Could I easily explain this to laymen stakeholders? Does such an interpretation quantify uncertainty in the way that I want it to?</p>
 <p>No, the p-value is oftentimes not ideal (as discussed earlier). It is difficult to interpret and communicate and it is rather narrow in its coverage. However, frequentist analysis often report 95% confidence intervals instead of p-values. And, while I admit, these look better and lend themselves well to visualizations, we do not escape the interpretation problem. In the following figure, I plot a standard 95% confidence interval from a frequentist model and a Bayesian credible interval from a Bayesian model side-by-side for comparative purposes. Doing this will <em>really</em> emphasize why the Bayesian approach wins out on the interpretation side of things.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -506,6 +512,7 @@ window.Quarto = {
 <span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">1000</span>,</span>
 <span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">1234</span>, <span class="at">backend =</span> <span class="st">"cmdstanr"</span></span>
 <span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
@@ -519,32 +526,27 @@ Chain 1 Iteration: 501 / 1000 [ 50%]  (Sampling)
 Chain 1 Iteration: 600 / 1000 [ 60%]  (Sampling) 
 Chain 2 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 2 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 2 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 2 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 2 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 2 Iteration: 500 / 1000 [ 50%]  (Warmup) 
-Chain 2 Iteration: 501 / 1000 [ 50%]  (Sampling) 
 Chain 3 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 3 Iteration: 100 / 1000 [ 10%]  (Warmup) 
+Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
 Chain 4 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 4 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 4 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 4 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 4 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 4 Iteration: 500 / 1000 [ 50%]  (Warmup) 
-Chain 4 Iteration: 501 / 1000 [ 50%]  (Sampling) 
 Chain 1 Iteration: 700 / 1000 [ 70%]  (Sampling) 
 Chain 1 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 1 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 1 Iteration: 1000 / 1000 [100%]  (Sampling) 
 Chain 1 finished in 0.3 seconds.
+Chain 2 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 2 Iteration: 300 / 1000 [ 30%]  (Warmup) 
+Chain 2 Iteration: 400 / 1000 [ 40%]  (Warmup) 
+Chain 2 Iteration: 500 / 1000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 501 / 1000 [ 50%]  (Sampling) 
 Chain 2 Iteration: 600 / 1000 [ 60%]  (Sampling) 
 Chain 2 Iteration: 700 / 1000 [ 70%]  (Sampling) 
 Chain 2 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 2 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 2 Iteration: 1000 / 1000 [100%]  (Sampling) 
 Chain 2 finished in 0.2 seconds.
-Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
 Chain 3 Iteration: 300 / 1000 [ 30%]  (Warmup) 
 Chain 3 Iteration: 400 / 1000 [ 40%]  (Warmup) 
 Chain 3 Iteration: 500 / 1000 [ 50%]  (Warmup) 
@@ -554,7 +556,12 @@ Chain 3 Iteration: 700 / 1000 [ 70%]  (Sampling)
 Chain 3 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 3 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 3 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 3 finished in 0.3 seconds.
+Chain 3 finished in 0.2 seconds.
+Chain 4 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 4 Iteration: 300 / 1000 [ 30%]  (Warmup) 
+Chain 4 Iteration: 400 / 1000 [ 40%]  (Warmup) 
+Chain 4 Iteration: 500 / 1000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 501 / 1000 [ 50%]  (Sampling) 
 Chain 4 Iteration: 600 / 1000 [ 60%]  (Sampling) 
 Chain 4 Iteration: 700 / 1000 [ 70%]  (Sampling) 
 Chain 4 Iteration: 800 / 1000 [ 80%]  (Sampling) 
@@ -564,8 +571,10 @@ Chain 4 finished in 0.2 seconds.
 
 All 4 chains finished successfully.
 Mean chain execution time: 0.2 seconds.
-Total execution time: 0.5 seconds.</code></pre>
+Total execution time: 0.4 seconds.</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>bayes_draws <span class="ot">&lt;-</span> bayes_mod <span class="sc">|&gt;</span> </span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_X)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -598,10 +607,12 @@ Total execution time: 0.5 seconds.</code></pre>
 <span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span></span>
 <span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>95% Confidence Interval v. 95% Credible Interval</figcaption>
 </figure>
 </div>
 </div>
@@ -619,6 +630,8 @@ Total execution time: 0.5 seconds.</code></pre>
 <p>Below, I simulate data with the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> being 0.2. The <span class="math inline">\(X \rightarrow Y\)</span> relationship is confounded by <span class="math inline">\(Z\)</span>, but I will be running four separate regressions that purposely omit <span class="math inline">\(Z\)</span>. I am doing this to simulate a scenario when our designs omit adjustment for a confounder that we really ought to be adjusting for. And this certainly happens all the time in QCR. Why am I doing this? Well, it’s really a demonstration on how Bayesian statistics leverages its ability to incorporate prior knowledge to “regularize” estimates to prevent us from putting <em>too</em> much stock in results that prior information tells us is probably wrong.</p>
 <p>The first model is a standard frequentist model, the likes of which are hegemonic in QCR. The latter three models are all Bayesian and all of their priors assume (correctly) that 0.2 is the average causal effect, but they differ in the strength of their prior convictions. The first of these models is the <em>weak</em> model which is <em>incredibly</em> unsure of its convictions. The second of these models is something I call the <em>medium</em> model which has much stronger convictions about 0.2 being the average causal effect, but is still open-minded towards various other (positive) effect sizes. Lastly, the <em>strong</em> model is <em>very</em> confident that the average effect size is 0.2. Like, extremely confident (unreasonably confident but again, this is an amateur teaching demonstration so give me a break).</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -646,6 +659,7 @@ Total execution time: 0.5 seconds.</code></pre>
 <span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">1000</span>,</span>
 <span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">1234</span>, <span class="at">backend =</span> <span class="st">"cmdstanr"</span></span>
 <span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
@@ -656,6 +670,7 @@ Chain 1 Iteration: 300 / 1000 [ 30%]  (Warmup)
 Chain 1 Iteration: 400 / 1000 [ 40%]  (Warmup) 
 Chain 1 Iteration: 500 / 1000 [ 50%]  (Warmup) 
 Chain 1 Iteration: 501 / 1000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 600 / 1000 [ 60%]  (Sampling) 
 Chain 2 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 2 Iteration: 100 / 1000 [ 10%]  (Warmup) 
 Chain 2 Iteration: 200 / 1000 [ 20%]  (Warmup) 
@@ -663,8 +678,10 @@ Chain 2 Iteration: 300 / 1000 [ 30%]  (Warmup)
 Chain 2 Iteration: 400 / 1000 [ 40%]  (Warmup) 
 Chain 2 Iteration: 500 / 1000 [ 50%]  (Warmup) 
 Chain 2 Iteration: 501 / 1000 [ 50%]  (Sampling) 
+Chain 2 Iteration: 600 / 1000 [ 60%]  (Sampling) 
 Chain 3 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 3 Iteration: 100 / 1000 [ 10%]  (Warmup) 
+Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
 Chain 4 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 4 Iteration: 100 / 1000 [ 10%]  (Warmup) 
 Chain 4 Iteration: 200 / 1000 [ 20%]  (Warmup) 
@@ -672,13 +689,16 @@ Chain 4 Iteration: 300 / 1000 [ 30%]  (Warmup)
 Chain 4 Iteration: 400 / 1000 [ 40%]  (Warmup) 
 Chain 4 Iteration: 500 / 1000 [ 50%]  (Warmup) 
 Chain 4 Iteration: 501 / 1000 [ 50%]  (Sampling) 
-Chain 1 Iteration: 600 / 1000 [ 60%]  (Sampling) 
 Chain 1 Iteration: 700 / 1000 [ 70%]  (Sampling) 
 Chain 1 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 1 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 1 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 1 finished in 0.1 seconds.
-Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 1 finished in 0.2 seconds.
+Chain 2 Iteration: 700 / 1000 [ 70%]  (Sampling) 
+Chain 2 Iteration: 800 / 1000 [ 80%]  (Sampling) 
+Chain 2 Iteration: 900 / 1000 [ 90%]  (Sampling) 
+Chain 2 Iteration: 1000 / 1000 [100%]  (Sampling) 
+Chain 2 finished in 0.2 seconds.
 Chain 3 Iteration: 300 / 1000 [ 30%]  (Warmup) 
 Chain 3 Iteration: 400 / 1000 [ 40%]  (Warmup) 
 Chain 3 Iteration: 500 / 1000 [ 50%]  (Warmup) 
@@ -695,17 +715,13 @@ Chain 4 Iteration: 800 / 1000 [ 80%]  (Sampling)
 Chain 4 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 4 Iteration: 1000 / 1000 [100%]  (Sampling) 
 Chain 4 finished in 0.2 seconds.
-Chain 2 Iteration: 600 / 1000 [ 60%]  (Sampling) 
-Chain 2 Iteration: 700 / 1000 [ 70%]  (Sampling) 
-Chain 2 Iteration: 800 / 1000 [ 80%]  (Sampling) 
-Chain 2 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 2 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 2 finished in 0.2 seconds.
 
 All 4 chains finished successfully.
 Mean chain execution time: 0.2 seconds.
-Total execution time: 0.5 seconds.</code></pre>
+Total execution time: 0.3 seconds.</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>weak_draws <span class="ot">&lt;-</span> weak_confounded_model <span class="sc">|&gt;</span> </span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_X)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -724,6 +740,7 @@ Total execution time: 0.5 seconds.</code></pre>
 <span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">1000</span>,</span>
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">1234</span>, <span class="at">backend =</span> <span class="st">"cmdstanr"</span></span>
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
@@ -734,28 +751,35 @@ Chain 1 Iteration: 300 / 1000 [ 30%]  (Warmup)
 Chain 1 Iteration: 400 / 1000 [ 40%]  (Warmup) 
 Chain 1 Iteration: 500 / 1000 [ 50%]  (Warmup) 
 Chain 1 Iteration: 501 / 1000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 600 / 1000 [ 60%]  (Sampling) 
+Chain 1 Iteration: 700 / 1000 [ 70%]  (Sampling) 
 Chain 2 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 2 Iteration: 100 / 1000 [ 10%]  (Warmup) 
 Chain 2 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 3 Iteration:   1 / 1000 [  0%]  (Warmup) 
+Chain 3 Iteration: 100 / 1000 [ 10%]  (Warmup) 
+Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 4 Iteration:   1 / 1000 [  0%]  (Warmup) 
+Chain 4 Iteration: 100 / 1000 [ 10%]  (Warmup) 
+Chain 4 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 4 Iteration: 300 / 1000 [ 30%]  (Warmup) 
+Chain 4 Iteration: 400 / 1000 [ 40%]  (Warmup) 
+Chain 4 Iteration: 500 / 1000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 501 / 1000 [ 50%]  (Sampling) 
+Chain 1 Iteration: 800 / 1000 [ 80%]  (Sampling) 
+Chain 1 Iteration: 900 / 1000 [ 90%]  (Sampling) 
+Chain 1 Iteration: 1000 / 1000 [100%]  (Sampling) 
+Chain 1 finished in 0.2 seconds.
 Chain 2 Iteration: 300 / 1000 [ 30%]  (Warmup) 
 Chain 2 Iteration: 400 / 1000 [ 40%]  (Warmup) 
 Chain 2 Iteration: 500 / 1000 [ 50%]  (Warmup) 
 Chain 2 Iteration: 501 / 1000 [ 50%]  (Sampling) 
 Chain 2 Iteration: 600 / 1000 [ 60%]  (Sampling) 
-Chain 3 Iteration:   1 / 1000 [  0%]  (Warmup) 
-Chain 3 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 4 Iteration:   1 / 1000 [  0%]  (Warmup) 
-Chain 4 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 1 Iteration: 600 / 1000 [ 60%]  (Sampling) 
-Chain 1 Iteration: 700 / 1000 [ 70%]  (Sampling) 
-Chain 1 Iteration: 800 / 1000 [ 80%]  (Sampling) 
-Chain 1 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 1 Iteration: 1000 / 1000 [100%]  (Sampling) 
 Chain 2 Iteration: 700 / 1000 [ 70%]  (Sampling) 
 Chain 2 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 2 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 2 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 2 finished in 0.2 seconds.
 Chain 3 Iteration: 300 / 1000 [ 30%]  (Warmup) 
 Chain 3 Iteration: 400 / 1000 [ 40%]  (Warmup) 
 Chain 3 Iteration: 500 / 1000 [ 50%]  (Warmup) 
@@ -765,25 +789,20 @@ Chain 3 Iteration: 700 / 1000 [ 70%]  (Sampling)
 Chain 3 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 3 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 3 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 4 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 4 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 4 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 4 Iteration: 500 / 1000 [ 50%]  (Warmup) 
-Chain 4 Iteration: 501 / 1000 [ 50%]  (Sampling) 
+Chain 3 finished in 0.2 seconds.
 Chain 4 Iteration: 600 / 1000 [ 60%]  (Sampling) 
 Chain 4 Iteration: 700 / 1000 [ 70%]  (Sampling) 
 Chain 4 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 4 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 4 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 1 finished in 0.2 seconds.
-Chain 2 finished in 0.2 seconds.
-Chain 3 finished in 0.2 seconds.
 Chain 4 finished in 0.2 seconds.
 
 All 4 chains finished successfully.
 Mean chain execution time: 0.2 seconds.
-Total execution time: 0.4 seconds.</code></pre>
+Total execution time: 0.3 seconds.</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>med_draws <span class="ot">&lt;-</span> med_confounded_model <span class="sc">|&gt;</span> </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_X)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -802,11 +821,40 @@ Total execution time: 0.4 seconds.</code></pre>
 <span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">1000</span>,</span>
 <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">1234</span>, <span class="at">backend =</span> <span class="st">"cmdstanr"</span></span>
 <span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Running MCMC with 4 parallel chains...
 
 Chain 1 Iteration:   1 / 1000 [  0%]  (Warmup) 
 Chain 1 Iteration: 100 / 1000 [ 10%]  (Warmup) 
+Chain 2 Iteration:   1 / 1000 [  0%]  (Warmup) 
+Chain 2 Iteration: 100 / 1000 [ 10%]  (Warmup) 
+Chain 2 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 2 Iteration: 300 / 1000 [ 30%]  (Warmup) 
+Chain 2 Iteration: 400 / 1000 [ 40%]  (Warmup) 
+Chain 2 Iteration: 500 / 1000 [ 50%]  (Warmup) 
+Chain 2 Iteration: 501 / 1000 [ 50%]  (Sampling) 
+Chain 3 Iteration:   1 / 1000 [  0%]  (Warmup) 
+Chain 3 Iteration: 100 / 1000 [ 10%]  (Warmup) 
+Chain 4 Iteration:   1 / 1000 [  0%]  (Warmup) 
+Chain 4 Iteration: 100 / 1000 [ 10%]  (Warmup) 
+Chain 4 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 2 Iteration: 600 / 1000 [ 60%]  (Sampling) 
+Chain 2 Iteration: 700 / 1000 [ 70%]  (Sampling) 
+Chain 2 Iteration: 800 / 1000 [ 80%]  (Sampling) 
+Chain 2 Iteration: 900 / 1000 [ 90%]  (Sampling) 
+Chain 2 Iteration: 1000 / 1000 [100%]  (Sampling) 
+Chain 2 finished in 0.1 seconds.
+Chain 4 Iteration: 300 / 1000 [ 30%]  (Warmup) 
+Chain 4 Iteration: 400 / 1000 [ 40%]  (Warmup) 
+Chain 4 Iteration: 500 / 1000 [ 50%]  (Warmup) 
+Chain 4 Iteration: 501 / 1000 [ 50%]  (Sampling) 
+Chain 4 Iteration: 600 / 1000 [ 60%]  (Sampling) 
+Chain 4 Iteration: 700 / 1000 [ 70%]  (Sampling) 
+Chain 4 Iteration: 800 / 1000 [ 80%]  (Sampling) 
+Chain 4 Iteration: 900 / 1000 [ 90%]  (Sampling) 
+Chain 4 Iteration: 1000 / 1000 [100%]  (Sampling) 
+Chain 4 finished in 0.1 seconds.
 Chain 1 Iteration: 200 / 1000 [ 20%]  (Warmup) 
 Chain 1 Iteration: 300 / 1000 [ 30%]  (Warmup) 
 Chain 1 Iteration: 400 / 1000 [ 40%]  (Warmup) 
@@ -814,41 +862,12 @@ Chain 1 Iteration: 500 / 1000 [ 50%]  (Warmup)
 Chain 1 Iteration: 501 / 1000 [ 50%]  (Sampling) 
 Chain 1 Iteration: 600 / 1000 [ 60%]  (Sampling) 
 Chain 1 Iteration: 700 / 1000 [ 70%]  (Sampling) 
-Chain 2 Iteration:   1 / 1000 [  0%]  (Warmup) 
-Chain 2 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 2 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 3 Iteration:   1 / 1000 [  0%]  (Warmup) 
-Chain 3 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 3 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 3 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 4 Iteration:   1 / 1000 [  0%]  (Warmup) 
-Chain 4 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 4 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 4 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 4 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 4 Iteration: 500 / 1000 [ 50%]  (Warmup) 
-Chain 4 Iteration: 501 / 1000 [ 50%]  (Sampling) 
 Chain 1 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 1 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 1 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 1 finished in 0.1 seconds.
-Chain 2 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 2 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 2 Iteration: 500 / 1000 [ 50%]  (Warmup) 
-Chain 2 Iteration: 501 / 1000 [ 50%]  (Sampling) 
-Chain 2 Iteration: 600 / 1000 [ 60%]  (Sampling) 
-Chain 2 Iteration: 700 / 1000 [ 70%]  (Sampling) 
-Chain 2 Iteration: 800 / 1000 [ 80%]  (Sampling) 
-Chain 2 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 2 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 2 finished in 0.2 seconds.
-Chain 4 Iteration: 600 / 1000 [ 60%]  (Sampling) 
-Chain 4 Iteration: 700 / 1000 [ 70%]  (Sampling) 
-Chain 4 Iteration: 800 / 1000 [ 80%]  (Sampling) 
-Chain 4 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 4 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 4 finished in 0.1 seconds.
+Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
+Chain 3 Iteration: 300 / 1000 [ 30%]  (Warmup) 
+Chain 3 Iteration: 400 / 1000 [ 40%]  (Warmup) 
 Chain 3 Iteration: 500 / 1000 [ 50%]  (Warmup) 
 Chain 3 Iteration: 501 / 1000 [ 50%]  (Sampling) 
 Chain 3 Iteration: 600 / 1000 [ 60%]  (Sampling) 
@@ -856,12 +875,15 @@ Chain 3 Iteration: 700 / 1000 [ 70%]  (Sampling)
 Chain 3 Iteration: 800 / 1000 [ 80%]  (Sampling) 
 Chain 3 Iteration: 900 / 1000 [ 90%]  (Sampling) 
 Chain 3 Iteration: 1000 / 1000 [100%]  (Sampling) 
+Chain 1 finished in 0.3 seconds.
 Chain 3 finished in 0.2 seconds.
 
 All 4 chains finished successfully.
 Mean chain execution time: 0.2 seconds.
-Total execution time: 0.4 seconds.</code></pre>
+Total execution time: 0.5 seconds.</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>strong_draws <span class="ot">&lt;-</span> strong_confounded_model <span class="sc">|&gt;</span> </span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_X)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -919,10 +941,12 @@ Total execution time: 0.4 seconds.</code></pre>
 <span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>() <span class="sc">+</span> </span>
 <span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
 <span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Frequentist and Three Bayesian Model Estimates with Confounded Data</figcaption>
 </figure>
 </div>
 </div>
