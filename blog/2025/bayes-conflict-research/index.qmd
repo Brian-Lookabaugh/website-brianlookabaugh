@@ -109,6 +109,11 @@ There are some obvious heavy hitters that probably influence the risk of civil w
 To demonstrate, consider the following plot. To explain what is going on, I am simulating data with three variables: $Y$ (the outcome), $X$ (the hypothesized exposure that should impact $Y$), and $Z$ (a potential confounder of the alleged $X \rightarrow Y$ relationship). Now, within the simulation, $X$ actually has no effect whatsoever on $Y$. In other words, the *null hypothesis of no effect whatsoever* is true in this universe. With 5,000 observations each, I repeat this process of simulating data like this 10,000 times.
 
 ```{r}
+#| fig-cap: "Distribution of Estimated Effect Sizes in Null Effect Worlds"
+#| code-fold: true
+#| message: false
+#| error: false
+
 # Create a Function to Create Thousands of Null Findings
 sim_null_world <- function(n_runs = 10000, n_obs = 5000) {
   
