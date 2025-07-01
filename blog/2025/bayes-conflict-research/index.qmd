@@ -108,7 +108,7 @@ There are some obvious heavy hitters that probably influence the risk of civil w
 
 To demonstrate, consider the following plot. To explain what is going on, I am simulating data with three variables: $Y$ (the outcome), $X$ (the hypothesized exposure that should impact $Y$), and $Z$ (a potential confounder of the alleged $X \rightarrow Y$ relationship). Now, within the simulation, $X$ actually has no effect whatsoever on $Y$. In other words, the *null hypothesis of no effect whatsoever* is true in this universe. With 5,000 observations each, I repeat this process of simulating data like this 10,000 times.
 
-```{r}
+```{r fig.height=8, fig.width=10}
 #| fig-cap: "Distribution of Estimated Effect Sizes in Null Effect Worlds"
 #| code-fold: true
 #| message: false
@@ -258,7 +258,12 @@ Totally strip away how applicable such an analysis may be in the first place and
 
 No, the p-value is oftentimes not ideal (as discussed earlier). It is difficult to interpret and communicate and it is rather narrow in its coverage. However, frequentist analysis often report 95% confidence intervals instead of p-values. And, while I admit, these look better and lend themselves well to visualizations, we do not escape the interpretation problem. In the following figure, I plot a standard 95% confidence interval from a frequentist model and a Bayesian credible interval from a Bayesian model side-by-side for comparative purposes. Doing this will *really* emphasize why the Bayesian approach wins out on the interpretation side of things.
 
-```{r}
+```{r fig.height=8, fig.width=10}
+#| fig-cap: "95% Confidence Interval v. 95% Credible Interval"
+#| code-fold: true
+#| message: false
+#| error: false
+
 set.seed(1234)
 n <- 5000
 
@@ -356,7 +361,12 @@ Below, I simulate data with the causal effect of $X$ on $Y$ being 0.2. The $X \r
 
 The first model is a standard frequentist model, the likes of which are hegemonic in QCR. The latter three models are all Bayesian and all of their priors assume (correctly) that 0.2 is the average causal effect, but they differ in the strength of their prior convictions. The first of these models is the *weak* model which is *incredibly* unsure of its convictions. The second of these models is something I call the *medium* model which has much stronger convictions about 0.2 being the average causal effect, but is still open-minded towards various other (positive) effect sizes. Lastly, the *strong* model is *very* confident that the average effect size is 0.2. Like, extremely confident (unreasonably confident but again, this is an amateur teaching demonstration so give me a break).
 
-```{r}
+```{r fig.height=8, fig.width=10}
+#| fig-cap: "Frequentist and Three Bayesian Model Estimates with Confounded Data"
+#| code-fold: true
+#| message: false
+#| error: false
+
 set.seed(1234)
 n <- 5000
 
