@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2025-09-15">
+<meta name="description" content="I’ve been looking for a way to work with Pokemon data for a while now, so I shoehorned topic modeling and natural language processing in there to finally justify it…">
 
-<title>Predicting Pokemon Typing with Pokedex Text Entries – Brian Lookabaugh</title>
+<title>Predicting Pokemon Types with Pokedex Text Entries – Brian Lookabaugh</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -223,7 +224,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Predicting Pokemon Typing with Pokedex Text Entries</h1>
+<h1 class="title">Predicting Pokemon Types with Pokedex Text Entries</h1>
   <div class="quarto-categories">
     <div class="quarto-category">nlp</div>
     <div class="quarto-category">llm</div>
@@ -233,6 +234,11 @@ window.Quarto = {
   </div>
   </div>
 
+<div>
+  <div class="description">
+    I’ve been looking for a way to work with Pokemon data for a while now, so I shoehorned topic modeling and natural language processing in there to finally justify it…
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -581,8 +587,8 @@ window.Quarto = {
 
     <script>
 
-      function styleCell_9nqms6tpom0quttkw0bp(i, j, css_id) {
-          var table = document.getElementById("tinytable_9nqms6tpom0quttkw0bp");
+      function styleCell_ovg4s4lvb1r8hvpcjvxf(i, j, css_id) {
+          var table = document.getElementById("tinytable_ovg4s4lvb1r8hvpcjvxf");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -592,7 +598,7 @@ window.Quarto = {
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_9nqms6tpom0quttkw0bp');
+        var table = document.getElementById('tinytable_ovg4s4lvb1r8hvpcjvxf');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -600,8 +606,8 @@ window.Quarto = {
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_9nqms6tpom0quttkw0bp(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_9nqms6tpom0quttkw0bp");
+      function spanCell_ovg4s4lvb1r8hvpcjvxf(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_ovg4s4lvb1r8hvpcjvxf");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -631,15 +637,15 @@ window.Quarto = {
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 5, j: 0 }, { i: 5, j: 1 },  ], css_id: 'tinytable_css_glo4l8t5bl3x8wss506u',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 3, j: 1 }, { i: 2, j: 0 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 4, j: 1 },  ], css_id: 'tinytable_css_w8tjrw9k860w51mj1xbn',}, 
-          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 },  ], css_id: 'tinytable_css_ila7osrzuzzc68lgxhhr',}, 
+          { positions: [ { i: 5, j: 0 }, { i: 5, j: 1 },  ], css_id: 'tinytable_css_0fl54m2gmgyte9y0ktb2',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 3, j: 1 }, { i: 2, j: 0 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 4, j: 1 },  ], css_id: 'tinytable_css_7jihvvjijfyg6bbrtekk',}, 
+          { positions: [ { i: 0, j: 0 }, { i: 0, j: 1 },  ], css_id: 'tinytable_css_mmgjezi2almimtzjxeh1',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_9nqms6tpom0quttkw0bp(cell.i, cell.j, group.css_id);
+                  styleCell_ovg4s4lvb1r8hvpcjvxf(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -647,12 +653,12 @@ window.Quarto = {
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_glo4l8t5bl3x8wss506u, .table th.tinytable_css_glo4l8t5bl3x8wss506u { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_w8tjrw9k860w51mj1xbn, .table th.tinytable_css_w8tjrw9k860w51mj1xbn { text-align: center; }
-      .table td.tinytable_css_ila7osrzuzzc68lgxhhr, .table th.tinytable_css_ila7osrzuzzc68lgxhhr { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_0fl54m2gmgyte9y0ktb2, .table th.tinytable_css_0fl54m2gmgyte9y0ktb2 { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_7jihvvjijfyg6bbrtekk, .table th.tinytable_css_7jihvvjijfyg6bbrtekk { text-align: center; }
+      .table td.tinytable_css_mmgjezi2almimtzjxeh1, .table th.tinytable_css_mmgjezi2almimtzjxeh1 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_9nqms6tpom0quttkw0bp" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_ovg4s4lvb1r8hvpcjvxf" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>

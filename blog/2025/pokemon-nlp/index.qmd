@@ -1,7 +1,7 @@
 ---
-title: "Predicting Pokemon Typing with Pokedex Text Entries"
+title: "Predicting Pokemon Types with Pokedex Text Entries"
 date: 2025-09-15
-description: ""
+description: "I've been looking for a way to work with Pokemon data for a while now, so I shoehorned topic modeling and natural language processing in there to finally justify it..."
 image: "figures/pokeball.png"
 toc: true
 execute:
