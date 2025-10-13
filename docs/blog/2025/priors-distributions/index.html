@@ -262,6 +262,8 @@ window.Quarto = {
 
 
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dplyr"</span>, <span class="co"># Data Manipulation</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ggplot2"</span>, <span class="co"># Data Visualization</span></span>
@@ -304,6 +306,7 @@ window.Quarto = {
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#ab2a42"</span>,</span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="st">"gray50"</span></span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <section id="intro" class="level1">
 <h1>Intro</h1>
@@ -428,7 +431,7 @@ Before Continuing…
 </section>
 <section id="students-t-distribution" class="level3">
 <h3 class="anchored" data-anchor-id="students-t-distribution">Student’s t-Distribution</h3>
-<p>The Student’s-t distribution (pictured below) at first glance doesn’t really seem any different from the normal distribution. After all, its highest point is its mean (<span class="math inline">\(\mu\)</span>), it is symmetric around <span class="math inline">\(\mu\)</span> and it is scaled by <span class="math inline">\(\theta\)</span>. So what is different about this? Well, take a look at the range of values on the x-axis. Then, eyeball it and look at how much is covered under the tails of each distribution. This is what differentiates the normal distribution from the Student-t distribution; its heavy tails, which are established by the <span class="math inline">\(\nu\)</span>.</p>
+<p>The Student’s-t distribution (pictured below) at first glance doesn’t really seem any different from the normal distribution. After all, its highest point is its mean (<span class="math inline">\(\mu\)</span>), it is symmetric around <span class="math inline">\(\mu\)</span> and it is scaled by <span class="math inline">\(\sigma\)</span>. So what is different about this? Well, take a look at the range of values on the x-axis. Then, eyeball it and look at how much is covered under the tails of each distribution. This is what differentiates the normal distribution from the Student-t distribution; its heavy tails, which are established by the <span class="math inline">\(\nu\)</span>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -535,9 +538,6 @@ Before Continuing…
 <p>We start building our Bayesian linear regression model by specifying a prior for the intercept. It makes little sense to assume that our regression line should start at 0 since <em>any</em> country throughout <em>all</em> of history has never had a life expectancy of <em>literally zero</em>. Instead, let’s use a normal distribution centered around the average life expectancy from our data and allow a good degree of variance around this mean because the life expectancy in places like Western Europe are going to be quite different from places like Sub-Saharan Africa. And it’s also going to vary over time (yes, this would normally be a good place to use multilevel models, but that is not for this blog)… This prior could be expressed like this:</p>
 <p><span class="math inline">\(\beta_0 \sim \text{Normal}(65, 10)\)</span></p>
 <p>Which means that our intercept follows a normal distribution with a mean of 65 years but about 95% of the prior mass is within <span class="math inline">\(\pm\)</span> 20 years around the mean. Likewise, it also means that about 68% of the prior mass is within <span class="math inline">\(\pm\)</span> 10 years around the mean.</p>
-<ul>
-<li>Coefficients</li>
-</ul>
 <p>Next, we need to set a prior for our association between GDP per capita and life expectancy. Importantly, unless I am <em>trying</em> to do causal analysis, I should not think about my prior as “my best guess for the effect of GDP per capita on life expectancy”. Instead, I need to think about how much I think life expectancy moves when GDP per capita moves. Obviously, these two things are <em>very</em> correlated. As societies become wealthier, people live longer. For the purposes of thinking about the scale of the prior more intuitively, I am going to convert GDP per capita to GDP per capita <em>in thousands of dollars</em>. That way, I can say things like “I expect that, when GDP per capita goes up by $1,000, life expectancy increases by X (instead of when GDP per capita goes up by 1 dollar because the likely associated change in life expectancy would probably be super small).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>gap <span class="ot">&lt;-</span> gap <span class="sc">|&gt;</span> </span>
@@ -547,9 +547,6 @@ Before Continuing…
 <p><span class="math inline">\(\beta_1 \sim \text{Student}(5, 0.5, 0.1)\)</span></p>
 <p>Lastly, I need to think about the amount of residual variance that remains if all I include in this model to predict life expectancy is GPD per capita. Here, I’ll stick with my assumptions that the standard deviation of life expectancy is 10 years (as I assumed with the intercept.) Accordingly, if I divide 1 / 10, I get <span class="math inline">\(\lambda\)</span>, so I will be setting:</p>
 <p><span class="math inline">\(\sigma \sim \text{Exponential}(0.1)\)</span></p>
-<ul>
-<li>Plotting the Priors</li>
-</ul>
 <p>And now, I can plot these three priors and we can get an idea of what they actually look like and see if they’re reasonable. Here’s the prior for our intercept:</p>
 <div class="cell">
 <details class="code-fold">
@@ -710,116 +707,54 @@ Before Continuing…
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> model_priors,</span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">1000</span>,</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">1234</span>, <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Running MCMC with 4 parallel chains...
-
-Chain 1 Iteration:   1 / 1000 [  0%]  (Warmup) 
-Chain 1 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 1 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 1 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 1 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 1 Iteration: 500 / 1000 [ 50%]  (Warmup) 
-Chain 1 Iteration: 501 / 1000 [ 50%]  (Sampling) 
-Chain 1 Iteration: 600 / 1000 [ 60%]  (Sampling) 
-Chain 1 Iteration: 700 / 1000 [ 70%]  (Sampling) 
-Chain 1 Iteration: 800 / 1000 [ 80%]  (Sampling) 
-Chain 1 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 1 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 2 Iteration:   1 / 1000 [  0%]  (Warmup) 
-Chain 2 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 2 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 2 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 2 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 2 Iteration: 500 / 1000 [ 50%]  (Warmup) 
-Chain 2 Iteration: 501 / 1000 [ 50%]  (Sampling) 
-Chain 2 Iteration: 600 / 1000 [ 60%]  (Sampling) 
-Chain 2 Iteration: 700 / 1000 [ 70%]  (Sampling) 
-Chain 2 Iteration: 800 / 1000 [ 80%]  (Sampling) 
-Chain 2 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 2 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 3 Iteration:   1 / 1000 [  0%]  (Warmup) 
-Chain 3 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 3 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 3 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 3 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 3 Iteration: 500 / 1000 [ 50%]  (Warmup) 
-Chain 3 Iteration: 501 / 1000 [ 50%]  (Sampling) 
-Chain 3 Iteration: 600 / 1000 [ 60%]  (Sampling) 
-Chain 3 Iteration: 700 / 1000 [ 70%]  (Sampling) 
-Chain 3 Iteration: 800 / 1000 [ 80%]  (Sampling) 
-Chain 3 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 3 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 4 Iteration:   1 / 1000 [  0%]  (Warmup) 
-Chain 4 Iteration: 100 / 1000 [ 10%]  (Warmup) 
-Chain 4 Iteration: 200 / 1000 [ 20%]  (Warmup) 
-Chain 4 Iteration: 300 / 1000 [ 30%]  (Warmup) 
-Chain 4 Iteration: 400 / 1000 [ 40%]  (Warmup) 
-Chain 4 Iteration: 500 / 1000 [ 50%]  (Warmup) 
-Chain 4 Iteration: 501 / 1000 [ 50%]  (Sampling) 
-Chain 4 Iteration: 600 / 1000 [ 60%]  (Sampling) 
-Chain 4 Iteration: 700 / 1000 [ 70%]  (Sampling) 
-Chain 4 Iteration: 800 / 1000 [ 80%]  (Sampling) 
-Chain 4 Iteration: 900 / 1000 [ 90%]  (Sampling) 
-Chain 4 Iteration: 1000 / 1000 [100%]  (Sampling) 
-Chain 1 finished in 0.1 seconds.
-Chain 2 finished in 0.1 seconds.
-Chain 3 finished in 0.0 seconds.
-Chain 4 finished in 0.1 seconds.
-
-All 4 chains finished successfully.
-Mean chain execution time: 0.1 seconds.
-Total execution time: 0.4 seconds.</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract Bayesian Info from the Model</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>bayes_draws <span class="ot">&lt;-</span> mod_fit <span class="sc">|&gt;</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_gdpPercap)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>bayes_df <span class="ot">&lt;-</span> bayes_draws <span class="sc">|&gt;</span> </span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">estimate =</span> b_gdpPercap) <span class="sc">|&gt;</span> </span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Bayesian"</span>)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Frequentist Model</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>freq_mod_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(lifeExp <span class="sc">~</span> gdpPercap, <span class="at">data =</span> gap)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract Frequentist Estimate and Confidence Intervals</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>freq_ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(freq_mod_fit)[<span class="st">"gdpPercap"</span>, ]</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>freq_est <span class="ot">&lt;-</span> <span class="fu">coef</span>(freq_mod_fit)[<span class="st">"gdpPercap"</span>]</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>freq_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">"Frequentist"</span>,</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> freq_est,</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> freq_ci[<span class="dv">1</span>],</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper =</span> freq_ci[<span class="dv">2</span>]</span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bayes_df, <span class="fu">aes</span>(<span class="at">x =</span> estimate, <span class="at">y =</span> model)) <span class="sc">+</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_halfeye</span>(</span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">slab_alpha =</span> <span class="fu">after_stat</span>(pdf)),</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fu">c</span>(<span class="fl">0.95</span>, <span class="fl">0.80</span>, <span class="fl">0.50</span>),</span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">interval_size_range =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="dv">2</span>),</span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">point_interval =</span> median_qi,</span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> colors[<span class="dv">2</span>],</span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill_type =</span> <span class="st">"segments"</span>,       </span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="fl">0.75</span></span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointinterval</span>(</span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> freq_df,</span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> estimate, <span class="at">y =</span> model, <span class="at">xmin =</span> lower, <span class="at">xmax =</span> upper),</span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> colors[<span class="dv">5</span>],</span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">6</span></span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.68</span>, <span class="at">to =</span> <span class="fl">0.88</span>, <span class="at">by =</span> <span class="fl">0.02</span>)) <span class="sc">+</span></span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_slab_alpha_continuous</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Estimated Association of GDP per capita and Life Expectancy"</span>,</span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span></span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract Bayesian Info from the Model</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>bayes_draws <span class="ot">&lt;-</span> mod_fit <span class="sc">|&gt;</span> </span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_draws</span>(b_gdpPercap)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>bayes_df <span class="ot">&lt;-</span> bayes_draws <span class="sc">|&gt;</span> </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">estimate =</span> b_gdpPercap) <span class="sc">|&gt;</span> </span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Bayesian"</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Frequentist Model</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>freq_mod_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(lifeExp <span class="sc">~</span> gdpPercap, <span class="at">data =</span> gap)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract Frequentist Estimate and Confidence Intervals</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>freq_ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(freq_mod_fit)[<span class="st">"gdpPercap"</span>, ]</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>freq_est <span class="ot">&lt;-</span> <span class="fu">coef</span>(freq_mod_fit)[<span class="st">"gdpPercap"</span>]</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>freq_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">"Frequentist"</span>,</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> freq_est,</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> freq_ci[<span class="dv">1</span>],</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper =</span> freq_ci[<span class="dv">2</span>]</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bayes_df, <span class="fu">aes</span>(<span class="at">x =</span> estimate, <span class="at">y =</span> model)) <span class="sc">+</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_halfeye</span>(</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">slab_alpha =</span> <span class="fu">after_stat</span>(pdf)),</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fu">c</span>(<span class="fl">0.95</span>, <span class="fl">0.80</span>, <span class="fl">0.50</span>),</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">interval_size_range =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="dv">2</span>),</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">point_interval =</span> median_qi,</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> colors[<span class="dv">2</span>],</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill_type =</span> <span class="st">"segments"</span>,       </span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">show.legend =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="fl">0.75</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointinterval</span>(</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> freq_df,</span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> estimate, <span class="at">y =</span> model, <span class="at">xmin =</span> lower, <span class="at">xmax =</span> upper),</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> colors[<span class="dv">5</span>],</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">6</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.68</span>, <span class="at">to =</span> <span class="fl">0.88</span>, <span class="at">by =</span> <span class="fl">0.02</span>)) <span class="sc">+</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_slab_alpha_continuous</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Estimated Association of GDP per capita and Life Expectancy"</span>,</span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">""</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
