@@ -177,7 +177,7 @@ Above are three normal distributions who all share a mean of 20, but the uncerta
 
 ### Student's t-Distribution
 
-The Student's-t distribution (pictured below) at first glance doesn't really seem any different from the normal distribution. After all, its highest point is its mean ($\mu$), it is symmetric around $\mu$ and it is scaled by $\theta$. So what is different about this? Well, take a look at the range of values on the x-axis. Then, eyeball it and look at how much is covered under the tails of each distribution. This is what differentiates the normal distribution from the Student-t distribution; its heavy tails, which are established by the $\nu$.
+The Student's-t distribution (pictured below) at first glance doesn't really seem any different from the normal distribution. After all, its highest point is its mean ($\mu$), it is symmetric around $\mu$ and it is scaled by $\sigma$. So what is different about this? Well, take a look at the range of values on the x-axis. Then, eyeball it and look at how much is covered under the tails of each distribution. This is what differentiates the normal distribution from the Student-t distribution; its heavy tails, which are established by the $\nu$.
 
 ```{r fig.height=8, fig.width=10}
 #| fig-cap: "Different Student's-t Distributions"
