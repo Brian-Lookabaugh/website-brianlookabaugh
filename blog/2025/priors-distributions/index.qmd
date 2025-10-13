@@ -251,6 +251,8 @@ library(gapminder)
 
 data(gapminder)
 
+gap <- gapminder
+
 head(gap, 10)
 ```
 
