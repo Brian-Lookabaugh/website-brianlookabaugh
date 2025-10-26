@@ -31,6 +31,9 @@ website:
       - icon: envelope
         href: mailto:brianlookabaughjr@gmail.com
 
+resources:
+  - "google58b9d93b939a5973.html"
+
 format:
   html:
     theme:
