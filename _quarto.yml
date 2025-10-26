@@ -9,6 +9,8 @@ website:
   title: "Brian Lookabaugh"
   image: "images/stickerv2.png"
   favicon: "images/stickerv2.png"
+  site-url: "https://brian-lookabaugh.github.io/website-brianlookabaugh/"
+  repo-url: "https://github.com/Brian-Lookabaugh/website-brianlookabaugh"
   description: "Brian Lookabaugh's Personal Website for Research and Blogs"
   navbar:
     logo: "images/stickerv2.png"
