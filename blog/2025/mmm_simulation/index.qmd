@@ -560,6 +560,8 @@ ggplot(fb_effects_extreme, aes(x = DATE, y = value, color = dgp)) +
 With adstock and diminishing returns built into impressions and clicks, we can now calculate conversions, which is a super easy step.
 
 ```{r}
+#| results: hide
+
 conversions <- step_6_calculating_conversions(
   my_variables = basic_vars,
   df_ads_step5c = dim_returns
@@ -573,6 +575,8 @@ conversions <- step_6_calculating_conversions(
 In Step 7, we "do final calculations for all the variables that we need for the final data frame". There's nothing customizable that you do here, it's just a procedural step.
 
 ```{r}
+#| results: hide
+
 expanded_df <- step_7_expanded_df(
   my_variables = basic_vars,
   df_ads_step6 = conversions,
@@ -588,8 +592,7 @@ expanded_df <- step_7_expanded_df(
 Again, this a very easy, self-explanatory step. In the guide, the author does not store the results in a data frame and it doesn't seem like the results from Step  8 are built into the final step. However, this is still an important step because these results are our baseline truth for our most important metric (ROI). Again, we want that baseline truth so we can compare it to the results we'd get from an MMM we might use to see how biased it is. I won't be testing any model's in this blog, so I'm just going to run this and not use it in this blog, but this step is still very important.
 
 ```{r}
-#| message: false
-#| warning: false
+#| results: hide
 
 step_8_calculate_roi(
   my_variables = basic_vars,
@@ -602,8 +605,7 @@ step_8_calculate_roi(
 And now we can get our final simulated data frame with Step 9!
 
 ```{r}
-#| message: false
-#| warning: false
+#| results: hide
 
 final_df <- step_9_final_df(
   my_variables = basic_vars,
@@ -614,6 +616,8 @@ final_df <- step_9_final_df(
 This gives us two data frames, one measured at the daily level and the other measured at the weekly level. You can extract either as follows.
 
 ```{r}
+#| results: hide
+
 daily_df <- final_df[[1]]
 
 weekly_df <- final_df[[2]]
@@ -626,6 +630,7 @@ And now let's see what our data looks like!
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 ggplot(daily_df, aes(x = DATE, y = total_revenue)) +
   geom_line(color = colors[2]) +
@@ -642,6 +647,7 @@ ggplot(daily_df, aes(x = DATE, y = total_revenue)) +
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 ggplot(weekly_df, aes(x = DATE, y = total_revenue)) +
   geom_line(color = colors[2], linewidth = 1) +
