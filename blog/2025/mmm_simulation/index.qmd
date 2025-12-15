@@ -78,8 +78,7 @@ Because of this, I'm always interested in packages that attempt to make simulati
 `{siMMMulator}` works by a series of building blocks. You follow a set order of commands (the commands are literally outlined for you... `step_0`, `step_1`, etc.) and, by the time you hit step 9, you have your simulated data set! Step 0 is pretty easy. You just establish the type of channels you're interested in, the length of time covered in the data, each channel's conversion rate and the amount of money made from each conversion.
 
 ```{r}
-#| message: false
-#| warning: false
+#| results: hide
 
 basic_vars <- step_0_define_basic_parameters(
   years = 5,
@@ -111,8 +110,7 @@ It doesn't look like `{siMMMulator}` allows for varying campaign frequencies and
 # Step 1: Simulate Daily Baseline Sales
 
 ```{r}
-#| message: false
-#| warning: false
+#| results: hide
 
 baseline_sales <- step_1_create_baseline(
   my_variables = basic_vars,
@@ -140,6 +138,7 @@ baseline_sales <- step_1_create_baseline(
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 optional_step_1.5_plot_baseline_sales(df_baseline = baseline_sales) +
   geom_line(color = colors[2]) +
@@ -158,6 +157,7 @@ Now, we can vary `trend_p` and see how much baseline sales change over time. I'm
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 baseline_sales_small_trend_p <- step_1_create_baseline(
   my_variables = basic_vars,
@@ -186,6 +186,7 @@ You can see now that the overall rate of baseline growth is now much smaller tha
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 baseline_sales_small_trend_p_noisy <- step_1_create_baseline(
   my_variables = basic_vars,
@@ -214,6 +215,7 @@ Hey, not everything can be a tidy toy data set. We can also mess with how sharp 
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 baseline_sales_sharp_swings <- step_1_create_baseline(
   my_variables = basic_vars,
@@ -242,6 +244,7 @@ Related, but still different, we can control the effect of seasonality on sales.
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 baseline_sales_sharp_swings_big_effects <- step_1_create_baseline(
   my_variables = basic_vars,
@@ -274,6 +277,7 @@ But, even with all of this, we're still just at Step 1. We've only simulated bas
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 ad_spend <- step_2_ads_spend(
   my_variables = basic_vars,
@@ -313,6 +317,7 @@ And just for fun, let's see what ad spend looks like if we make our budget less 
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 ad_spend_less_noisy <- step_2_ads_spend(
   my_variables = basic_vars,
@@ -353,6 +358,7 @@ I'm not really sure why but Step 3 took considerably longer to run than any of t
 ```{r}
 #| message: false
 #| warning: false
+#| results: hide
 
 channel_activity <- step_3_generate_media(
   my_variables = basic_vars,
@@ -378,6 +384,7 @@ Step 4 takes us back a bit to something we did in Step 0. There, we already esta
 ```{r}
 #| message: false
 #| warning: false
+#| results: hide
 
 cvr_noise <- step_4_generate_cvr(
   my_variables = basic_vars,
@@ -399,6 +406,7 @@ Step 5 is a bit more complex because, up to this point, we have built in assumpt
 ```{r}
 #| message: false
 #| warning: false
+#| results: hide
 
 daily_activity <- step_5a_pivot_to_mmm_format(
   my_variables = basic_vars, 
@@ -410,6 +418,7 @@ Now that this done, we can simulate adstock. For those unfamiliar, this is basic
 ```{r}
 #| message: false
 #| warning: false
+#| results: hide
 
 adstock <- step_5b_decay(
   my_variables = basic_vars,
@@ -433,6 +442,7 @@ When you run `step_5c_diminishing_returns()`, you get a crazy long warning messa
 ```{r}
 #| message: false
 #| warning: false
+#| results: hide
 
 dim_returns <- step_5c_diminishing_returns(
   my_variables = basic_vars,
@@ -449,6 +459,7 @@ So we've worked with adstock and diminishing returns, messing around with alpha,
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 fb_effects <- dim_returns |> 
   pivot_longer(
@@ -493,6 +504,7 @@ Now, let's get crazy and simulate another DGP with very long lagged effects and 
 #| code-fold: true
 #| message: false
 #| error: false
+#| results: hide
 
 adstock_extreme <- step_5b_decay(
   my_variables = basic_vars,
