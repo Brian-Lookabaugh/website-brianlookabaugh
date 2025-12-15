@@ -2,7 +2,7 @@
 title: "Testing Facebook's {siMMMulator} Package for Marketing Data Simulation"
 date: 2025-12-16
 description: "Simulating the data that you want by hand is always a task much easier said than done. As a result, I never turn away from a package designed to make simulation easier. As usual, there's trade-offs between manually simulating and using customized softwares so I wrote up this blog to test out a neat looking simulation tool designed for marketing/MMM settings."
-image: "figures/.png"
+image: "figures/adspend.png"
 toc: true
 execute:
   warning: false
