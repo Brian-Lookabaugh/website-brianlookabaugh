@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-12-30">
+<meta name="description" content="Simulating the data that you want by hand is always a task much easier said than done. As a result, I never turn away from a package designed to make simulation easier. As usual, there’s trade-offs between manually simulating and using customized softwares so I wrote up this blog to test out a neat looking simulation tool designed for marketing/MMM settings.">
+
+<title>Testing Facebook’s {siMMMulator} Package for Marketing Data Simulation – Brian Lookabaugh</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../images/stickerv2.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-S362C5PLRJ"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-S362C5PLRJ', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../images/stickerv2.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Brian Lookabaugh</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../resume/index.html"> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../research/index.html"> 
+<span class="menu-text">Research</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/brian-lookabaugh-phd-372ab31a1/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/Brian-Lookabaugh"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:brianlookabaughjr@gmail.com"> <i class="bi bi-envelope" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#why-simulation-is-so-important-and-hard" id="toc-why-simulation-is-so-important-and-hard" class="nav-link active" data-scroll-target="#why-simulation-is-so-important-and-hard">Why Simulation Is So Important (and Hard…)</a></li>
+  <li><a href="#step-0-define-basic-parameters" id="toc-step-0-define-basic-parameters" class="nav-link" data-scroll-target="#step-0-define-basic-parameters">Step 0: Define Basic Parameters</a></li>
+  <li><a href="#step-1-simulate-daily-baseline-sales" id="toc-step-1-simulate-daily-baseline-sales" class="nav-link" data-scroll-target="#step-1-simulate-daily-baseline-sales">Step 1: Simulate Daily Baseline Sales</a></li>
+  <li><a href="#step-2-generate-ad-spend" id="toc-step-2-generate-ad-spend" class="nav-link" data-scroll-target="#step-2-generate-ad-spend">Step 2: Generate Ad Spend</a></li>
+  <li><a href="#step-3-generate-media-variables" id="toc-step-3-generate-media-variables" class="nav-link" data-scroll-target="#step-3-generate-media-variables">Step 3: Generate Media Variables</a></li>
+  <li><a href="#step-4-generate-noisy-cvrs" id="toc-step-4-generate-noisy-cvrs" class="nav-link" data-scroll-target="#step-4-generate-noisy-cvrs">Step 4: Generate Noisy CVRs</a></li>
+  <li><a href="#step-5-transforming-media-variables" id="toc-step-5-transforming-media-variables" class="nav-link" data-scroll-target="#step-5-transforming-media-variables">Step 5: Transforming Media Variables</a></li>
+  <li><a href="#step-6-calculating-conversions" id="toc-step-6-calculating-conversions" class="nav-link" data-scroll-target="#step-6-calculating-conversions">Step 6: Calculating Conversions</a></li>
+  <li><a href="#step-7-expanded-data-frame" id="toc-step-7-expanded-data-frame" class="nav-link" data-scroll-target="#step-7-expanded-data-frame">Step 7: Expanded Data Frame</a></li>
+  <li><a href="#step-8-calculating-roi" id="toc-step-8-calculating-roi" class="nav-link" data-scroll-target="#step-8-calculating-roi">Step 8: Calculating ROI</a></li>
+  <li><a href="#step-9-get-final-data-frame" id="toc-step-9-get-final-data-frame" class="nav-link" data-scroll-target="#step-9-get-final-data-frame">Step 9: Get Final Data Frame</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Testing Facebook’s {siMMMulator} Package for Marketing Data Simulation</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">causal inference</div>
+    <div class="quarto-category">marketing</div>
+    <div class="quarto-category">simulation</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Simulating the data that you want by hand is always a task much easier said than done. As a result, I never turn away from a package designed to make simulation easier. As usual, there’s trade-offs between manually simulating and using customized softwares so I wrote up this blog to test out a neat looking simulation tool designed for marketing/MMM settings.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 30, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tidyverse"</span>, <span class="co"># Data Manipulation and Visualization</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"siMMMulator"</span>, <span class="co"># Simulating Marketing Data for MMMs</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"scales"</span>, <span class="co"># Scaling for Data Visualization</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">install =</span> <span class="cn">FALSE</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a Custom Theme</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>blog_theme <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray80"</span>, <span class="at">size =</span> <span class="fl">0.3</span>),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="cn">NA</span>),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">16</span>, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">0</span>, <span class="at">r =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="dv">15</span>, <span class="at">l =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">15</span>, <span class="at">r =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="dv">0</span>, <span class="at">l =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">0</span>, <span class="at">r =</span> <span class="dv">15</span>, <span class="at">b =</span> <span class="dv">0</span>, <span class="at">l =</span> <span class="dv">0</span>)),</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">10</span>), </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">10</span>), </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.ticks.x =</span> <span class="fu">element_blank</span>(), </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>(), </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"grey80"</span>, <span class="at">color =</span> <span class="cn">NA</span>),</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">color =</span> <span class="st">"grey25"</span>),</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Establish a Custom Color Scheme</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#0a697d"</span>,</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#0091af"</span>,</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#ddb067"</span>,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#c43d56"</span>,</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#ab2a42"</span>,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="st">"#A9A9A9"</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="why-simulation-is-so-important-and-hard" class="level1">
+<h1>Why Simulation Is So Important (and Hard…)</h1>
+<p>In any causal research endeavor, simulation is your friend. “What effect did this media mix have on sales?” That’s the motivating question behind marketing, but it’s incredibly challenging to answer. We attempt to answer this question by employing advanced statistical techniques and assuming (sometimes plausible) assumptions. But our assumptions are often wrong and our statistics are often poorly implemented. So how can you tell the difference between a good research design that can answer the business question and a research design that cannot? After all, either will produce numbers that can be dressed up in the mystique of fancy, esoteric math and engaging visualizations. If I’m a stakeholder, how am I to know which numbers are actionable and which results <em>should not</em> be treated as actionable?</p>
+<p>This is where simulation shines. With a simulation analysis, you can manually create artificial marketing data with media/marketing effects hard-coded into the data (we would call this the data generating process). In doing so, we know what the effects are because we specified them. Then, we can test a number of different research designs on the simulated data to figure out which research design gets the closest to the truth. The leap that we make is that, if a given research design was able to estimate the true effect in the simulated data, then it should estimate the true effect in the <em>real</em> data.</p>
+<p>Now, this isn’t assumption isn’t a guarantee, because the ability to make inferences about your actual data generating process from your simulated data is dependent on how much your simulated data is <em>like</em> your real data. If the two are generated by totally different data generating processes, the quality of research designs could vary between the two data sets. There are no magic solutions when trying to do causal inference, but simulation will typically give you more information than what you had <em>before</em> the simulation analysis. As a result, if you take the time to think about the causal structures that generated your data, you’ll have a much more useful simulation analysis.</p>
+<p>While thinking about your data generating process requires a good amount of effort, manually simulating data can also be a bit of a pain. As it turns out, when you’re in full control of how a data set is created, it’s super easy to get data that looks totally wrong. Much like programming, if you tell the computer to do something un-intuitive, it will do it and it won’t tell you that it’s a bad idea. If you define a data generating process that is going to produce un-intuitive results, your program will produce it and you’ll have to find out how ridiculous it is (and debug) on your own.</p>
+<p>Because of this, I’m always interested in packages that attempt to make simulation easier. And that’s what this blog is all about. We’ll be taking a look at Facebook’s <code>{siMMMulator}</code> <a href="https://facebookexperimental.github.io/siMMMulator/docs/set_up">package</a> designed to simulate data that you would use in a marketing/media mix model (MMM). The goal is to thoroughly explore its capabilities and (potentially) evaluate any limitations. In fairness to the developers of the package, they did a great job walking through how to use this package so I recommend checking <a href="https://facebookexperimental.github.io/siMMMulator/docs/step_by_step_guide">that</a> out as well!</p>
+</section>
+<section id="step-0-define-basic-parameters" class="level1">
+<h1>Step 0: Define Basic Parameters</h1>
+<p><code>{siMMMulator}</code> works by a series of building blocks. You follow a set order of commands (the commands are literally outlined for you… <code>step_0</code>, <code>ste_1</code>, etc.) and, by the time you hit step 9, you have your simulated data set! Step 0 is pretty easy. You just establish the type of channels you’re interested in, the length of time covered in the data, each channel’s conversion rate and the amount of money made from each conversion.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>basic_vars <span class="ot">&lt;-</span> <span class="fu">step_0_define_basic_parameters</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">years =</span> <span class="dv">5</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">channels_impressions =</span> <span class="fu">c</span>(<span class="st">"Facebook"</span>, <span class="st">"TV"</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">channels_clicks =</span> <span class="fu">c</span>(<span class="st">"Paid Search"</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">frequency_of_campaigns =</span> <span class="dv">2</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">true_cvr =</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.002</span>, <span class="fl">0.003</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">revenue_per_conv =</span> <span class="dv">1</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> <span class="st">"2017/1/1"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have just run step 0: Defining Basic Parameters"
+[1] "To confirm what you have input: "
+[1] "Years of Data to generate :  5"
+[1] "Channel that use impressions :  Facebook"
+[2] "Channel that use impressions :  TV"      
+[1] "Channel that use clicks :  Paid Search"
+[1] "How frequently campaigns occur :  2"
+[1] "True CVRs of a channel (in order of channels you specified) :  0.001"
+[2] "True CVRs of a channel (in order of channels you specified) :  0.002"
+[3] "True CVRs of a channel (in order of channels you specified) :  0.003"
+[1] "Revenue per conversion :  1"
+[1] "Date the data set will start with :  2017-01-01"</code></pre>
+</div>
+</div>
+<p>Let’s walk through each argument in Step 0. The basic parameters in this blog will follow closely with those established in the package’s step-by-step user guide. Here, the only meaningful change I am making is adding more years of simulated data.</p>
+<ul>
+<li><code>years</code>: This just specifies the number of years that are simulated in the data set.</li>
+<li><code>channels_impressions</code>: This is just a collection of strings that can be named anything but are designed to store channels whose metrics of importance are impressions. You do not have to populate this argument if you are not interested in simulating channels that do not track impressions.</li>
+<li><code>channels_clicks</code>: This is the exact same thing as <code>channel_impressions</code> but just for channels whose metrics of importance are measured in clicks instead of impressions.</li>
+<li><code>frequency_of_campaigns</code>: This controls both how often campaigns occur and how long they last. In this case, I am telling my data generating process that campaigns roll out every 2 weeks and last 2 weeks.</li>
+<li><code>true_cvr</code>: This tells us the conversion rate for each channel. Conversion rates are stored in the same order that they appear in <code>channel_impressions</code> and <code>channel_clicks</code>. In this case, the conversion rate for Facebook is 1/1000 impressions, the conversion rate for TV is 2/1000 impressions, and the conversion rate for Paid Search is 3/1000 clicks.</li>
+<li><code>revenue_per_conv</code>: This establishes how much money is made per conversion.</li>
+<li><code>start_date</code>: This just sets the start date for the data.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Limitations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It doesn’t look like <code>{siMMMulator}</code> allows for varying campaign frequencies and revenue per channel. You can only enter one type of campaign frequency in the <code>frequency_of_campaign</code> argument and 1 revenue amount in <code>revenue_per_conv</code>. Personally, this seems like a really big limitation. If universal campaign frequencies and ad revenues make sense for your business context, then sure, this isn’t a problem, but I’m not sure how realistic that is. If there is known wide variation between media campaign frequency/revenue, you might want to look elsewhere for a simulation analysis.</p>
+</div>
+</div>
+</section>
+<section id="step-1-simulate-daily-baseline-sales" class="level1">
+<h1>Step 1: Simulate Daily Baseline Sales</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>baseline_sales <span class="ot">&lt;-</span> <span class="fu">step_1_create_baseline</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_p =</span> <span class="dv">500000</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">trend_p =</span> <span class="fl">1.8</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_var =</span> <span class="dv">8</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_mean =</span> <span class="dv">50000</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_sd =</span> <span class="dv">5000</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">error_std =</span> <span class="dv">100000</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 1: generating baseline sales."</code></pre>
+</div>
+</div>
+<ul>
+<li><code>my_variables</code>: What was created in Step 0.</li>
+<li><code>base_p</code>: This is your baseline sales at the start of the period or, in other terms, what your sales would be without any spend on any of the media specified in Step 0.</li>
+<li><code>trend_p</code>: The overall trend on how baseline sales will grow over the entire period of the data set. This is something that is good to play around with and graphically inspect (which we will do below!)</li>
+<li><code>temp_var</code>: This is used to “inject seasonality” into the data. Much like <code>trend_p</code>, this is something that is good to iterate and experiment with.</li>
+<li><code>temp_coef_mean</code>: This determines how important seasonality is for sales.</li>
+<li><code>temp_coef_sd</code>: This value will determine how much variability exists with the importance of seasonality on sales.</li>
+<li><code>error_std</code>: This is the amount of noise that is added to baseline sales. The greater this number is, the more noisy your baseline sales will be.</li>
+</ul>
+<p><code>{siMMMulator}</code> has some built in features that allow you to inspect what your data looks like as you go down the simulation pipeline. Given what we have so far, we get the follow time series.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">optional_step_1.5_plot_baseline_sales</span>(<span class="at">df_baseline =</span> baseline_sales) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> colors[<span class="dv">2</span>]) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fu">max</span>(baseline_sales<span class="sc">$</span>day), <span class="at">by =</span> <span class="dv">250</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Baseline Sales</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Now, we can vary <code>trend_p</code> and see how much baseline sales change over time. I’m going to decrease <code>trend_p</code> substantially to really make the change apparent.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>baseline_sales_small_trend_p <span class="ot">&lt;-</span> <span class="fu">step_1_create_baseline</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_p =</span> <span class="dv">500000</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">trend_p =</span> <span class="fl">0.5</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_var =</span> <span class="dv">8</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_mean =</span> <span class="dv">50000</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_sd =</span> <span class="dv">5000</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">error_std =</span> <span class="dv">100000</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 1: generating baseline sales."</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">optional_step_1.5_plot_baseline_sales</span>(<span class="at">df_baseline =</span> baseline_sales_small_trend_p) <span class="sc">+</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> colors[<span class="dv">2</span>]) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fu">max</span>(baseline_sales<span class="sc">$</span>day), <span class="at">by =</span> <span class="dv">250</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Baseline Sales with Smaller Baseline Growth</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>You can see now that the overall rate of baseline growth is now much smaller than before. But we could complicate our ability to even visually determine baseline growth by increasing the amount of noise to the our baseline sales.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>baseline_sales_small_trend_p_noisy <span class="ot">&lt;-</span> <span class="fu">step_1_create_baseline</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_p =</span> <span class="dv">500000</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">trend_p =</span> <span class="fl">0.5</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_var =</span> <span class="dv">8</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_mean =</span> <span class="dv">50000</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_sd =</span> <span class="dv">5000</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">error_std =</span> <span class="dv">300000</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 1: generating baseline sales."</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">optional_step_1.5_plot_baseline_sales</span>(<span class="at">df_baseline =</span> baseline_sales_small_trend_p_noisy) <span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> colors[<span class="dv">2</span>]) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fu">max</span>(baseline_sales<span class="sc">$</span>day), <span class="at">by =</span> <span class="dv">250</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Baseline Sales with Smaller Baseline Growth and Greater Noise</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Hey, not everything can be a tidy toy data set. We can also mess with how sharp seasonality swings are in our data. By setting the <code>temp_var</code> to higher values, we can see steeper changes in sales at different times throughout the years.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>baseline_sales_sharp_swings <span class="ot">&lt;-</span> <span class="fu">step_1_create_baseline</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_p =</span> <span class="dv">500000</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">trend_p =</span> <span class="fl">1.8</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_var =</span> <span class="dv">16</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_mean =</span> <span class="dv">50000</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_sd =</span> <span class="dv">5000</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">error_std =</span> <span class="dv">100000</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 1: generating baseline sales."</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">optional_step_1.5_plot_baseline_sales</span>(<span class="at">df_baseline =</span> baseline_sales_sharp_swings) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> colors[<span class="dv">2</span>]) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fu">max</span>(baseline_sales<span class="sc">$</span>day), <span class="at">by =</span> <span class="dv">250</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Baseline Sales with Sharp Seasonality Swings</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><em>varying temp_coef_mean/temp_coef_sd</em></p>
+<p>Related, but still different, we can control the effect of seasonality on sales. While <code>temp_var</code> basically models the height of the swing, <code>temp_coef_mean</code> and <code>temp_coef_sd</code> directly establish the average effect of seasonality on sales. Showing what changing these values does to baseline sales will probably be helpful in distinguishing them from <code>temp_var</code>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>baseline_sales_sharp_swings_big_effects <span class="ot">&lt;-</span> <span class="fu">step_1_create_baseline</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_p =</span> <span class="dv">500000</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">trend_p =</span> <span class="fl">1.8</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_var =</span> <span class="dv">16</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_mean =</span> <span class="dv">100000</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">temp_coef_sd =</span> <span class="dv">2500</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">error_std =</span> <span class="dv">100000</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 1: generating baseline sales."</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">optional_step_1.5_plot_baseline_sales</span>(<span class="at">df_baseline =</span> baseline_sales_sharp_swings_big_effects) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> colors[<span class="dv">2</span>]) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fu">max</span>(baseline_sales<span class="sc">$</span>day), <span class="at">by =</span> <span class="dv">250</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Baseline Sales with Sharp Seasonality Swings and Large Seasonality Effects</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Obviously, this is extremely hyperbolic data, but that’s the fun (and utility!) of playing around with simulated data. For most businesses, such seasonality assumptions are not realistic (this might be accurate for ski resorts?). I’m intentionally being extreme in the values set to get an idea of what each thing does in the argument.</p>
+<p>But, even with all of this, we’re still just at Step 1. We’ve only simulated baseline sales. We haven’t <em>yet</em> got to simulating <em>media</em> spend and effects.</p>
+</section>
+<section id="step-2-generate-ad-spend" class="level1">
+<h1>Step 2: Generate Ad Spend</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ad_spend <span class="ot">&lt;-</span> <span class="fu">step_2_ads_spend</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">campaign_spend_mean =</span> <span class="dv">329000</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">campaign_spend_std =</span> <span class="dv">100000</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_min_proportion_on_each_channel =</span> <span class="fu">c</span>(<span class="fl">0.45</span>, <span class="fl">0.55</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 2: Simulating ad spend."</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">optional_step_2.5_plot_ad_spend</span>(<span class="at">df_ads_step2 =</span> ad_spend) <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Facebook"</span> <span class="ot">=</span> colors[<span class="dv">2</span>],</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"TV"</span> <span class="ot">=</span> colors[<span class="dv">3</span>],</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Paid Search"</span> <span class="ot">=</span> colors[<span class="dv">4</span>]</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fu">max</span>(baseline_sales<span class="sc">$</span>day), <span class="at">by =</span> <span class="dv">100</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="cn">NULL</span>,</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Channel"</span>) <span class="sc">+</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Ad Spend by Channel</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Above is a plot showing ad spend by channel over each campaign. Remember that we set our campaign to occur every 2 weeks so the x-axis will not reflect the total number of days in a 5-year period. Let’s walk through each argument to see how this ad spend was generated.</p>
+<ul>
+<li><code>my_variables</code> = This is your object of baseline variables that were produced in Step 0.</li>
+<li><code>campaign_spend_mean</code> = This reflects the average amount of money that is spent on <em>all</em> media campaigns throughout the entire period that the data set covers. Here, you do not need to worry about <em>how</em> that budget is allocated between different channels. That is what the <code>max_min_proportion_on_each_channel</code> argument is about.</li>
+<li><code>campaign_spend_std</code> = This is how you can make your <code>campaign_spend_mean</code> have greater/less variation.</li>
+<li><code>max_min_proportion_on_each_channel</code> = Modifying this is how you allocate the media budget between different channels. Each channel has a minimum and a maximum percent of the budget that they can receive. For example, the least that Facebook receives in the budget is 45% and the most is 55%. The least that TV receives is 15% and the most is 25%. But, what about paid search? Well, you don’t have to specify that because we are working with percentages. If Facebook takes up 45-55% and TV takes up 15-25% then paid search must take up 20-40% of the budget (45% + 15% + 40% = 100% or 55% + 25% + 20% = 100%.) Basically, the amount of numbers populated in this argument will always be (<span class="math inline">\(k\)</span> (number of channels) - 1) * 2.</li>
+</ul>
+<p>And just for fun, let’s see what ad spend looks like if we make our budget less noisy.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ad_spend_less_noisy <span class="ot">&lt;-</span> <span class="fu">step_2_ads_spend</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">campaign_spend_mean =</span> <span class="dv">329000</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">campaign_spend_std =</span> <span class="dv">25000</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_min_proportion_on_each_channel =</span> <span class="fu">c</span>(<span class="fl">0.45</span>, <span class="fl">0.55</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 2: Simulating ad spend."</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">optional_step_2.5_plot_ad_spend</span>(<span class="at">df_ads_step2 =</span> ad_spend_less_noisy) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Facebook"</span> <span class="ot">=</span> colors[<span class="dv">2</span>],</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"TV"</span> <span class="ot">=</span> colors[<span class="dv">3</span>],</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Paid Search"</span> <span class="ot">=</span> colors[<span class="dv">4</span>]</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fu">max</span>(baseline_sales<span class="sc">$</span>day), <span class="at">by =</span> <span class="dv">100</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="cn">NULL</span>,</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Channel"</span>) <span class="sc">+</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Less Noisy Ad Spend by Channel</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>And that checks out! With less variation, there is clearer distinction between channels concerning which get greater budget allocation.</p>
+</section>
+<section id="step-3-generate-media-variables" class="level1">
+<h1>Step 3: Generate Media Variables</h1>
+<p>Now that we have our baseline information and simulated ad spend, we’re in good shape to move on to Step 3 and begin to simulate channel activity. In this step, we specify what the cost per impression/click is for each channel. This is relevant because it sets how much spending coverts into clicks/impressions. Now, with this layer, we have media spend (Step 2) <span class="math inline">\(\rightarrow\)</span> impressions/clicks (Step 3) <span class="math inline">\(\rightarrow\)</span> conversions (Step 0) <span class="math inline">\(\rightarrow\)</span> revenue (Step 0).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Computation Time
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I’m not really sure why but Step 3 took considerably longer to run than any of the other steps so far. Still, it didn’t take a super long time, just around a minute. But it was long enough that I thought I should include a brief note because all the other steps so far took about 1-2 seconds.</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>channel_activity <span class="ot">&lt;-</span> <span class="fu">step_3_generate_media</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step2 =</span> ad_spend,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">true_cpm =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">20</span>, <span class="cn">NA</span>),</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">true_cpc =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">0.25</span>),</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_noisy_cpm_cpc =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span>),</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">std_noisy_cpm_cpc =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.15</span>, <span class="fl">0.01</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 3: Simulating media variables."</code></pre>
+</div>
+</div>
+<ul>
+<li><code>my_variables</code>: Output from Step 0</li>
+<li><code>df_ads_step2</code>: Output from Step 2</li>
+<li><code>true_cpm</code>: This sets the true cost per impression (CPM) for each channel where impressions are a relevant metric. These numbers are ordered in accordance with how channels were specified in Step 0. For channels where this metric is not relevant, <code>NA</code> is used.</li>
+<li><code>true_cpc</code>: This sets the true cost per click (CPC) for each channel where clicks are a relevant metric. These numbers are ordered in accordance with how channels were specified in Step 0. For channels where this metric is not relevant, <code>NA</code> is used.</li>
+<li><code>mean_noisy_cpm_cpc</code>: This sets the mean of the normal distribution that is used to add noise to CPM/CPC.</li>
+<li><code>std_noisy_cpm_cpc</code>: This is the second part of the noise generation process that sets the standard deviation of the normal distribution that noise for CPM/CPC is produced from.</li>
+</ul>
+</section>
+<section id="step-4-generate-noisy-cvrs" class="level1">
+<h1>Step 4: Generate Noisy CVRs</h1>
+<p>Step 4 takes us back a bit to something we did in Step 0. There, we already established conversion rates for each channel. But conversion rates are not static, so Step 4 allows us to inject some statistical noise to our conversion rates.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cvr_noise <span class="ot">&lt;-</span> <span class="fu">step_4_generate_cvr</span>(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step3 =</span> channel_activity,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_noisy_cvr =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.0001</span>, <span class="fl">0.0002</span>), </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">std_noisy_cvr =</span> <span class="fu">c</span>(<span class="fl">0.001</span>, <span class="fl">0.002</span>, <span class="fl">0.003</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 4: Simulating conversion rates."</code></pre>
+</div>
+</div>
+<ul>
+<li><code>my_variables</code>: Output from Step 0</li>
+<li><code>df_ads_step3</code>: Output from Step 3</li>
+<li><code>mean_noisy_cvr</code>: Mean of the normal distribution used to add noise to our CVRs.</li>
+<li><code>std_noisy_cvr</code>: Standard deviation of the normal distribution used to add noise to our CVRs.</li>
+</ul>
+</section>
+<section id="step-5-transforming-media-variables" class="level1">
+<h1>Step 5: Transforming Media Variables</h1>
+<p>Step 5 is a bit more complex because, up to this point, we have built in assumptions into our data set that the effect of media on revenue is linear. But this is for sure not true. For any simulation analysis to be helpful, it needs to capture the (potentially complex) realities that occur in the <em>actual</em> data generating process. For Step 5, we apply adstock and diminishing returns to our media effects. But first, we execute Step 5a which pivots the data to a daily format.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>daily_activity <span class="ot">&lt;-</span> <span class="fu">step_5a_pivot_to_mmm_format</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars, </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step4 =</span> cvr_noise)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 5a: pivoting the data frame to an MMM format."</code></pre>
+</div>
+</div>
+<p>Now that this done, we can simulate adstock. For those unfamiliar, this is basically the lagged effect of a given campaign. That is, even if a campaign ends, it still likely has <em>some</em> “decayed” effect over time. A TV commercial campaign can end, but I can still think about it after it stops fielding and that can influence my purchasing decisions. Again <code>{siMMMulator}</code> makes this very easy, where we specify a number between 0 and 1 that controls how long the lagged effect lasts.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>adstock <span class="ot">&lt;-</span> <span class="fu">step_5b_decay</span>(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step5a_before_mmm =</span> daily_activity,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">true_lambda_decay =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 5b: applying adstock decay."</code></pre>
+</div>
+</div>
+<p>The 0.1, 0.2, and 0.3 refer to distinct lagged effects for each channel. Like all other steps in this process, the effects correspond to the channels in the order they were specified in Step 0.</p>
+<p>Lastly, we can build in diminishing media effects to account for the fact that, as time goes on, increased/the same amount of spending for a given channel will not yield increased, or even the same level of results due to saturation. You can control diminishing returns via two parameters, alpha and gamma saturation (from Facebook’s Robyn). Alpha controls how steep the curve is (higher alpha models a more “S”-shaped curve which means the channel saturates more quickly while lower alpha values resemble a “C”-shape which denotes a more gradual rate until saturation). In other words, manipulating alpha changes how long it takes until a channel effect is saturated. Gamma controls the inflection point or, the level of spend when a channel hits saturation. The larger that gamma is, the later the inflection point occurs.</p>
+<p>To put this all into a simpler example, say that we set alpha to be lower and a gamma value to be high. Doing so would model our saturation point to occur late <em>and</em> the rate that we approach that saturation point to be very gradual. In contrast, if we reversed it and alpha was high and gamma was low, we would be modeling a scenario where the saturation point occurs very early on and we approach it rapidly.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Weird Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When you run <code>step_5c_diminishing_returns()</code>, you get a crazy long warning message that repeats “<code>lengthWarning: longer object length is not a multiple of shorter object</code>” over and over and over again. You won’t see it in this blog because I’m suppressing it, but I get it every time. I’m not sure why this is the case, and it doesn’t seem to produce any problems, but that’s something to be aware of.</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>dim_returns <span class="ot">&lt;-</span> <span class="fu">step_5c_diminishing_returns</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step5b =</span> adstock,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_saturation =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_saturation =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 5c: apply diminishing marginal returns."</code></pre>
+</div>
+</div>
+<p>So we’ve worked with adstock and diminishing returns, messing around with alpha, gamma, and lambda. But this still has all been a bit abstract. <code>{siMMMulator}</code> does not provide built in plotting functions to plot these effects like they did in Steps 1 and 2. But, we still get a data frame that we can play around with from our <code>dim_returns</code> data frame. Let’s start by looking at how impressions for the Facebook channel in particular changes when manipulating alpha, gamma, and lambda. We’ll start by looking at how impressions for Facebook change without adstock or diminishing returns, only with adstock, and with adstock <em>and</em> diminishing returns.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>fb_effects <span class="ot">&lt;-</span> dim_returns <span class="sc">|&gt;</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>      sum_n_Facebook_imps_this_day,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>      sum_n_Facebook_imps_this_day_adstocked,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>      sum_n_Facebook_imps_this_day_adstocked_adstocked_decay_diminishing</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"dgp"</span>,</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fb_effects, <span class="fu">aes</span>(<span class="at">x =</span> DATE, <span class="at">y =</span> value, <span class="at">color =</span> dgp)) <span class="sc">+</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Impressions"</span>,</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"DGP"</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day"</span> <span class="ot">=</span> colors[<span class="dv">2</span>],</span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day_adstocked"</span> <span class="ot">=</span> colors[<span class="dv">3</span>],</span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day_adstocked_adstocked_decay_diminishing"</span> <span class="ot">=</span> colors[<span class="dv">4</span>]</span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day"</span> <span class="ot">=</span> <span class="st">"Raw Impressions"</span>,</span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day_adstocked"</span> <span class="ot">=</span> <span class="st">"With Adstock"</span>,</span>
+<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day_adstocked_adstocked_decay_diminishing"</span> <span class="ot">=</span> <span class="st">"With Adstock + Diminishing Returns"</span></span>
+<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Facebook Conversions with Different Data Generating Processes</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>It’s kind of hard to tell, but we see that the data generating process with diminishing returns (unsurprisingly) has the most downward impressions while the DGP with adstock but <em>without</em> diminishing returns has the most upward impressions. This all totally makes sense. A DGP with <em>just</em> adstock means that every campaign has decaying effects, with means every campaign at <span class="math inline">\(t-1\)</span> gets a little more extra boost from the campaign at time <span class="math inline">\(t\)</span>. However, once we introduce diminishing returns, we get… diminishing returns, which means we are modeling <em>less</em> impressions.</p>
+<p>Now, let’s get crazy and simulate another DGP with very long lagged effects and very steep and immediate diminishing returns. Again, this is just for fun and familiarity with the package.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>adstock_extreme <span class="ot">&lt;-</span> <span class="fu">step_5b_decay</span>(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step5a_before_mmm =</span> daily_activity,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Just Modifying Facebook Adstock Since That's All We're Plotting</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">true_lambda_decay =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 5b: applying adstock decay."</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>dim_returns_extreme <span class="ot">&lt;-</span> <span class="fu">step_5c_diminishing_returns</span>(</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step5b =</span> adstock_extreme,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Just Modifying Facebook</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_saturation =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma_saturation =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 5c: apply diminishing marginal returns."</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>fb_effects_extreme <span class="ot">&lt;-</span> dim_returns_extreme <span class="sc">|&gt;</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>      sum_n_Facebook_imps_this_day,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>      sum_n_Facebook_imps_this_day_adstocked,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>      sum_n_Facebook_imps_this_day_adstocked_adstocked_decay_diminishing</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"dgp"</span>,</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fb_effects_extreme, <span class="fu">aes</span>(<span class="at">x =</span> DATE, <span class="at">y =</span> value, <span class="at">color =</span> dgp)) <span class="sc">+</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Impressions"</span>,</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"DGP"</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day"</span> <span class="ot">=</span> colors[<span class="dv">2</span>],</span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day_adstocked"</span> <span class="ot">=</span> colors[<span class="dv">3</span>],</span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day_adstocked_adstocked_decay_diminishing"</span> <span class="ot">=</span> colors[<span class="dv">4</span>]</span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day"</span> <span class="ot">=</span> <span class="st">"Raw Impressions"</span>,</span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day_adstocked"</span> <span class="ot">=</span> <span class="st">"With Adstock"</span>,</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sum_n_Facebook_imps_this_day_adstocked_adstocked_decay_diminishing"</span> <span class="ot">=</span> <span class="st">"With Adstock + Diminishing Returns"</span></span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Facebook Conversions with Extreme Data Generating Processes</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="step-6-calculating-conversions" class="level1">
+<h1>Step 6: Calculating Conversions</h1>
+<p>With adstock and diminishing returns built into impressions and clicks, we can now calculate conversions, which is a super easy step.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>conversions <span class="ot">&lt;-</span> <span class="fu">step_6_calculating_conversions</span>(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step5c =</span> dim_returns</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 6: Calculating the number of conversions."</code></pre>
+</div>
+</div>
+<ul>
+<li><code>df_ads_step5c</code>: This is what is created in Step 5c</li>
+</ul>
+</section>
+<section id="step-7-expanded-data-frame" class="level1">
+<h1>Step 7: Expanded Data Frame</h1>
+<p>In Step 7, we “do final calculations for all the variables that we need for the final data frame”. There’s nothing customizable that you do here, it’s just a procedural step.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>expanded_df <span class="ot">&lt;-</span> <span class="fu">step_7_expanded_df</span>(</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step6 =</span> conversions,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_baseline =</span> baseline_sales</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 7: Expanding to maximum data frame."</code></pre>
+</div>
+</div>
+<ul>
+<li><code>df_ads_step6</code>: This is the output from Step 6</li>
+<li><code>df_baseline</code>: This is the output from Step 1</li>
+</ul>
+</section>
+<section id="step-8-calculating-roi" class="level1">
+<h1>Step 8: Calculating ROI</h1>
+<p>Again, this a very easy, self-explanatory step. In the guide, the author does not store the results in a data frame and it doesn’t seem like the results from Step 8 are built into the final step. However, this is still an important step because these results are our baseline truth for our most important metric (ROI). Again, we want that baseline truth so we can compare it to the results we’d get from an MMM we might use to see how biased it is. I won’t be testing any model’s in this blog, so I’m just going to run this and not use it in this blog, but this step is still very important.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">step_8_calculate_roi</span>(</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step7 =</span> expanded_df</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "roi of Facebook is: -0.656993034239495"
+[1] "roi of TV is: -0.899928122763719"
+[1] "roi of Paid Search is: -0.986277010484728"</code></pre>
+</div>
+</div>
+</section>
+<section id="step-9-get-final-data-frame" class="level1">
+<h1>Step 9: Get Final Data Frame</h1>
+<p>And now we can get our final simulated data frame with Step 9!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>final_df <span class="ot">&lt;-</span> <span class="fu">step_9_final_df</span>(</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">my_variables =</span> basic_vars,</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df_ads_step7 =</span> expanded_df</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You have completed running step 9: Creating the final data frame. You have completed the simulation and should have two data frames ready to be used in an MMM. These two data frames are stored in a list. The first data frame is at the daily level; the second data frame is at a weekly level."</code></pre>
+</div>
+</div>
+<p>This gives us two data frames, one measured at the daily level and the other measured at the weekly level. You can extract either as follows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>daily_df <span class="ot">&lt;-</span> final_df[[<span class="dv">1</span>]]</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>weekly_df <span class="ot">&lt;-</span> final_df[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And now let’s see what our data looks like!</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(daily_df, <span class="fu">aes</span>(<span class="at">x =</span> DATE, <span class="at">y =</span> total_revenue)) <span class="sc">+</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> colors[<span class="dv">2</span>]) <span class="sc">+</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Revenue"</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Simulated Revenue (Daily)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(weekly_df, <span class="fu">aes</span>(<span class="at">x =</span> DATE, <span class="at">y =</span> total_revenue)) <span class="sc">+</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> colors[<span class="dv">2</span>], <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Revenue"</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">1000</span>, <span class="at">suffix =</span> <span class="st">"K"</span>, <span class="at">big.mark =</span> <span class="st">","</span>)) <span class="sc">+</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blog_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Simulated Revenue (Weekly)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Overall, this package certainly makes simulation easier! But it does have some of the natural and universal limitations that any package does. But, that is the price you pay for convenience.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/brian-lookabaugh\.github\.io\/website-brianlookabaugh\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
