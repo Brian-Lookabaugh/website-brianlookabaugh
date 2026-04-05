@@ -1,7 +1,7 @@
 ---
 title: "Almost Half a Dozen Practical Decisions to Make When Using Marginal Structural Models"
 date: 2026-04-05
-description: ""
+description: "Check out this blog to learn about what MSMs are, why you might use them, and some of the technical issues you'll run into along the way."
 image: "figures/feedback_loop.png"
 toc: true
 execute:
