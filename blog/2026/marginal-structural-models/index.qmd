@@ -1,8 +1,8 @@
 ---
 title: "Almost Half a Dozen Practical Decisions to Make When Using Marginal Structural Models"
-date: 2026-04-30
+date: 2026-04-05
 description: ""
-image: "figures/.png"
+image: "figures/feedback_loop.png"
 toc: true
 execute:
   warning: false
@@ -46,19 +46,19 @@ colors <- c(
 
 # Intro
 
-I've researched and talked a lot about marginal structural models over the past couple of years. Their application has historically been extremely appropriate for several of my research projects in the past. And, while they might *sound* niche, I don't think they should be treated as such at all since they should be a go-to in many/most panel/longitudinal data settings (more on that later).
+I've researched and talked a lot about marginal structural models over the past couple of years. Their application has been very appropriate for several of my research projects in the past. And, while they might *sound* niche, I don't think they should be treated as such. Instead, I think they should be a go-to in many/most panel/longitudinal/time series cross sectional data settings (more on that later).
 
-What little I've written about marginal structural models has however, been mostly about *why* you should consider them and less about what actually implementing them is like. So I decided to write a blog about this (with a preface that explains what a marginal structural model is and why you might want to use one in the first three sections of this blog). Read onward if you'd like!
+What little I've written about marginal structural models has however, been mostly about *why* you should consider them and less about what actually implementing them is like. So I decided to write a blog about *both*. Read onward if you'd like!
 
 # The Problem of Time and Feedback Loops
 
-Most toy causal inference teaching examples ignore time (for good reason). Those examples stick to the comfortable world of the cross-section where we (in theory...) don't have to worry about time. But time is real thing that can't be ignored in most applied research. And when you have data that tracks the same group of units over time, there are some unique challenges that, even today, don't get the attention that they deserve.
+Most toy causal inference teaching examples ignore time (for good reason). Those examples stick to the comfortable world of the cross-section where we don't have to worry about time (in theory..., which itself is an assumption that isn't quite true). But time is real thing that can't be ignored in most applied research. And when you have data that tracks the same group of units over time, there are some unique challenges that, even today, don't get the attention that they deserve.
 
 Referencing the figures from [a prior blog post](https://brian-lookabaugh.github.io/website-brianlookabaugh/blog/2024/simulating-panel-data/), we can see two ways that time creates serious problems for our abilities to make causal inferences. First, in the figure below, we see a simple DAG that depicts the problem of *feedback loops* between our exposure and outcome. We make a simple assumption that our causal effect of interest is confounded by a single time-invariant confounder. Because it ($Z$) is time-invariant, it impacts all $X$ and $Y$ values across time. Surely, as long as well control for $Z$, we're good, right?
 
 ![Exposure-Outcome Feedback Loop DAG](figures/feedback_loop.png)
 
-Nope! Take a look at $X_{t}$ and $Y_{t}$ for example. That is the contemporaneous effect (the effect in the current/immediate time period) that we often start with after all. $Z$ does confound this relationship... but *so does* $Y_{t-1}$. That is, prior outcome values impact both current outcome values *and* current exposure values, which go on to impact future outcome values. In other words, we have a feedback loop between our exposure and outcome.
+Nope! Take a look at $X_{t}$ and $Y_{t}$ for example. That is the contemporaneous effect (the effect in the current/immediate time period) that we often start with. $Z$ does confound this relationship... but *so does* $Y_{t-1}$. That is, prior outcome values impact both current outcome values *and* current exposure values, which go on to impact future outcome values. In other words, we have a feedback loop between our exposure and outcome.
 
 Why is this a problem? Why not control for $Y_{t-1}$ in your regression model? Go ahead, but don't expect that your analysis will be able to estimate any unbiased *lagged* treatment effects. By adjusting for $Y_{t-1}$ you're basically drawing a big red "X" over it. This means that you are blocking the part of the lagged treatment effect that travels to $Y_{t}$ via the $X_{t-1} \rightarrow Y_{t-1} \rightarrow Y_{t}$ path. Okay, so maybe just don't control for $Y_{t-1}$ then? Well, now you've got a *known* confounder of the $X_{t} \rightarrow Y_{t}$ that you aren't adjusting for. Basically, under your standard approaches you'd see in causal inference settings like regression adjustment, matching, fixed effects, etc., you are damned-if-you-do and damned-if-you-don't in this situation.
 
@@ -74,7 +74,7 @@ While there's no *guarantee* that your panel/longitudinal/time series cross sect
 
 A marginal structural model (MSM) is something that you can implement in a wide variety of contexts. They aren't explicitly implemented in the event of feedback loops or time-varying confounding[^1], although they are a core methodology when such issues pop up. Technically, a marginal structural model refers to any statistical model that (forgive my overuse of the word here) *models* the potential outcomes, rather than the observed outcomes... This will make more sense once we start talking about inverse probability weights. But just remember that we *want to know* what the potential outcomes are in any causal project, but how we get there is going to vary.
 
-[^1]: If you want to know more about what I mean here, check out \[Noah Greifer's response\](<https://stats.stackexchange.com/questions/669340/estimating-marginal-structural-models-with-the-weightit-package>) to my question about the {WeightIt} package.
+[^1]: If you want to know more about what I mean here, check out [Noah Greifer's response](https://stats.stackexchange.com/questions/669340/estimating-marginal-structural-models-with-the-weightit-package) to my question about the `{WeightIt}` package.
 
 The language here may seem vague, but perhaps we can break down the mystique with a very simplistic and practical example. Say we have an observational cross-section with a binary treatment and a continuous outcome. An MSM allows us to estimate the population-level potential outcome when $X$ = 1 and the potential outcome when $X$ = 0. More interestingly (and applicable for this blog) is that we can also model potential outcomes under different *treatment regimes* over time.
 
@@ -84,13 +84,13 @@ For example, let's say that the aforementioned cross-sectional data set actually
 
 Inverse probability weighting (IPW) is used for all sorts of stuff. I was complaining earlier that MSMs aren't a core part of the causal inference toolkit yet (even though they should be), but that is not the case for IPW. You can technically use IPWs for all sorts of things[^2], but, to be technically precise, it is inverse probability of treatment weighting (IPTW) that is popular in causal studies. Still, this is a nuance that is already assumed in a causal inference context, so I'm going to refer to them as "IPW"s from now on.
 
-[^2]: \[Chatton and Rohrer (2024) discuss several of these alternative applications such as inverse probability of missigness weights (IPMW) for handling missingness, inverse probability of sampling weights (IPSW) for sampling, and inverse probability of censoring weights (IPCW) for survival analysis.\](<https://psycnet.apa.org/record/2024-71804-001>)
+[^2]: [Chatton and Rohrer (2024)](https://psycnet.apa.org/record/2024-71804-001) discuss several of these alternative applications such as inverse probability of missigness weights (IPMW) for handling missingness, inverse probability of sampling weights (IPSW) for sampling, and inverse probability of censoring weights (IPCW) for survival analysis.
 
-So... what actually is it? The logic is pretty simple. Assume again our handy-dandy binary treatment $X$. Use the confounders that you've identified to build a model to predict whether or not an individual is treated v. untreated. This can literally be `glm(X ~ Z1 + Z2 + Z3, family = binomial(link = "logit"))`. Then, extract the predicted probabilities of treatment status for each individual from the model. Invert these "propensity scores" by computing $\frac{1}{PS}$ (although we'll get into why you can and maybe should make the numerator a little more complicated than just "1") and you've got yourself inverse probability weights. Add these weights into your outcome model via something like this `lm(Y ~ X, weights = ipw` and you've just implemented IPW.
+So... what actually is it? The logic is pretty simple. Assume again our handy-dandy binary treatment $X$. Use the confounders that you've identified to build a model to predict whether or not an individual is treated v. untreated. This can literally be `glm(X ~ Z1 + Z2 + Z3, family = binomial(link = "logit"))`. Then, extract the predicted probabilities of treatment status for each individual from the model. Invert these "propensity scores" by computing $\frac{1}{PS}$ (although we'll get into why you can and maybe should make the numerator a little more complicated than just "1") and you've got yourself inverse probability weights. Add these weights into your outcome model via something like this `lm(Y ~ X, weights = ipw)` and you've just implemented IPW.
 
 Why go through the steps of modeling the probability of receiving treatment just to invert it? What does that do? By inverting the propensity scores, you are giving more weight to observations that *were confidently predicted to be in a certain treatment status* but *were not observed to be in that treatment status*. For example, let's say that, for Unit A, the predicted probability that $X$ = 1 was 0.78, so 78%. Let's say that Unit A's $X$ value, however, was 0. By taking the inverse of 0.78 ($\frac{1}{1 - 0.78}$), (adding a "1 - " before the propensity score because the unit is not treated), we get an IPW of 4.54. Instead, consider Unit B whose probability of $X$ = 1 was also 0.78, but their treatment status was *actually* 1. We would estimate our IPW by $\frac{1}{0.78}$ and so our IPW would be 1.28. Unit A is going to be weighted much more heavily compared to Unit B and that is by design. The point of IPW is to provide more weight to units that are predicted to have one treatment status but, in actuality, demonstrate another treatment status.
 
-This can be demonstrated visually and, rather than re-invent the wheel, I'm attaching and image from \[Andrew Heiss's blog\](<https://www.andrewheiss.com/blog/2024/03/21/demystifying-ate-att-atu/>) that really communicates what is going on with IPW. The darker colors reflect our actual observed data. The lighter shades reflect what the data looks like after weighting.
+This can be demonstrated visually and, rather than re-invent the wheel, I'm attaching and image from [Andrew Heiss's blog](https://www.andrewheiss.com/blog/2024/03/21/demystifying-ate-att-atu/) that really communicates what is going on with IPW. The darker colors reflect our actual observed data. The lighter shades reflect what the data looks like after weighting.
 
 ![Motivation of IPW Figure by Andrew Heiss](figures/heiss_ipw.png)
 
@@ -115,6 +115,8 @@ I'm not going to go into great detail concerning the variables I'll be using. To
 And, with that being explicitly laid out, this toy analysis is going to be looking at the dynamic relationship between civilian mass mobilization (protests, strikes, sit-ins) and government repression. Mass mobilization efforts may decrease repression and increase civil liberties via public pressure. Alternatively, they may also provoke governments to repression in attempts to quell dissent. The regime and the dissidents play an interactive game with each other where their present actions are in response to past actions by the other. This represents a feedback loop that is confounded by several time-varying characteristics. Because it's not important, I won't lay out the theoretical reasoning for the inclusion of each control variable, but it's annotated in the code below if you're interested.
 
 ```{r}
+#| code-fold: true
+
 vdem_data <- vdem |> 
   select(
     # Identifiers
@@ -175,6 +177,8 @@ Another problem with a longer causal lag length is a dimensionality problem. Con
 Now, let's get to the fun part and look at how effect sizes change when we introduce different lag lengths and use alternative non-MSM methods to get a sense of how much results can change when we use things like regression adjustment, the ADL model, and fixed effects.
 
 ```{r}
+#| code-fold: true
+
 vdem_data <- vdem_data |> 
   mutate(
     v2cagenmob_bin_lag1 = lag(v2cagenmob_bin, 1),
@@ -377,16 +381,16 @@ ggplot(results, aes(x = estimate, y = method, color = method)) +
     y = NULL
   ) +
   scale_y_discrete(limits = rev(c("Regression Adjustment", "ADL", "Fixed Effects",
-                               "Two-Way Fixed Effects", "MSM - 1 Lag", 
-                               "MSM - 2 Lags", "MSM - 3 Lags"))) +
+                               "Two-Way Fixed Effects", "MSM - 1 Lag Model", 
+                               "MSM - 2 Lags Model", "MSM - 3 Lags Model"))) +
   scale_color_manual(values = c(
     "Regression Adjustment" = colors[5],
     "ADL" = colors[6],
     "Fixed Effects" = colors[3],
     "Two-Way Fixed Effects" = colors[4],
-    "MSM - 1 Lag" = colors[1],
-    "MSM - 2 Lags" = colors[2],
-    "MSM - 3 Lags" = colors[7]
+    "MSM - 1 Lag Model" = colors[1],
+    "MSM - 2 Lags Model" = colors[2],
+    "MSM - 3 Lags Model" = colors[7]
   )) +
   theme_bw() +
   theme(legend.position = "none",
@@ -401,6 +405,8 @@ The other glaringly obvious difference are those confidence intervals. This is n
 Using stabilized weights instead is really easy to implement. All we have to do is estimate a separate model for the numerator. In this numerator, we are still going to be in the businesses of fitting propensity scores to predict our exposure. However, instead of including *all* prior exposure values of interest, lagged outcome, time-varying and time-invariant confounders as predictors, we are only going to include lagged exposure values and time-*invariant* confounders as predictors.
 
 ```{r}
+#| code-fold: true
+
 # MSM - 1 Lagged Estimate
 ## Estimate the Propensity Score Model
 ps_mod_lag1 <- glm(v2cagenmob_bin ~ v2cagenmob_bin_lag1 + any_election + v2x_jucon +
@@ -589,7 +595,7 @@ ggplot(results, aes(x = estimate, y = method, color = method)) +
 
 If you're still concerned about large weights *after* stabilization (which can still be a problem), another practical decision to make is whether or not you'll pursue *truncation* as an additional strategy. Post-stabilization, you might still end up with some extreme weights that are dominating the analysis. Truncation is a strategy to re-code the weights for some units in the analysis at an arbitrary threshold, such as the 1% most extreme (so the 0.5% largest and 0.5% smallest), or the 5% most extreme (so the 2.5% largest and 2.5% smallest) weights.
 
-For example, if you decided to do pursue 5% truncation and the 97.5% largest IPW was 2.5, then any IPW greater than 2.5 would be re-coded to 2.5. Similarly, if the 2.5% smallest IPW was 0.02, then all IPWs smaller than 0.02 would be re-coded to 0.02. Such strategy should generally decrease the variance as you increase the truncation, because you are artificially re-coding the most extreme weights. The downside to this is that you are increasing bias because, even though these crazy IPWs are creating *statistical* problems for us, they are (assuming you identified all the confounders and adjusted for them in the correct way...), they are assumed to be *correct*. If that's true, we're basically injecting bias for convenience. So this is a trade-off you'll need to evaluate carefully.
+For example, if you decided to pursue 5% truncation and the 97.5% largest IPW was 2.5, then any IPW greater than 2.5 would be re-coded to 2.5. Similarly, if the 2.5% smallest IPW was 0.02, then all IPWs smaller than 0.02 would be re-coded to 0.02. Such strategy should generally decrease the variance as you increase the truncation, because you are artificially re-coding the most extreme weights. The downside to this is that you are increasing bias because, even though these crazy IPWs are creating *statistical* problems for us, they are (assuming you identified all the confounders and adjusted for them in the correct way...), assumed to be *correct*. If that's true, we're basically injecting bias for convenience. So this is a trade-off you'll need to evaluate carefully.
 
 As mentioned earlier, one way to navigate this is to see how much results change as you artificially increase the truncation rule. Truncating 1% might be sufficient to decrease the variance without inducing much bias. Or it might be 2%... or 0.05%...
 
@@ -602,6 +608,8 @@ I can see why some might think that re-coding extreme IPWs might be "cheating". 
 Now, let's see if the results changed any by doing 1% and 5% truncation on our stabilized weights!
 
 ```{r}
+#| code-fold: true
+
 # Lag 1 Models
 vdem_data_lag1 <- vdem_data |> 
   mutate(
@@ -830,6 +838,8 @@ So far, every propensity score that we've estimated has been from logistic regre
 Let's see how results change when we use two alternative methods; a Generalized Additive Model (GAM) and a Random Forest machine learning algorithm. These two approaches are known to be much more flexible than a standard generalized linear model like logistic regression. Still, it's important to know that what I'm testing here isn't exhaustive by any means. You could make your propensity score algorithm more flexible by also including non-linear terms in your standard logit (like interactions and polynomials), by using other machine learning algorithms, or by implementing algorithms specifically designed for predicting the correct propensity score, such as the Covariate Balancing Propensity Score (CBPS).
 
 ```{r}
+#| code-fold: true
+
 # Estimate Results with Random Forest
 ## Lag 1
 ps_mod_lag1_rf <- randomForest(factor(v2cagenmob_bin) ~ v2cagenmob_bin_lag1 + any_election + v2x_jucon +
@@ -1111,6 +1121,8 @@ ggplot(results, aes(x = estimate, y = method, color = method)) +
 This last point is one that still confuses me... and I'm not sure what the correct practice, but I decided to be transparent about this and evaluate how results might change depending on how you actually implement the IPWs. So far, we have implemented weights directly by using the `weights` argument in the model directly. Yet, I have seen others implement these weights differently using the `{survey}` package. So I'm going to give that a try as well and see if results change.
 
 ```{r}
+#| code-fold: true
+
 # Logit - Survey Weights
 msm_lag1_model_svy <- svyglm(v2x_civlib ~ v2cagenmob_bin + v2cagenmob_bin_lag1,
                      design = svydesign(ids = ~ 1, weights = ~ cws_notrunc, data = na.omit(vdem_data_lag1)))
@@ -1208,6 +1220,6 @@ ggplot(results, aes(x = estimate, y = method, color = method)) +
 
 The existence and problem of time-varying confounding and feedback loops are real and likely plague your panel/longitudinal/time series cross sectional data. MSMs are one popular strategy that are there to save the day for your analysis... sort of. Like all observational causal inference tools, they are finicky and rely on tons of un-testable assumptions. This isn't a fault of MSMs in particular, but rather the entire approach of observational causal inference. Still, especially because you're working with sometimes wonky-weights, there are some more methods-specific concerns to pay attention to than just those that you normally would need to be on the lookout for and we discussed some of these in this blog post.
 
-By no means was this blog exhaustive, however. For example, I didn't go over using \[augmented IPWs\](<https://www.law.berkeley.edu/files/AIPW(1).pdf>) or \[incorporating fixed effects\](<https://www.mattblackwell.org/files/papers/psfe.pdf>) to name a couple. I am writing a blog and not a textbook, after all. But if you're seriously about implementing MSMs in an academic or a professional setting, topics such as those mentioned should be something that you research and consider.
+By no means was this blog exhaustive, however. For example, I didn't go over using [augmented IPWs](https://www.cambridge.org/core/journals/political-analysis/article/abs/an-introduction-to-the-augmented-inverse-propensity-weighted-estimator/4B1B8301E46F4432C4DCC91FE20780DB) or [incorporating fixed effects](https://www.mattblackwell.org/files/papers/psfe.pdf) to name a couple. I am writing a blog and not a textbook, after all. But if you're seriously about implementing MSMs in an academic or a professional setting, topics such as those mentioned should be something that you research and consider.
 
 I hope this helps!
