@@ -11,7 +11,7 @@
     "href": "blog/index.html#section",
     "title": "Blog",
     "section": "2026",
-    "text": "2026\n\n\n\n\n\n\n\n\n\n\nAlmost Half a Dozen Practical Decisions to Make When Using Marginal Structural Models\n\n\n\n\n\n\ncausal inference\n\n\npanel data\n\n\nmsm\n\n\nipw\n\n\n\n\n\n\n\n\n\nApril 30, 2026\n\n\n\n\n\n\nNo matching items"
+    "text": "2026\n\n\n\n\n\n\n\n\n\n\nAlmost Half a Dozen Practical Decisions to Make When Using Marginal Structural Models\n\n\n\n\n\n\ncausal inference\n\n\npanel data\n\n\nmsm\n\n\nipw\n\n\n\n\n\n\n\n\n\nApril 5, 2026\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/index.html#section-1",
@@ -165,7 +165,7 @@
     "href": "blog/2026/marginal-structural-models/index.html#footnotes",
     "title": "Almost Half a Dozen Practical Decisions to Make When Using Marginal Structural Models",
     "section": "Footnotes",
-    "text": "Footnotes\n\n\nIf you want to know more about what I mean here, check out [Noah Greifer’s response](https://stats.stackexchange.com/questions/669340/estimating-marginal-structural-models-with-the-weightit-package) to my question about the {WeightIt} package.↩︎\n[Chatton and Rohrer (2024) discuss several of these alternative applications such as inverse probability of missigness weights (IPMW) for handling missingness, inverse probability of sampling weights (IPSW) for sampling, and inverse probability of censoring weights (IPCW) for survival analysis.](https://psycnet.apa.org/record/2024-71804-001)↩︎\nThis gets at the idea of MSMs relying on a sequential ignorability identification assumption. Basically, if we did our confounder adjustment correctly, then our MSM mimics a sequentially randomized experiment where each unit’s treatment status at each time period is totally random and independent of prior exposure, outcome, and confounder values.↩︎"
+    "text": "Footnotes\n\n\nIf you want to know more about what I mean here, check out Noah Greifer’s response to my question about the {WeightIt} package.↩︎\nChatton and Rohrer (2024) discuss several of these alternative applications such as inverse probability of missigness weights (IPMW) for handling missingness, inverse probability of sampling weights (IPSW) for sampling, and inverse probability of censoring weights (IPCW) for survival analysis.↩︎\nThis gets at the idea of MSMs relying on a sequential ignorability identification assumption. Basically, if we did our confounder adjustment correctly, then our MSM mimics a sequentially randomized experiment where each unit’s treatment status at each time period is totally random and independent of prior exposure, outcome, and confounder values.↩︎"
   },
   {
     "objectID": "blog/index.html#section-2",

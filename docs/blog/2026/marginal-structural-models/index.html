@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-04-30">
+<meta name="dcterms.date" content="2026-04-05">
 
 <title>Almost Half a Dozen Practical Decisions to Make When Using Marginal Structural Models – Brian Lookabaugh</title>
 <style>
@@ -252,7 +252,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 30, 2026</p>
+      <p class="date">April 5, 2026</p>
     </div>
   </div>
   
@@ -291,12 +291,12 @@ window.Quarto = {
 </div>
 <section id="intro" class="level1">
 <h1>Intro</h1>
-<p>I’ve researched and talked a lot about marginal structural models over the past couple of years. Their application has historically been extremely appropriate for several of my research projects in the past. And, while they might <em>sound</em> niche, I don’t think they should be treated as such at all since they should be a go-to in many/most panel/longitudinal data settings (more on that later).</p>
-<p>What little I’ve written about marginal structural models has however, been mostly about <em>why</em> you should consider them and less about what actually implementing them is like. So I decided to write a blog about this (with a preface that explains what a marginal structural model is and why you might want to use one in the first three sections of this blog). Read onward if you’d like!</p>
+<p>I’ve researched and talked a lot about marginal structural models over the past couple of years. Their application has been very appropriate for several of my research projects in the past. And, while they might <em>sound</em> niche, I don’t think they should be treated as such. Instead, I think they should be a go-to in many/most panel/longitudinal/time series cross sectional data settings (more on that later).</p>
+<p>What little I’ve written about marginal structural models has however, been mostly about <em>why</em> you should consider them and less about what actually implementing them is like. So I decided to write a blog about <em>both</em>. Read onward if you’d like!</p>
 </section>
 <section id="the-problem-of-time-and-feedback-loops" class="level1">
 <h1>The Problem of Time and Feedback Loops</h1>
-<p>Most toy causal inference teaching examples ignore time (for good reason). Those examples stick to the comfortable world of the cross-section where we (in theory…) don’t have to worry about time. But time is real thing that can’t be ignored in most applied research. And when you have data that tracks the same group of units over time, there are some unique challenges that, even today, don’t get the attention that they deserve.</p>
+<p>Most toy causal inference teaching examples ignore time (for good reason). Those examples stick to the comfortable world of the cross-section where we don’t have to worry about time (in theory…, which itself is an assumption that isn’t quite true). But time is real thing that can’t be ignored in most applied research. And when you have data that tracks the same group of units over time, there are some unique challenges that, even today, don’t get the attention that they deserve.</p>
 <p>Referencing the figures from <a href="https://brian-lookabaugh.github.io/website-brianlookabaugh/blog/2024/simulating-panel-data/">a prior blog post</a>, we can see two ways that time creates serious problems for our abilities to make causal inferences. First, in the figure below, we see a simple DAG that depicts the problem of <em>feedback loops</em> between our exposure and outcome. We make a simple assumption that our causal effect of interest is confounded by a single time-invariant confounder. Because it (<span class="math inline">\(Z\)</span>) is time-invariant, it impacts all <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> values across time. Surely, as long as well control for <span class="math inline">\(Z\)</span>, we’re good, right?</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -304,7 +304,7 @@ window.Quarto = {
 <figcaption>Exposure-Outcome Feedback Loop DAG</figcaption>
 </figure>
 </div>
-<p>Nope! Take a look at <span class="math inline">\(X_{t}\)</span> and <span class="math inline">\(Y_{t}\)</span> for example. That is the contemporaneous effect (the effect in the current/immediate time period) that we often start with after all. <span class="math inline">\(Z\)</span> does confound this relationship… but <em>so does</em> <span class="math inline">\(Y_{t-1}\)</span>. That is, prior outcome values impact both current outcome values <em>and</em> current exposure values, which go on to impact future outcome values. In other words, we have a feedback loop between our exposure and outcome.</p>
+<p>Nope! Take a look at <span class="math inline">\(X_{t}\)</span> and <span class="math inline">\(Y_{t}\)</span> for example. That is the contemporaneous effect (the effect in the current/immediate time period) that we often start with. <span class="math inline">\(Z\)</span> does confound this relationship… but <em>so does</em> <span class="math inline">\(Y_{t-1}\)</span>. That is, prior outcome values impact both current outcome values <em>and</em> current exposure values, which go on to impact future outcome values. In other words, we have a feedback loop between our exposure and outcome.</p>
 <p>Why is this a problem? Why not control for <span class="math inline">\(Y_{t-1}\)</span> in your regression model? Go ahead, but don’t expect that your analysis will be able to estimate any unbiased <em>lagged</em> treatment effects. By adjusting for <span class="math inline">\(Y_{t-1}\)</span> you’re basically drawing a big red “X” over it. This means that you are blocking the part of the lagged treatment effect that travels to <span class="math inline">\(Y_{t}\)</span> via the <span class="math inline">\(X_{t-1} \rightarrow Y_{t-1} \rightarrow Y_{t}\)</span> path. Okay, so maybe just don’t control for <span class="math inline">\(Y_{t-1}\)</span> then? Well, now you’ve got a <em>known</em> confounder of the <span class="math inline">\(X_{t} \rightarrow Y_{t}\)</span> that you aren’t adjusting for. Basically, under your standard approaches you’d see in causal inference settings like regression adjustment, matching, fixed effects, etc., you are damned-if-you-do and damned-if-you-don’t in this situation.</p>
 <p>But what if you don’t suspect that such a feedback loops exists? Are you in the clear? Probably not, because time is potentially causing another problem that is demonstrated in the following DAG known as <em>time-varying confounding</em> (TVC).</p>
 <div class="quarto-figure quarto-figure-center">
@@ -325,9 +325,9 @@ window.Quarto = {
 <section id="how-ipw-gets-into-the-picture" class="level1">
 <h1>How IPW Gets Into the Picture</h1>
 <p>Inverse probability weighting (IPW) is used for all sorts of stuff. I was complaining earlier that MSMs aren’t a core part of the causal inference toolkit yet (even though they should be), but that is not the case for IPW. You can technically use IPWs for all sorts of things<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, but, to be technically precise, it is inverse probability of treatment weighting (IPTW) that is popular in causal studies. Still, this is a nuance that is already assumed in a causal inference context, so I’m going to refer to them as “IPW”s from now on.</p>
-<p>So… what actually is it? The logic is pretty simple. Assume again our handy-dandy binary treatment <span class="math inline">\(X\)</span>. Use the confounders that you’ve identified to build a model to predict whether or not an individual is treated v. untreated. This can literally be <code>glm(X ~ Z1 + Z2 + Z3, family = binomial(link = "logit"))</code>. Then, extract the predicted probabilities of treatment status for each individual from the model. Invert these “propensity scores” by computing <span class="math inline">\(\frac{1}{PS}\)</span> (although we’ll get into why you can and maybe should make the numerator a little more complicated than just “1”) and you’ve got yourself inverse probability weights. Add these weights into your outcome model via something like this <code>lm(Y ~ X, weights = ipw</code> and you’ve just implemented IPW.</p>
+<p>So… what actually is it? The logic is pretty simple. Assume again our handy-dandy binary treatment <span class="math inline">\(X\)</span>. Use the confounders that you’ve identified to build a model to predict whether or not an individual is treated v. untreated. This can literally be <code>glm(X ~ Z1 + Z2 + Z3, family = binomial(link = "logit"))</code>. Then, extract the predicted probabilities of treatment status for each individual from the model. Invert these “propensity scores” by computing <span class="math inline">\(\frac{1}{PS}\)</span> (although we’ll get into why you can and maybe should make the numerator a little more complicated than just “1”) and you’ve got yourself inverse probability weights. Add these weights into your outcome model via something like this <code>lm(Y ~ X, weights = ipw)</code> and you’ve just implemented IPW.</p>
 <p>Why go through the steps of modeling the probability of receiving treatment just to invert it? What does that do? By inverting the propensity scores, you are giving more weight to observations that <em>were confidently predicted to be in a certain treatment status</em> but <em>were not observed to be in that treatment status</em>. For example, let’s say that, for Unit A, the predicted probability that <span class="math inline">\(X\)</span> = 1 was 0.78, so 78%. Let’s say that Unit A’s <span class="math inline">\(X\)</span> value, however, was 0. By taking the inverse of 0.78 (<span class="math inline">\(\frac{1}{1 - 0.78}\)</span>), (adding a “1 -” before the propensity score because the unit is not treated), we get an IPW of 4.54. Instead, consider Unit B whose probability of <span class="math inline">\(X\)</span> = 1 was also 0.78, but their treatment status was <em>actually</em> 1. We would estimate our IPW by <span class="math inline">\(\frac{1}{0.78}\)</span> and so our IPW would be 1.28. Unit A is going to be weighted much more heavily compared to Unit B and that is by design. The point of IPW is to provide more weight to units that are predicted to have one treatment status but, in actuality, demonstrate another treatment status.</p>
-<p>This can be demonstrated visually and, rather than re-invent the wheel, I’m attaching and image from [Andrew Heiss’s blog](<a href="https://www.andrewheiss.com/blog/2024/03/21/demystifying-ate-att-atu/" class="uri">https://www.andrewheiss.com/blog/2024/03/21/demystifying-ate-att-atu/</a>) that really communicates what is going on with IPW. The darker colors reflect our actual observed data. The lighter shades reflect what the data looks like after weighting.</p>
+<p>This can be demonstrated visually and, rather than re-invent the wheel, I’m attaching and image from <a href="https://www.andrewheiss.com/blog/2024/03/21/demystifying-ate-att-atu/">Andrew Heiss’s blog</a> that really communicates what is going on with IPW. The darker colors reflect our actual observed data. The lighter shades reflect what the data looks like after weighting.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/heiss_ipw.png" class="img-fluid figure-img"></p>
@@ -346,6 +346,8 @@ window.Quarto = {
 <p>I’m not going to go into great detail concerning the variables I’ll be using. To be clear, none of the results from this toy example should be taken seriously. I just needed to find an assumed data generating process with feedback loops and time-varying confounding as a template to work through the process of implementing MSMs.</p>
 <p>And, with that being explicitly laid out, this toy analysis is going to be looking at the dynamic relationship between civilian mass mobilization (protests, strikes, sit-ins) and government repression. Mass mobilization efforts may decrease repression and increase civil liberties via public pressure. Alternatively, they may also provoke governments to repression in attempts to quell dissent. The regime and the dissidents play an interactive game with each other where their present actions are in response to past actions by the other. This represents a feedback loop that is confounded by several time-varying characteristics. Because it’s not important, I won’t lay out the theoretical reasoning for the inclusion of each control variable, but it’s annotated in the code below if you’re interested.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vdem_data <span class="ot">&lt;-</span> vdem <span class="sc">|&gt;</span> </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Identifiers</span></span>
@@ -385,6 +387,7 @@ window.Quarto = {
 <span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Restrict Analysis to Post-Cold War Era</span></span>
 <span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1991</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(v2xel_elecpres, v2xel_elecparl, v2stfisccap))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="decision-1-how-far-back-do-you-go" class="level1">
@@ -408,6 +411,8 @@ Missingness Is a Problem for MSMs…
 <p>Another problem with a longer causal lag length is a dimensionality problem. Consider the scenario where we’re interested in the causal effect of only 2 time periods, such as the contemporaneous effect and 1-period lagged effect. There’s only four counterfactual treatment histories with 2 time periods: {1, 1}, {1, 0}, {0, 1}, and {0, 0}. If we add in just one more lagged effect, we now have the burden of having to estimate the potential outcomes of 8 separate treatment histories. With three lagged effects, we would need to estimate the potential outcomes of 16 separate histories, etc. This is challenging and you begin to stretch the support of your data as this dimensionality curse increases.</p>
 <p>Now, let’s get to the fun part and look at how effect sizes change when we introduce different lag lengths and use alternative non-MSM methods to get a sense of how much results can change when we use things like regression adjustment, the ADL model, and fixed effects.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>vdem_data <span class="ot">&lt;-</span> vdem_data <span class="sc">|&gt;</span> </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">v2cagenmob_bin_lag1 =</span> <span class="fu">lag</span>(v2cagenmob_bin, <span class="dv">1</span>),</span>
@@ -583,6 +588,7 @@ Missingness Is a Problem for MSMs…
 <span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">method =</span> <span class="st">"MSM - 3 Lags Model"</span>)</span>
 <span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(method, term, estimate, conf.low, conf.high)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>In the figure below, you can see that there is a big gap, <em>especially</em> concerning the contemporaneous effect, between the more traditional approaches and the MSM estimates. According to these (extremely untrustworthy and simply toy) results, the MSM generally estimates an immediate response from the state to crack down on civil liberties (in one model) <em>or</em> that the state generally gives in to demands (in another model) when there has been many to several small and large scale mass mobilization events. This alone shows why it might be important to be intentional about the number of causal lag lengths you include as moving from modeling 2-year lags to three resulted in a total sign flip for the contemporaneous effect.</p>
 <div class="cell">
@@ -604,16 +610,16 @@ Missingness Is a Problem for MSMs…
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="cn">NULL</span></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">limits =</span> <span class="fu">rev</span>(<span class="fu">c</span>(<span class="st">"Regression Adjustment"</span>, <span class="st">"ADL"</span>, <span class="st">"Fixed Effects"</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Two-Way Fixed Effects"</span>, <span class="st">"MSM - 1 Lag"</span>, </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"MSM - 2 Lags"</span>, <span class="st">"MSM - 3 Lags"</span>))) <span class="sc">+</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Two-Way Fixed Effects"</span>, <span class="st">"MSM - 1 Lag Model"</span>, </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"MSM - 2 Lags Model"</span>, <span class="st">"MSM - 3 Lags Model"</span>))) <span class="sc">+</span></span>
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Regression Adjustment"</span> <span class="ot">=</span> colors[<span class="dv">5</span>],</span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ADL"</span> <span class="ot">=</span> colors[<span class="dv">6</span>],</span>
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Fixed Effects"</span> <span class="ot">=</span> colors[<span class="dv">3</span>],</span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Two-Way Fixed Effects"</span> <span class="ot">=</span> colors[<span class="dv">4</span>],</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSM - 1 Lag"</span> <span class="ot">=</span> colors[<span class="dv">1</span>],</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSM - 2 Lags"</span> <span class="ot">=</span> colors[<span class="dv">2</span>],</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSM - 3 Lags"</span> <span class="ot">=</span> colors[<span class="dv">7</span>]</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSM - 1 Lag Model"</span> <span class="ot">=</span> colors[<span class="dv">1</span>],</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSM - 2 Lags Model"</span> <span class="ot">=</span> colors[<span class="dv">2</span>],</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSM - 3 Lags Model"</span> <span class="ot">=</span> colors[<span class="dv">7</span>]</span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
 <span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
@@ -635,6 +641,8 @@ Missingness Is a Problem for MSMs…
 <h1>Decision 2: Stabilizing Your Weights</h1>
 <p>Using stabilized weights instead is really easy to implement. All we have to do is estimate a separate model for the numerator. In this numerator, we are still going to be in the businesses of fitting propensity scores to predict our exposure. However, instead of including <em>all</em> prior exposure values of interest, lagged outcome, time-varying and time-invariant confounders as predictors, we are only going to include lagged exposure values and time-<em>invariant</em> confounders as predictors.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MSM - 1 Lagged Estimate</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimate the Propensity Score Model</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>ps_mod_lag1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(v2cagenmob_bin <span class="sc">~</span> v2cagenmob_bin_lag1 <span class="sc">+</span> any_election <span class="sc">+</span> v2x_jucon <span class="sc">+</span></span>
@@ -775,6 +783,7 @@ Missingness Is a Problem for MSMs…
 <span id="cb5-138"><a href="#cb5-138" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">method =</span> <span class="st">"MSM - 3 Lags Model"</span>)</span>
 <span id="cb5-139"><a href="#cb5-139" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(method, term, estimate, conf.low, conf.high)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Interesting results below. Don’t be fooled by the scaling of the plot. If you pay attention to the x-axis marginal effects, you’ll notice that these confidence intervals have dramatically shrunk… along with the point estimates. These results suggest that our initial findings generated from the unstabilized weights were a bit unwieldy and sensitive to extreme weights that were generated by taking the simple inverse of the propensity score. This easy, and recommended, practical step led to a major change in the results, so this step definitely should not be considered as a minor, cosmetic change.</p>
 <div class="cell">
@@ -825,7 +834,7 @@ Missingness Is a Problem for MSMs…
 <section id="decision-3-dealing-with-extreme-weights" class="level1">
 <h1>Decision 3: Dealing with Extreme Weights</h1>
 <p>If you’re still concerned about large weights <em>after</em> stabilization (which can still be a problem), another practical decision to make is whether or not you’ll pursue <em>truncation</em> as an additional strategy. Post-stabilization, you might still end up with some extreme weights that are dominating the analysis. Truncation is a strategy to re-code the weights for some units in the analysis at an arbitrary threshold, such as the 1% most extreme (so the 0.5% largest and 0.5% smallest), or the 5% most extreme (so the 2.5% largest and 2.5% smallest) weights.</p>
-<p>For example, if you decided to do pursue 5% truncation and the 97.5% largest IPW was 2.5, then any IPW greater than 2.5 would be re-coded to 2.5. Similarly, if the 2.5% smallest IPW was 0.02, then all IPWs smaller than 0.02 would be re-coded to 0.02. Such strategy should generally decrease the variance as you increase the truncation, because you are artificially re-coding the most extreme weights. The downside to this is that you are increasing bias because, even though these crazy IPWs are creating <em>statistical</em> problems for us, they are (assuming you identified all the confounders and adjusted for them in the correct way…), they are assumed to be <em>correct</em>. If that’s true, we’re basically injecting bias for convenience. So this is a trade-off you’ll need to evaluate carefully.</p>
+<p>For example, if you decided to pursue 5% truncation and the 97.5% largest IPW was 2.5, then any IPW greater than 2.5 would be re-coded to 2.5. Similarly, if the 2.5% smallest IPW was 0.02, then all IPWs smaller than 0.02 would be re-coded to 0.02. Such strategy should generally decrease the variance as you increase the truncation, because you are artificially re-coding the most extreme weights. The downside to this is that you are increasing bias because, even though these crazy IPWs are creating <em>statistical</em> problems for us, they are (assuming you identified all the confounders and adjusted for them in the correct way…), assumed to be <em>correct</em>. If that’s true, we’re basically injecting bias for convenience. So this is a trade-off you’ll need to evaluate carefully.</p>
 <p>As mentioned earlier, one way to navigate this is to see how much results change as you artificially increase the truncation rule. Truncating 1% might be sufficient to decrease the variance without inducing much bias. Or it might be 2%… or 0.05%…</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -842,6 +851,8 @@ Why Re-Code Instead of Drop?
 </div>
 <p>Now, let’s see if the results changed any by doing 1% and 5% truncation on our stabilized weights!</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lag 1 Models</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>vdem_data_lag1 <span class="ot">&lt;-</span> vdem_data <span class="sc">|&gt;</span> </span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
@@ -1016,6 +1027,7 @@ Why Re-Code Instead of Drop?
 <span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">method =</span> <span class="st">"3 Lags (5% Truncation)"</span>)</span>
 <span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(method, term, estimate, conf.low, conf.high)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Below, we can see that truncation seems to help a bit with precision. When comparing the same lagged model that uses truncation v. those that don’t, we do see that confidence intervals shrink a bit, <em>especially</em> for the estimation of lagged effects, and that point estimates are pushed towards zero. Is this push towards zero a result of noisy results being “regularized” or is it a sign of bias injected into the point estimates? I don’t know! Again, truncation requires careful evaluation and being honest about the trade-offs.</p>
 <div class="cell">
@@ -1071,6 +1083,8 @@ Why Re-Code Instead of Drop?
 <p>So far, every propensity score that we’ve estimated has been from logistic regression. This is sort of the norm, but necessarily the standard. It’s easy to just use logit as a default because it’s easy to implement and we’re all familiar with it. However, such convenience should be confronted. After all, with MSMs, we not only need to identify the correct adjustment set of controls to de-bias our estimates, we also need to make sure that we are modeling these in the correct way. It’s easy to code up an additive logit model, but there’s probably all sorts of non-linear effects going on that impact treatment assignment. An additive logit model is probably not always the best for modeling such complexities.</p>
 <p>Let’s see how results change when we use two alternative methods; a Generalized Additive Model (GAM) and a Random Forest machine learning algorithm. These two approaches are known to be much more flexible than a standard generalized linear model like logistic regression. Still, it’s important to know that what I’m testing here isn’t exhaustive by any means. You could make your propensity score algorithm more flexible by also including non-linear terms in your standard logit (like interactions and polynomials), by using other machine learning algorithms, or by implementing algorithms specifically designed for predicting the correct propensity score, such as the Covariate Balancing Propensity Score (CBPS).</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate Results with Random Forest</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Lag 1</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ps_mod_lag1_rf <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="fu">factor</span>(v2cagenmob_bin) <span class="sc">~</span> v2cagenmob_bin_lag1 <span class="sc">+</span> any_election <span class="sc">+</span> v2x_jucon <span class="sc">+</span></span>
@@ -1300,6 +1314,7 @@ Why Re-Code Instead of Drop?
 <span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">method =</span> <span class="st">"GAM - 3 Lag Model"</span>)</span>
 <span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(method, term, estimate, conf.low, conf.high)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>As you can see, it does look like your algorithm/method for estimating your propensity score matters. A researcher using logit could come to very different conclusion from a research using a random forest algorithm. Which approach is right for you? I don’t know and I can’t do the hard part of thinking through your data generating process and all non-linearities that might exist for you. As a general rule of thumb, however, I would naturally assume that reality is a lot more complicated than our toy additive models and so I would assume that the actual propensity mechanism that exist in the wild is incredibly complicated and non-linear, so I would prioritize models/methods that begin to allow me to account for those complications.</p>
 <div class="cell">
@@ -1354,6 +1369,8 @@ Why Re-Code Instead of Drop?
 <h1>Decision 5: Actually Implementing the Weights</h1>
 <p>This last point is one that still confuses me… and I’m not sure what the correct practice, but I decided to be transparent about this and evaluate how results might change depending on how you actually implement the IPWs. So far, we have implemented weights directly by using the <code>weights</code> argument in the model directly. Yet, I have seen others implement these weights differently using the <code>{survey}</code> package. So I’m going to give that a try as well and see if results change.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Logit - Survey Weights</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>msm_lag1_model_svy <span class="ot">&lt;-</span> <span class="fu">svyglm</span>(v2x_civlib <span class="sc">~</span> v2cagenmob_bin <span class="sc">+</span> v2cagenmob_bin_lag1,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">design =</span> <span class="fu">svydesign</span>(<span class="at">ids =</span> <span class="sc">~</span> <span class="dv">1</span>, <span class="at">weights =</span> <span class="sc">~</span> cws_notrunc, <span class="at">data =</span> <span class="fu">na.omit</span>(vdem_data_lag1)))</span>
@@ -1404,6 +1421,7 @@ Why Re-Code Instead of Drop?
 <span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">method =</span> <span class="st">"3 Lag Model - Survey Weights"</span>)</span>
 <span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(method, term, estimate, conf.low, conf.high)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>That’s interesting! There is a difference, although it’s not related to point estimates (as expected) but the variance is noticeably lower when we implement the weights using the <code>{survey}</code> package instead. I still don’t know which approach is technically correct, however, so if anybody is reading this and knows the answer, please let me know!</p>
 <div class="cell">
@@ -1453,7 +1471,7 @@ Why Re-Code Instead of Drop?
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
 <p>The existence and problem of time-varying confounding and feedback loops are real and likely plague your panel/longitudinal/time series cross sectional data. MSMs are one popular strategy that are there to save the day for your analysis… sort of. Like all observational causal inference tools, they are finicky and rely on tons of un-testable assumptions. This isn’t a fault of MSMs in particular, but rather the entire approach of observational causal inference. Still, especially because you’re working with sometimes wonky-weights, there are some more methods-specific concerns to pay attention to than just those that you normally would need to be on the lookout for and we discussed some of these in this blog post.</p>
-<p>By no means was this blog exhaustive, however. For example, I didn’t go over using [augmented IPWs](<a href="https://www.law.berkeley.edu/files/AIPW(1).pdf" class="uri">https://www.law.berkeley.edu/files/AIPW(1).pdf</a>) or [incorporating fixed effects](<a href="https://www.mattblackwell.org/files/papers/psfe.pdf" class="uri">https://www.mattblackwell.org/files/papers/psfe.pdf</a>) to name a couple. I am writing a blog and not a textbook, after all. But if you’re seriously about implementing MSMs in an academic or a professional setting, topics such as those mentioned should be something that you research and consider.</p>
+<p>By no means was this blog exhaustive, however. For example, I didn’t go over using <a href="https://www.cambridge.org/core/journals/political-analysis/article/abs/an-introduction-to-the-augmented-inverse-propensity-weighted-estimator/4B1B8301E46F4432C4DCC91FE20780DB">augmented IPWs</a> or <a href="https://www.mattblackwell.org/files/papers/psfe.pdf">incorporating fixed effects</a> to name a couple. I am writing a blog and not a textbook, after all. But if you’re seriously about implementing MSMs in an academic or a professional setting, topics such as those mentioned should be something that you research and consider.</p>
 <p>I hope this helps!</p>
 
 
@@ -1463,8 +1481,8 @@ Why Re-Code Instead of Drop?
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>If you want to know more about what I mean here, check out [Noah Greifer’s response](<a href="https://stats.stackexchange.com/questions/669340/estimating-marginal-structural-models-with-the-weightit-package" class="uri">https://stats.stackexchange.com/questions/669340/estimating-marginal-structural-models-with-the-weightit-package</a>) to my question about the {WeightIt} package.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>[Chatton and Rohrer (2024) discuss several of these alternative applications such as inverse probability of missigness weights (IPMW) for handling missingness, inverse probability of sampling weights (IPSW) for sampling, and inverse probability of censoring weights (IPCW) for survival analysis.](<a href="https://psycnet.apa.org/record/2024-71804-001" class="uri">https://psycnet.apa.org/record/2024-71804-001</a>)<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>If you want to know more about what I mean here, check out <a href="https://stats.stackexchange.com/questions/669340/estimating-marginal-structural-models-with-the-weightit-package">Noah Greifer’s response</a> to my question about the <code>{WeightIt}</code> package.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://psycnet.apa.org/record/2024-71804-001">Chatton and Rohrer (2024)</a> discuss several of these alternative applications such as inverse probability of missigness weights (IPMW) for handling missingness, inverse probability of sampling weights (IPSW) for sampling, and inverse probability of censoring weights (IPCW) for survival analysis.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>This gets at the idea of MSMs relying on a <em>sequential ignorability</em> identification assumption. Basically, if we did our confounder adjustment correctly, then our MSM mimics a sequentially randomized experiment where each unit’s treatment status at each time period is totally random and independent of prior exposure, outcome, and confounder values.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
