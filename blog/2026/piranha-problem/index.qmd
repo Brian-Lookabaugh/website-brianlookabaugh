@@ -24,7 +24,6 @@ pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
   "marginaleffects", # Marginal Effects
   "tinytable", # Reporting Tabular Results
-  "vdemdata", # Democracy Data
   "scales", # Plotting Percentages
   install = FALSE
 )
