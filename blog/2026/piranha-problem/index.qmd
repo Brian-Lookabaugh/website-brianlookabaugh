@@ -2,7 +2,7 @@
 title: "Understanding the Piranha Problem and Navigating Statistical Reporting In Light of Your Cannibalistic Effects"
 date: 2026-09-17
 description: "It is often said that 'there are no free lunches in causal inference'. I am not here to dispute that claim. In fact, this inconvinient fact is present in ways that we don't often think of. Check out this post to learn about the so-called 'Piranha Problem' and why it is probably very important to understand for your research and what to do about it."
-image: "figures/pirhana.png"
+image: "figures/piranha.png"
 toc: true
 execute:
   warning: false
